@@ -1,3 +1,3 @@
-# mirsg-template
+# xnat-chart
 
-A template for general MIRSG repositories
+Helm Chart for XNAT

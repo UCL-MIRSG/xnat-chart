@@ -1,0 +1,306 @@
+# Default values for xnat chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## @section Common parameters for both XNAT web and shadow deployments
+
+## @param replicaCount Number of replicas
+replicaCount: 1
+
+## @param image.digest Image digest in the way sha256:aa...
+## @param image.pullPolicy MariaDB image pull policy
+## @param image.pullSecrets Image pull secrets
+## @param image.registry Image registry
+## @param image.repository Image repository
+## @param image.tag Image tag
+##
+image:
+  digest: ""
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    - ghcr-secret
+  registry: ghcr.io
+  repository: ghcr.io/ucl-mirsg/xnat-core
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: latest
+
+## @param imageCredentials.registry Image registry
+## @param imageCredentials.username Image registry username
+## @param imageCredentials.password Image registry password
+## @param imageCredentials.email Image registry email
+##
+imageCredentials:
+  registry: ghcr.io
+  username: username
+  password: password
+  email: ""
+
+## @param nameOverride Override name
+nameOverride: ""
+## @param fullnameOverride Override fullname
+fullnameOverride: ""
+
+## @param serviceAccount.create Specifies whether a service account should be created
+## @param serviceAccount.automount Automatically mount a ServiceAccount's API credentials?
+## @param serviceAccount.annotations Annotations to add to the service account
+## @param serviceAccount.name The name of the service account to use.
+##
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+## @param service.port Service port
+## @param service.type Service type
+##
+service:
+  type: ClusterIP
+  port: 80
+
+## @param volumes[0].name XNAT node configuration Volume name
+## @param volumes[1].name XNAT node configuration Volume name
+## @param volumes[1].secret.secretName XNAT instance configuration Volume secret
+##
+volumes:
+  - name: node-conf
+  - name: xnat-config
+    secret:
+      secretName: xnat-conf
+
+## @param volumeMounts[0].name XNAT node configuration Volume name
+## @param volumeMounts[0].mountPath XNAT node configuration Volume mount path
+## @param volumeMounts[1].name XNAT instance configuration Volume name
+## @param volumeMounts[1].mountPath XNAT instance configuration Volume mount path
+## @param volumeMounts[1].readOnly XNAT instance configuration Volume read only
+## @param volumeMounts[1].subPath XNAT instance configuration Volume sub path
+volumeMounts:
+  - name: node-conf
+    mountPath: /data/xnat/home/config
+  - name: xnat-config
+    mountPath: /data/xnat/home/config/xnat-conf.properties
+    readOnly: true
+    subPath: xnat-conf.properties
+
+## @section XNAT Database parameters
+## @param postgresql.enabled Enable or disable the PostgreSQL deployment
+## @param postgresql.auth.database PostgreSQL database name
+## @param postgresql.auth.username PostgreSQL username
+## @param postgresql.auth.password PostgreSQL password. Make sure to override this.
+## @param postgresql.auth.postgresPassword PostgreSQL password. Make sure to override this.
+postgresql:
+  enabled: true
+  auth:
+    database: xnat
+    username: xnat
+    password: xnat
+    postgresPassword: postgres
+
+## @section XNAT Web parameters
+web:
+  ## @param web.podAnnotations Annotations to add to the web pod
+  podAnnotations: {}
+
+  ## @param web.podLabels Labels to add to the web pod
+  podLabels: {}
+
+  ## @param web.podSecurityContext Pod security context
+  podSecurityContext: {}
+
+  ## @param web.securityContext Pod security context
+  securityContext:
+    {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  ## @param web.ingress.enabled Enable or disable the ingress deployment
+  ## @param web.ingress.className Ingress class name
+  ## @param web.ingress.annotations Ingress annotations
+  ## @param web.ingress.hosts[0].host Ingress host
+  ## @param web.ingress.hosts[0].paths[0].path Ingress path
+  ## @param web.ingress.hosts[0].paths[0].pathType Ingress path type
+  ## @param web.ingress.tls Ingress TLS
+  ##
+  ingress:
+    enabled: false
+    className: ""
+    annotations:
+      {}
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  ## @param web.resources Resources to set for the web pod
+  resources:
+    {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  ## @param web.livenessProbe.failureThreshold Liveness probe failure threshold
+  ## @param web.livenessProbe.httpGet.path Liveness probe httpGet path
+  ## @param web.livenessProbe.httpGet.port Liveness probe httpGet port
+  ## @param web.livenessProbe.periodSeconds Liveness probe period seconds
+  ## @param web.livenessProbe.timeoutSeconds Liveness probe timeout seconds
+  livenessProbe:
+    failureThreshold: 1
+    httpGet:
+      path: /app/template/Login.vm#!
+      port: http
+    periodSeconds: 10
+    timeoutSeconds: 5
+
+  ## @param web.readinessProbe.failureThreshold Readiness probe failure threshold
+  ## @param web.readinessProbe.httpGet.path Readiness probe httpGet path
+  ## @param web.readinessProbe.httpGet.port Readiness probe httpGet port
+  ## @param web.readinessProbe.periodSeconds Readiness probe period seconds
+  ## @param web.readinessProbe.timeoutSeconds Readiness probe timeout seconds
+  readinessProbe:
+    failureThreshold: 1
+    httpGet:
+      path: /app/template/Login.vm#!
+      port: http
+    periodSeconds: 10
+    timeoutSeconds: 3
+
+  ## @param web.startupProbe.failureThreshold Startup probe failure threshold
+  ## @param web.startupProbe.httpGet.path Startup probe httpGet path
+  ## @param web.startupProbe.httpGet.port Startup probe httpGet port
+  ## @param web.startupProbe.periodSeconds Startup probe period seconds
+  startupProbe:
+    failureThreshold: 15
+    httpGet:
+      path: /app/template/Login.vm#!
+      port: http
+    periodSeconds: 10
+
+  ## @param web.autoscaling.enabled Enable or disable the autoscaling
+  ## @param web.autoscaling.minReplicas Minimum number of replicas
+  ## @param web.autoscaling.maxReplicas Maximum number of replicas
+  ## @param web.autoscaling.targetCPUUtilizationPercentage Target CPU utilisation percentage
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  ## @param web.nodeSelector Node selector
+  nodeSelector: {}
+
+  ## @param web.tolerations Tolerations to add to the web pod
+  tolerations: []
+
+  ## @param web.affinity Affinity to add to the web pod
+  affinity: {}
+
+## @section XNAT shadow parameters
+shadow:
+  ## @param shadow.dicom_scp.serviceType Service type
+  ## @param shadow.dicom_scp.annotations Annotations
+  ## @param shadow.dicom_scp.receivers[0].ae_title SCP AE title
+  ## @param shadow.dicom_scp.receivers[0].port SCP port
+  ##
+  dicom_scp:
+    serviceType: NodePort
+    annotations: {}
+    receivers:
+      - ae_title: XNAT
+        port: 8104
+
+  ## @param shadow.podAnnotations Pod annotations to add to the shadow pod
+  podAnnotations: {}
+
+  ## @param shadow.podLabels Labels to add to the shadow pod
+  podLabels: {}
+
+  ## @param shadow.podSecurityContext Pod security context
+  podSecurityContext:
+    {}
+    # fsGroup: 2000
+
+  ## @param shadow.securityContext shadow Deployment security context
+  securityContext:
+    {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  ## @param shadow.resources Resources to set for the shadow pod
+  resources:
+    {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+  ## @param shadow.readinessProbe.tcpSocket.port Readiness probe TCP socket
+  ## @param shadow.readinessProbe.initialDelaySeconds Readiness probe initial delay seconds
+  ## @param shadow.readinessProbe.periodSeconds Readiness probe period seconds
+  readinessProbe:
+    tcpSocket:
+      port: 8080
+    initialDelaySeconds: 15
+    periodSeconds: 10
+
+  ## @param shadow.livenessProbe.tcpSocket.port Liveness probe TCP socket
+  ## @param shadow.livenessProbe.initialDelaySeconds Liveness probe initial delay seconds
+  ## @param shadow.livenessProbe.periodSeconds Liveness probe period seconds
+  livenessProbe:
+    tcpSocket:
+      port: 8080
+    initialDelaySeconds: 15
+    periodSeconds: 10
+
+  ## @param shadow.autoscaling.enabled Enable or disable the autoscaling
+  ## @param shadow.autoscaling.minReplicas Minimum number of replicas
+  ## @param shadow.autoscaling.maxReplicas Maximum number of replicas
+  ## @param shadow.autoscaling.targetCPUUtilizationPercentage Target CPU utilisation percentage
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
+
+  ## @param shadow.nodeSelector Node selector to add to the shadow pod
+  nodeSelector: {}
+
+  ## @param shadow.tolerations Tolerations to add to the shadow pod
+  tolerations: []
+
+  ## @param shadow.affinity Affinity to add to the shadow pod
+  affinity: {}

@@ -58,34 +58,96 @@ serviceAccount:
 
 ## @param service.port Service port
 ## @param service.type Service type
+## @param service.targetPort Service target port
 ##
 service:
   type: ClusterIP
   port: 80
+  targetPort: 8080
+
+## @param persistence.storageClass Persistent volume storage class
+## @param persistence.annotations Persistent volume annotations
+##
+persistence:
+  storageClass:
+  annotations: {}
 
 ## @param volumes[0].name XNAT node configuration Volume name
-## @param volumes[1].name XNAT node configuration Volume name
-## @param volumes[1].secret.secretName XNAT instance configuration Volume secret
+## @param volumes[1].name Wait for PostgreSQL Volume name
+## @param volumes[1].configMap.name Wait for PostgreSQL Volume name
+## @param volumes[2].name XNAT archive Volume name
+## @param volumes[2].accessModes XNAT archive Volume access modes
+## @param volumes[2].annotations XNAT archive Volume annotations
+## @param volumes[2].existingClaim XNAT archive Volume existingClaim
+## @param volumes[2].persistent XNAT archive Volume persistent
+## @param volumes[2].size XNAT archive Volume size
+## @param volumes[2].storageClass XNAT archive Volume storageClass
+## @param volumes[3].name XNAT instance configuration Volume name
+## @param volumes[3].secret.secretName XNAT instance configuration Volume secret name
+## @param volumes[4].name XNAT prearchive Volume name
+## @param volumes[4].accessModes XNAT prearchive Volume access modes
+## @param volumes[4].annotations XNAT prearchive Volume annotations
+## @param volumes[4].existingClaim XNAT prearchive Volume existingClaim
+## @param volumes[4].persistent XNAT prearchive Volume persistent
+## @param volumes[4].size XNAT prearchive Volume size
+## @param volumes[4].storageClass XNAT prearchive Volume storageClass
 ##
 volumes:
   - name: node-conf
+  - name: wait-for-postgres
+    configMap:
+      name: wait-for-postgres
+  - name: xnat-archive
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+    existingClaim:
+    persistent: true
+    size: 8Gi
+    storageClass:
   - name: xnat-config
     secret:
       secretName: xnat-conf
+  - name: xnat-prearchive
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+    existingClaim:
+    persistent: true
+    size: 8Gi
+    storageClass:
 
 ## @param volumeMounts[0].name XNAT node configuration Volume name
 ## @param volumeMounts[0].mountPath XNAT node configuration Volume mount path
-## @param volumeMounts[1].name XNAT instance configuration Volume name
-## @param volumeMounts[1].mountPath XNAT instance configuration Volume mount path
-## @param volumeMounts[1].readOnly XNAT instance configuration Volume read only
-## @param volumeMounts[1].subPath XNAT instance configuration Volume sub path
+## @param volumeMounts[1].name Wait for PostgreSQL Volume name
+## @param volumeMounts[1].mountPath Wait for PostgreSQL Volume mount path
+## @param volumeMounts[1].readOnly Wait for PostgreSQL Volume read only
+## @param volumeMounts[2].name XNAT archive Volume name
+## @param volumeMounts[2].mountPath XNAT archive Volume mount path
+## @param volumeMounts[2].subPath XNAT archive Volume sub path
+## @param volumeMounts[3].name XNAT instance configuration Volume name
+## @param volumeMounts[3].mountPath XNAT instance configuration Volume mount path
+## @param volumeMounts[3].readOnly XNAT instance configuration Volume read only
+## @param volumeMounts[3].subPath XNAT instance configuration Volume sub path
+## @param volumeMounts[4].name XNAT prearchive Volume name
+## @param volumeMounts[4].mountPath XNAT prearchive Volume mount path
+## @param volumeMounts[4].subPath XNAT prearchive Volume sub path
 volumeMounts:
   - name: node-conf
     mountPath: /data/xnat/home/config
+  - name: wait-for-postgres
+    mountPath: /usr/local/bin/wait-for-postgres.sh
+    readOnly: true
+  - name: xnat-archive
+    mountPath: /data/xnat/archive
+    subPath:
   - name: xnat-config
     mountPath: /data/xnat/home/config/xnat-conf.properties
     readOnly: true
     subPath: xnat-conf.properties
+  - name: xnat-prearchive
+    mountPath: /data/xnat/prearchive
+    subPath:
 
 ## @section XNAT Database parameters
 ## @param postgresql.enabled Enable or disable the PostgreSQL deployment
@@ -147,19 +209,17 @@ web:
     #    hosts:
     #      - chart-example.local
 
-  ## @param web.resources Resources to set for the web pod
+  ## @param web.resources.limits.cpu CPU and memory limits
+  ## @param web.resources.limits.memory Memory limits
+  ## @param web.resources.requests.cpu CPU and memory requests
+  ## @param web.resources.requests.memory Memory requests
   resources:
-    {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 4000Mi
+    requests:
+      cpu: 250m
+      memory: 4000Mi
 
   ## @param web.livenessProbe.failureThreshold Liveness probe failure threshold
   ## @param web.livenessProbe.httpGet.path Liveness probe httpGet path
@@ -253,19 +313,17 @@ shadow:
     # runAsNonRoot: true
     # runAsUser: 1000
 
-  ## @param shadow.resources Resources to set for the shadow pod
+  ## @param shadow.resources.limits.cpu CPU and memory limits
+  ## @param shadow.resources.limits.memory Memory limits
+  ## @param shadow.resources.requests.cpu CPU and memory requests
+  ## @param shadow.resources.requests.memory Memory requests
   resources:
-    {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 1000Mi
+    requests:
+      cpu: 250m
+      memory: 1000Mi
 
   ## @param shadow.readinessProbe.tcpSocket.port Readiness probe TCP socket
   ## @param shadow.readinessProbe.initialDelaySeconds Readiness probe initial delay seconds

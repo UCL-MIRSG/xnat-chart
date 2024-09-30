@@ -27,15 +27,43 @@ Helm Chart for XNAT
 | `serviceAccount.name`          | The name of the service account to use.                 | `""`                                          |
 | `service.port`                 | Service port                                            | `80`                                          |
 | `service.type`                 | Service type                                            | `ClusterIP`                                   |
+| `service.targetPort`           | Service target port                                     | `8080`                                        |
+| `persistence.storageClass`     | Persistent volume storage class                         | `nil`                                         |
+| `persistence.annotations`      | Persistent volume annotations                           | `{}`                                          |
 | `volumes[0].name`              | XNAT node configuration Volume name                     | `node-conf`                                   |
-| `volumes[1].name`              | XNAT node configuration Volume name                     | `xnat-config`                                 |
-| `volumes[1].secret.secretName` | XNAT instance configuration Volume secret               | `xnat-conf`                                   |
+| `volumes[1].name`              | Wait for PostgreSQL Volume name                         | `wait-for-postgres`                           |
+| `volumes[1].configMap.name`    | Wait for PostgreSQL Volume name                         | `wait-for-postgres`                           |
+| `volumes[2].name`              | XNAT archive Volume name                                | `xnat-archive`                                |
+| `volumes[2].accessModes`       | XNAT archive Volume access modes                        | `["ReadWriteOnce"]`                           |
+| `volumes[2].annotations`       | XNAT archive Volume annotations                         | `{}`                                          |
+| `volumes[2].existingClaim`     | XNAT archive Volume existingClaim                       | `nil`                                         |
+| `volumes[2].persistent`        | XNAT archive Volume persistent                          | `true`                                        |
+| `volumes[2].size`              | XNAT archive Volume size                                | `8Gi`                                         |
+| `volumes[2].storageClass`      | XNAT archive Volume storageClass                        | `nil`                                         |
+| `volumes[3].name`              | XNAT instance configuration Volume name                 | `xnat-config`                                 |
+| `volumes[3].secret.secretName` | XNAT instance configuration Volume secret name          | `xnat-conf`                                   |
+| `volumes[4].name`              | XNAT prearchive Volume name                             | `xnat-prearchive`                             |
+| `volumes[4].accessModes`       | XNAT prearchive Volume access modes                     | `["ReadWriteOnce"]`                           |
+| `volumes[4].annotations`       | XNAT prearchive Volume annotations                      | `{}`                                          |
+| `volumes[4].existingClaim`     | XNAT prearchive Volume existingClaim                    | `nil`                                         |
+| `volumes[4].persistent`        | XNAT prearchive Volume persistent                       | `true`                                        |
+| `volumes[4].size`              | XNAT prearchive Volume size                             | `8Gi`                                         |
+| `volumes[4].storageClass`      | XNAT prearchive Volume storageClass                     | `nil`                                         |
 | `volumeMounts[0].name`         | XNAT node configuration Volume name                     | `node-conf`                                   |
 | `volumeMounts[0].mountPath`    | XNAT node configuration Volume mount path               | `/data/xnat/home/config`                      |
-| `volumeMounts[1].name`         | XNAT instance configuration Volume name                 | `xnat-config`                                 |
-| `volumeMounts[1].mountPath`    | XNAT instance configuration Volume mount path           | `/data/xnat/home/config/xnat-conf.properties` |
-| `volumeMounts[1].readOnly`     | XNAT instance configuration Volume read only            | `true`                                        |
-| `volumeMounts[1].subPath`      | XNAT instance configuration Volume sub path             | `xnat-conf.properties`                        |
+| `volumeMounts[1].name`         | Wait for PostgreSQL Volume name                         | `wait-for-postgres`                           |
+| `volumeMounts[1].mountPath`    | Wait for PostgreSQL Volume mount path                   | `/usr/local/bin/wait-for-postgres.sh`         |
+| `volumeMounts[1].readOnly`     | Wait for PostgreSQL Volume read only                    | `true`                                        |
+| `volumeMounts[2].name`         | XNAT archive Volume name                                | `xnat-archive`                                |
+| `volumeMounts[2].mountPath`    | XNAT archive Volume mount path                          | `/data/xnat/archive`                          |
+| `volumeMounts[2].subPath`      | XNAT archive Volume sub path                            | `nil`                                         |
+| `volumeMounts[3].name`         | XNAT instance configuration Volume name                 | `xnat-config`                                 |
+| `volumeMounts[3].mountPath`    | XNAT instance configuration Volume mount path           | `/data/xnat/home/config/xnat-conf.properties` |
+| `volumeMounts[3].readOnly`     | XNAT instance configuration Volume read only            | `true`                                        |
+| `volumeMounts[3].subPath`      | XNAT instance configuration Volume sub path             | `xnat-conf.properties`                        |
+| `volumeMounts[4].name`         | XNAT prearchive Volume name                             | `xnat-prearchive`                             |
+| `volumeMounts[4].mountPath`    | XNAT prearchive Volume mount path                       | `/data/xnat/prearchive`                       |
+| `volumeMounts[4].subPath`      | XNAT prearchive Volume sub path                         | `nil`                                         |
 
 ### XNAT Database parameters
 
@@ -62,7 +90,10 @@ Helm Chart for XNAT
 | `web.ingress.hosts[0].paths[0].path`             | Ingress path                             | `/`                        |
 | `web.ingress.hosts[0].paths[0].pathType`         | Ingress path type                        | `ImplementationSpecific`   |
 | `web.ingress.tls`                                | Ingress TLS                              | `[]`                       |
-| `web.resources`                                  | Resources to set for the web pod         | `{}`                       |
+| `web.resources.limits.cpu`                       | CPU and memory limits                    | `250m`                     |
+| `web.resources.limits.memory`                    | Memory limits                            | `4000Mi`                   |
+| `web.resources.requests.cpu`                     | CPU and memory requests                  | `250m`                     |
+| `web.resources.requests.memory`                  | Memory requests                          | `4000Mi`                   |
 | `web.livenessProbe.failureThreshold`             | Liveness probe failure threshold         | `1`                        |
 | `web.livenessProbe.httpGet.path`                 | Liveness probe httpGet path              | `/app/template/Login.vm#!` |
 | `web.livenessProbe.httpGet.port`                 | Liveness probe httpGet port              | `http`                     |
@@ -97,7 +128,10 @@ Helm Chart for XNAT
 | `shadow.podLabels`                                  | Labels to add to the shadow pod          | `{}`       |
 | `shadow.podSecurityContext`                         | Pod security context                     | `{}`       |
 | `shadow.securityContext`                            | shadow Deployment security context       | `{}`       |
-| `shadow.resources`                                  | Resources to set for the shadow pod      | `{}`       |
+| `shadow.resources.limits.cpu`                       | CPU and memory limits                    | `250m`     |
+| `shadow.resources.limits.memory`                    | Memory limits                            | `1000Mi`   |
+| `shadow.resources.requests.cpu`                     | CPU and memory requests                  | `250m`     |
+| `shadow.resources.requests.memory`                  | Memory requests                          | `1000Mi`   |
 | `shadow.readinessProbe.tcpSocket.port`              | Readiness probe TCP socket               | `8080`     |
 | `shadow.readinessProbe.initialDelaySeconds`         | Readiness probe initial delay seconds    | `15`       |
 | `shadow.readinessProbe.periodSeconds`               | Readiness probe period seconds           | `10`       |

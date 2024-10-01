@@ -9,4 +9,4 @@ repos:
         always_run: true
         args:
           - --readme=./README.md
-          - --values=charts/xnat/values.yaml
+          - --values=charts/values.yaml

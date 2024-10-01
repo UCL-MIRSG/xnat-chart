@@ -30,7 +30,7 @@ jobs:
           --password-stdin
 
       - name: Package and push
-        working-directory: ./charts
+        working-directory: ./chart
         run: |
           helm dependency build
           helm package .

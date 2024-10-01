@@ -42,4 +42,4 @@ repos:
         always_run: true
         args:
           - --readme=./README.md
-          - --values=charts/values.yaml
+          - --values=chart/values.yaml

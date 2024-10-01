@@ -27,7 +27,7 @@ jobs:
           --password-stdin
 
       - name: Package and push
-        working-directory: ./chart
+        working-directory: ./charts/xnat
         run: |
           helm repo add postgresql oci://registry-1.docker.io/bitnamicharts/postgresql
           helm dependency build

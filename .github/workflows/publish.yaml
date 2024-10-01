@@ -19,10 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
+      - name: Lowercase repository owner
+        run: echo "REPO_OWNER=${github.repository_owner@L}" >> "${GITHUB_ENV}"
+
       - name: Login
         run: >-
           echo ${{ secrets.GITHUB_TOKEN }} |
-          helm registry login ${{ env.REGISTRY }}/${{ github.repository_owner }}
+          helm registry login ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}
           --username ${{ github.actor }}
           --password-stdin
 
@@ -31,4 +34,4 @@ jobs:
         run: |
           helm dependency build
           helm package .
-          helm push *.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts
+          helm push *.tgz oci://${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/charts

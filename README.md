@@ -90,9 +90,9 @@ Helm Chart for XNAT
 | `web.ingress.hosts[0].paths[0].path`             | Ingress path                             | `/`                        |
 | `web.ingress.hosts[0].paths[0].pathType`         | Ingress path type                        | `ImplementationSpecific`   |
 | `web.ingress.tls`                                | Ingress TLS                              | `[]`                       |
-| `web.resources.limits.cpu`                       | CPU and memory limits                    | `250m`                     |
+| `web.resources.limits.cpu`                       | CPU and memory limits                    | `2`                        |
 | `web.resources.limits.memory`                    | Memory limits                            | `4000Mi`                   |
-| `web.resources.requests.cpu`                     | CPU and memory requests                  | `250m`                     |
+| `web.resources.requests.cpu`                     | CPU and memory requests                  | `1`                        |
 | `web.resources.requests.memory`                  | Memory requests                          | `4000Mi`                   |
 | `web.livenessProbe.failureThreshold`             | Liveness probe failure threshold         | `1`                        |
 | `web.livenessProbe.httpGet.path`                 | Liveness probe httpGet path              | `/app/template/Login.vm#!` |

@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
 
       - name: Lowercase repository owner
-        run: echo "REPO_OWNER=${github.repository_owner@L}" >> "${GITHUB_ENV}"
+        run: echo "REPO_OWNER=${GITHUB_REPOSITORY_OWNER@L}" >> "${GITHUB_ENV}"
 
       - name: Login
         run: >-

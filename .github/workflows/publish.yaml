@@ -1,0 +1,35 @@
+---
+name: Publish image and chart
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  publish-chart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+
+      - name: Login
+        run: >-
+          echo ${{ secrets.GITHUB_TOKEN }} |
+          helm registry login ${{ env.REGISTRY }}/${{ github.repository_owner }}
+          --username ${{ github.actor }}
+          --password-stdin
+
+      - name: Package and push
+        working-directory: ./chart
+        run: |
+          helm repo add postgresql oci://registry-1.docker.io/bitnamicharts/postgresql
+          helm dependency build
+          helm package .
+          helm push *.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts

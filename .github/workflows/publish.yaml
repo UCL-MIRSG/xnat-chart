@@ -29,7 +29,6 @@ jobs:
       - name: Package and push
         working-directory: ./charts/xnat
         run: |
-          helm repo add postgresql oci://registry-1.docker.io/bitnamicharts/postgresql
           helm dependency build
           helm package .
           helm push *.tgz oci://${{ env.REGISTRY }}/${{ github.repository_owner }}/charts

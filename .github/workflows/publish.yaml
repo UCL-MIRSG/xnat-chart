@@ -27,7 +27,7 @@ jobs:
           --password-stdin
 
       - name: Package and push
-        working-directory: ./charts/xnat
+        working-directory: ./charts
         run: |
           helm dependency build
           helm package .

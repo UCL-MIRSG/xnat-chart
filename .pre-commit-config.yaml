@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-case-conflict
@@ -12,7 +12,7 @@ repos:
           - --fix=lf
       - id: trailing-whitespace
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.41.0
+    rev: v0.42.0
     hooks:
       - id: markdownlint-fix
         args:
@@ -22,11 +22,11 @@ repos:
     hooks:
       - id: forbid-tabs
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.29.3
+    rev: 0.29.4
     hooks:
       - id: check-github-workflows
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.1
+    rev: v1.7.3
     hooks:
       - id: actionlint
   - repo: https://github.com/gruntwork-io/pre-commit

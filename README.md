@@ -4,7 +4,7 @@ Helm Chart for XNAT
 
 ## Parameters
 
-### Common parameters for both XNAT web and shadow deployments
+### Common parameters
 
 | Name                           | Description                                             | Value                                         |
 | ------------------------------ | ------------------------------------------------------- | --------------------------------------------- |
@@ -115,33 +115,3 @@ Helm Chart for XNAT
 | `web.nodeSelector`                               | Node selector                            | `{}`                       |
 | `web.tolerations`                                | Tolerations to add to the web pod        | `[]`                       |
 | `web.affinity`                                   | Affinity to add to the web pod           | `{}`                       |
-
-### XNAT shadow parameters
-
-| Name                                                | Description                              | Value      |
-| --------------------------------------------------- | ---------------------------------------- | ---------- |
-| `shadow.dicom_scp.serviceType`                      | Service type                             | `NodePort` |
-| `shadow.dicom_scp.annotations`                      | Annotations                              | `{}`       |
-| `shadow.dicom_scp.receivers[0].ae_title`            | SCP AE title                             | `XNAT`     |
-| `shadow.dicom_scp.receivers[0].port`                | SCP port                                 | `8104`     |
-| `shadow.podAnnotations`                             | Pod annotations to add to the shadow pod | `{}`       |
-| `shadow.podLabels`                                  | Labels to add to the shadow pod          | `{}`       |
-| `shadow.podSecurityContext`                         | Pod security context                     | `{}`       |
-| `shadow.securityContext`                            | shadow Deployment security context       | `{}`       |
-| `shadow.resources.limits.cpu`                       | CPU and memory limits                    | `250m`     |
-| `shadow.resources.limits.memory`                    | Memory limits                            | `1000Mi`   |
-| `shadow.resources.requests.cpu`                     | CPU and memory requests                  | `250m`     |
-| `shadow.resources.requests.memory`                  | Memory requests                          | `1000Mi`   |
-| `shadow.readinessProbe.tcpSocket.port`              | Readiness probe TCP socket               | `8080`     |
-| `shadow.readinessProbe.initialDelaySeconds`         | Readiness probe initial delay seconds    | `15`       |
-| `shadow.readinessProbe.periodSeconds`               | Readiness probe period seconds           | `10`       |
-| `shadow.livenessProbe.tcpSocket.port`               | Liveness probe TCP socket                | `8080`     |
-| `shadow.livenessProbe.initialDelaySeconds`          | Liveness probe initial delay seconds     | `15`       |
-| `shadow.livenessProbe.periodSeconds`                | Liveness probe period seconds            | `10`       |
-| `shadow.autoscaling.enabled`                        | Enable or disable the autoscaling        | `false`    |
-| `shadow.autoscaling.minReplicas`                    | Minimum number of replicas               | `1`        |
-| `shadow.autoscaling.maxReplicas`                    | Maximum number of replicas               | `100`      |
-| `shadow.autoscaling.targetCPUUtilizationPercentage` | Target CPU utilisation percentage        | `80`       |
-| `shadow.nodeSelector`                               | Node selector to add to the shadow pod   | `{}`       |
-| `shadow.tolerations`                                | Tolerations to add to the shadow pod     | `[]`       |
-| `shadow.affinity`                                   | Affinity to add to the shadow pod        | `{}`       |

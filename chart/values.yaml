@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-## @section Common parameters for both XNAT web and shadow deployments
+## @section Common parameters
 
 ## @param replicaCount Number of replicas
 replicaCount: 1
@@ -276,89 +276,4 @@ web:
   tolerations: []
 
   ## @param web.affinity Affinity to add to the web pod
-  affinity: {}
-
-## @section XNAT shadow parameters
-shadow:
-  ## @param shadow.dicom_scp.serviceType Service type
-  ## @param shadow.dicom_scp.annotations Annotations
-  ## @param shadow.dicom_scp.receivers[0].ae_title SCP AE title
-  ## @param shadow.dicom_scp.receivers[0].port SCP port
-  ##
-  dicom_scp:
-    serviceType: NodePort
-    annotations: {}
-    receivers:
-      - ae_title: XNAT
-        port: 8104
-
-  ## @param shadow.podAnnotations Pod annotations to add to the shadow pod
-  podAnnotations: {}
-
-  ## @param shadow.podLabels Labels to add to the shadow pod
-  podLabels: {}
-
-  ## @param shadow.podSecurityContext Pod security context
-  podSecurityContext:
-    {}
-    # fsGroup: 2000
-
-  ## @param shadow.securityContext shadow Deployment security context
-  securityContext:
-    {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
-
-  ## @param shadow.resources.limits.cpu CPU and memory limits
-  ## @param shadow.resources.limits.memory Memory limits
-  ## @param shadow.resources.requests.cpu CPU and memory requests
-  ## @param shadow.resources.requests.memory Memory requests
-  resources:
-    limits:
-      cpu: 250m
-      memory: 1000Mi
-    requests:
-      cpu: 250m
-      memory: 1000Mi
-
-  ## @param shadow.readinessProbe.tcpSocket.port Readiness probe TCP socket
-  ## @param shadow.readinessProbe.initialDelaySeconds Readiness probe initial delay seconds
-  ## @param shadow.readinessProbe.periodSeconds Readiness probe period seconds
-  readinessProbe:
-    tcpSocket:
-      port: 8080
-    initialDelaySeconds: 15
-    periodSeconds: 10
-
-  ## @param shadow.livenessProbe.tcpSocket.port Liveness probe TCP socket
-  ## @param shadow.livenessProbe.initialDelaySeconds Liveness probe initial delay seconds
-  ## @param shadow.livenessProbe.periodSeconds Liveness probe period seconds
-  livenessProbe:
-    tcpSocket:
-      port: 8080
-    initialDelaySeconds: 15
-    periodSeconds: 10
-
-  ## @param shadow.autoscaling.enabled Enable or disable the autoscaling
-  ## @param shadow.autoscaling.minReplicas Minimum number of replicas
-  ## @param shadow.autoscaling.maxReplicas Maximum number of replicas
-  ## @param shadow.autoscaling.targetCPUUtilizationPercentage Target CPU utilisation percentage
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
-
-  ## @param shadow.nodeSelector Node selector to add to the shadow pod
-  nodeSelector: {}
-
-  ## @param shadow.tolerations Tolerations to add to the shadow pod
-  tolerations: []
-
-  ## @param shadow.affinity Affinity to add to the shadow pod
   affinity: {}

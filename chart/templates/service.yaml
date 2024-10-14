@@ -32,34 +32,3 @@ spec:
   selector:
     {{- include "xnat.selectorLabels" . | nindent 4 }}
   sessionAffinity: "ClientIP"
-{{- if .Values.shadow.dicom_scp.receivers }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "xnat.fullname" . }}-dicom-scp
-  labels:
-    {{- include "xnat.labels" . | nindent 4 }}
-  {{- with .Values.shadow.dicom_scp.annotations }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
-spec:
-  type: {{ .Values.shadow.dicom_scp.serviceType | quote }}
-  ports:
-    {{- $serviceType := .Values.shadow.dicom_scp.serviceType }}
-    {{- range .Values.shadow.dicom_scp.receivers }}
-    - name: {{ lower .ae_title }}-dicom
-      port: {{ .port }}
-      targetPort: {{ .port }}
-      {{- if and (eq $serviceType "NodePort") .nodePort }}
-      nodePort: {{ .nodePort }}
-      {{- end }}
-      {{- if and (eq $serviceType "LoadBalancer") .loadBalancerIP }}
-      loadBalancerIP: {{ .loadBalancerIP }}
-      {{- end }}
-    {{- end }}
-  selector:
-    {{- include "xnat.selectorLabels" . | nindent 4 }}
-  sessionAffinity: "ClientIP"
-{{- end }}

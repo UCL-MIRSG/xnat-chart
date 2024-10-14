@@ -62,36 +62,3 @@ spec:
           averageUtilization: {{ .Values.web.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
-{{- if .Values.shadow.autoscaling.enabled }}
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: {{ include "xnat.fullname" . }}
-  labels:
-    {{- include "xnat.labels" . | nindent 4 }}
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: {{ include "xnat.fullname" . }}
-  minReplicas: {{ .Values.shadow.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.shadow.autoscaling.maxReplicas }}
-  metrics:
-    {{- if .Values.shadow.autoscaling.targetCPUUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: {{ .Values.shadow.autoscaling.targetCPUUtilizationPercentage }}
-    {{- end }}
-    {{- if .Values.shadow.autoscaling.targetMemoryUtilizationPercentage }}
-    - type: Resource
-      resource:
-        name: memory
-        target:
-          type: Utilization
-          averageUtilization: {{ .Values.shadow.autoscaling.targetMemoryUtilizationPercentage }}
-    {{- end }}
-{{- end }}

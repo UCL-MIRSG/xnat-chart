@@ -8,7 +8,7 @@
 replicaCount: 1
 
 ## @param image.digest Image digest in the way sha256:aa...
-## @param image.pullPolicy MariaDB image pull policy
+## @param image.pullPolicy image pull policy
 ## @param image.pullSecrets Image pull secrets
 ## @param image.registry Image registry
 ## @param image.repository Image repository

@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "xnat.fullname" . }}-web
+  labels:
+    {{- include "xnat.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.web.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "xnat.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.web.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "xnat.labels" . | nindent 8 }}
+        {{- with .Values.web.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . | quote }}
+      {{- end }}
+      serviceAccountName: {{ include "xnat.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.web.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.web.resources | nindent 12 }}
+          volumeMounts:
+          {{- with .Values.volumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              /usr/local/bin/wait-for-postgres.sh
+              /usr/local/tomcat/bin/catalina.sh run
+      initContainers:
+        - name: node-conf
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - 'bash'
+            - '-c'
+            - |
+              set -x
+              echo "node.id=$HOSTNAME" > /xnat/node-conf.properties
+          volumeMounts:
+            - name: node-conf
+              mountPath: /xnat
+      {{- with .Values.web.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.web.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.web.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      volumes:
+      {{- range .Values.volumes }}
+        - name: {{ .name }}
+        {{- if and .persistent .existingClaim }}
+          persistentVolumeClaim:
+          {{- with .existingClaim }}
+            claimName: {{ tpl . $ }}
+          {{- end }}
+        {{- else if not .persistent }}
+          {{- if or .configMap .secret }}
+          {{- range $key, $value := . }}
+            {{- if not (eq $key "name") }}
+          {{ $key }}:
+          {{- toYaml $value | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+  volumeClaimTemplates:
+  {{- range .Values.volumes }}
+    {{- if and .persistent (not .existingClaim) }}
+    - metadata:
+        name: {{ .name }}
+      {{- with .annotations }}
+        annotations:
+        {{- range $key, $value := . }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      {{- end }}
+      spec:
+        accessModes:
+        {{- range .accessModes }}
+          - {{ . }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .size | quote }}
+      {{- if .storageClass }}
+        {{- if (eq "-" .storageClass) }}
+        storageClassName: ""
+        {{- else }}
+        storageClassName: "{{ .storageClass }}"
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}

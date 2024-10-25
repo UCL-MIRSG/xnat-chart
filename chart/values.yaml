@@ -9,7 +9,7 @@ replicaCount: 1
 
 ## @param image.digest Image digest in the way sha256:aa...
 ## @param image.pullPolicy image pull policy
-## @param image.pullSecrets Image pull secrets
+## @param image.pullSecret Name of secret used to pull image
 ## @param image.registry Image registry
 ## @param image.repository Image repository
 ## @param image.tag Image tag
@@ -17,8 +17,7 @@ replicaCount: 1
 image:
   digest: ""
   pullPolicy: IfNotPresent
-  pullSecrets:
-    - ghcr-secret
+  pullSecret: ""
   registry: ghcr.io
   repository: ghcr.io/ucl-mirsg/xnat-core
   # Overrides the image tag whose default is the chart appVersion.

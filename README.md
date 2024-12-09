@@ -85,6 +85,10 @@ Helm Chart for XNAT
 
 | Name                                             | Description                              | Value                      |
 | ------------------------------------------------ | ---------------------------------------- | -------------------------- |
+| `web.auth.openid.clientId`                       | OpenID client ID                         | `""`                       |
+| `web.auth.openid.clientSecret`                   | OpenID client secret                     | `""`                       |
+| `web.auth.openid.accessTokenUri`                 | OpenID access token URI                  | `""`                       |
+| `web.auth.openid.userAuthUri`                    | OpenID user authentication URI           | `""`                       |
 | `web.podAnnotations`                             | Annotations to add to the web pod        | `{}`                       |
 | `web.podLabels`                                  | Labels to add to the web pod             | `{}`                       |
 | `web.podSecurityContext`                         | Pod security context                     | `{}`                       |

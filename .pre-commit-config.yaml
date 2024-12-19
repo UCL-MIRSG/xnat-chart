@@ -4,3 +4,18 @@ repos:
     rev: v0.127.0
     hooks:
       - id: mirsg-hooks
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.23
+    hooks:
+      - id: helmlint
+  - repo: https://github.com/bitnami/readme-generator-for-helm
+    rev: 2.6.1
+    hooks:
+      - id: helm-readme-generator
+        # in order to run helm-readme-generator only once
+        pass_filenames: false
+        always_run: true
+        args:
+          - --readme=./README.md
+          - --values=chart/values.yaml
+  

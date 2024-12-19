@@ -18,4 +18,3 @@ repos:
         args:
           - --readme=./README.md
           - --values=chart/values.yaml
-  

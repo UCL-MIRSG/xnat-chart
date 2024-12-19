@@ -1,45 +1,6 @@
 ---
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+  - repo: https://github.com/UCL-MIRSG/.github
+    rev: v0.127.0
     hooks:
-      - id: check-added-large-files
-      - id: check-case-conflict
-      - id: check-merge-conflict
-      - id: end-of-file-fixer
-      - id: mixed-line-ending
-        args:
-          - --fix=lf
-      - id: trailing-whitespace
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.42.0
-    hooks:
-      - id: markdownlint-fix
-        args:
-          - --dot
-  - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.5
-    hooks:
-      - id: forbid-tabs
-  - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.29.4
-    hooks:
-      - id: check-github-workflows
-  - repo: https://github.com/rhysd/actionlint
-    rev: v1.7.3
-    hooks:
-      - id: actionlint
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.23
-    hooks:
-      - id: helmlint
-  - repo: https://github.com/bitnami/readme-generator-for-helm
-    rev: 2.6.1
-    hooks:
-      - id: helm-readme-generator
-        # in order to run helm-readme-generator only once
-        pass_filenames: false
-        always_run: true
-        args:
-          - --readme=./README.md
-          - --values=chart/values.yaml
+      - id: mirsg-hooks

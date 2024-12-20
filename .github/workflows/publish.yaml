@@ -24,9 +24,8 @@ jobs:
 
       - name: Login
         run: >-
-          echo ${{ secrets.GITHUB_TOKEN }} |
-          helm registry login ${{ env.REGISTRY }}/${{ env.REPO_OWNER }}
-          --username ${{ github.actor }}
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ${{
+          env.REGISTRY }}/${{ env.REPO_OWNER }} --username ${{ github.actor }}
           --password-stdin
 
       - name: Package and push

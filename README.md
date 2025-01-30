@@ -11,7 +11,7 @@ Helm Chart for XNAT
 | `replicaCount`                 | Number of replicas                                      | `1`                                           |
 | `image.digest`                 | Image digest in the way sha256:aa...                    | `""`                                          |
 | `image.pullPolicy`             | image pull policy                                       | `IfNotPresent`                                |
-| `image.pullSecret`             | Name of secret used to pull image                       | `""`                                          |
+| `image.pullSecret`             | Name of secret used to pull image                       | `ghcr-secret`                                 |
 | `image.registry`               | Image registry                                          | `ghcr.io`                                     |
 | `image.repository`             | Image repository                                        | `ghcr.io/ucl-mirsg/xnat-core`                 |
 | `image.tag`                    | Image tag                                               | `latest`                                      |

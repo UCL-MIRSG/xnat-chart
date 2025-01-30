@@ -17,7 +17,7 @@ replicaCount: 1
 image:
   digest: ""
   pullPolicy: IfNotPresent
-  pullSecret: ""
+  pullSecret: ghcr-secret
   registry: ghcr.io
   repository: ghcr.io/ucl-mirsg/xnat-core
   # Overrides the image tag whose default is the chart appVersion.

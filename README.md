@@ -2,6 +2,37 @@
 
 Helm Chart for XNAT
 
+## Local Installation
+
+Create a cluster into which the chart will be installed using your preferred
+method. For example, using [kind](https://kind.sigs.k8s.io/):
+
+```shell
+kind create cluster --name xnat
+```
+
+To install a local copy of the chart, first create a package:
+
+```shell
+helm package --dependency-update chart
+```
+
+Install the packaged chart in the cluster with the following command:
+
+```shell
+helm install \
+--set imageCredentials.username=<GH Username>\
+--set imageCredentials.password=<GH Personal Access Token>\
+--set postgresql.auth.password=<POSTGRES_PASSWORD>\
+xnat-core xnat-0.0.1.tgz
+```
+
+The chart can be rendered using the default values with the following command:
+
+```shell
+helm template xnat-core ./xnat-0.0.1.tgz > build/chart.yaml
+```
+
 ## Parameters
 
 ### Common parameters

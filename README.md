@@ -27,6 +27,12 @@ helm install \
 xnat-core xnat-0.0.1.tgz
 ```
 
+Uninstall the chart using the following command:
+
+```shell
+helm uninstall xnat-core
+```
+
 The chart can be rendered using the default values with the following command:
 
 ```shell

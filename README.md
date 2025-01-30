@@ -24,8 +24,13 @@ helm install \
 --set imageCredentials.username=<GH Username>\
 --set imageCredentials.password=<GH Personal Access Token>\
 --set postgresql.auth.password=<POSTGRES_PASSWORD>\
+--namespace xnat-core \
+--create-namespace
 xnat-core xnat-0.0.1.tgz
 ```
+
+Note that omitting the `namespace` option and `create-namespace` flag will
+result in the `statefulset` being created in the `default` namespace.
 
 Uninstall the chart using the following command:
 

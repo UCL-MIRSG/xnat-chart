@@ -30,7 +30,7 @@ xnat-core xnat-0.0.1.tgz
 ```
 
 Note that omitting the `namespace` option and `create-namespace` flag will
-result in the `statefulset` being created in the `default` namespace.
+result in the resources being created in the `default` namespace.
 
 Uninstall the chart using the following command:
 

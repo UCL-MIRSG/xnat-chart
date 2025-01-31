@@ -83,13 +83,15 @@ persistence:
 ## @param volumes[2].storageClass XNAT archive Volume storageClass
 ## @param volumes[3].name XNAT instance configuration Volume name
 ## @param volumes[3].secret.secretName XNAT instance configuration Volume secret name
-## @param volumes[4].name XNAT prearchive Volume name
-## @param volumes[4].accessModes XNAT prearchive Volume access modes
-## @param volumes[4].annotations XNAT prearchive Volume annotations
-## @param volumes[4].existingClaim XNAT prearchive Volume existingClaim
-## @param volumes[4].persistent XNAT prearchive Volume persistent
-## @param volumes[4].size XNAT prearchive Volume size
-## @param volumes[4].storageClass XNAT prearchive Volume storageClass
+## @param volumes[4].name XNAT OpenID configuration Volume name
+## @param volumes[4].secret.secretName XNAT OpenID configuration Volume secret name
+## @param volumes[5].name XNAT prearchive Volume name
+## @param volumes[5].accessModes XNAT prearchive Volume access modes
+## @param volumes[5].annotations XNAT prearchive Volume annotations
+## @param volumes[5].existingClaim XNAT prearchive Volume existingClaim
+## @param volumes[5].persistent XNAT prearchive Volume persistent
+## @param volumes[5].size XNAT prearchive Volume size
+## @param volumes[5].storageClass XNAT prearchive Volume storageClass
 ##
 volumes:
   - name: node-conf
@@ -107,6 +109,9 @@ volumes:
   - name: xnat-config
     secret:
       secretName: xnat-conf
+  - name: xnat-openid-config
+    secret:
+      secretName: openid-conf
   - name: xnat-prearchive
     accessModes:
       - ReadWriteOnce
@@ -128,9 +133,13 @@ volumes:
 ## @param volumeMounts[3].mountPath XNAT instance configuration Volume mount path
 ## @param volumeMounts[3].readOnly XNAT instance configuration Volume read only
 ## @param volumeMounts[3].subPath XNAT instance configuration Volume sub path
-## @param volumeMounts[4].name XNAT prearchive Volume name
-## @param volumeMounts[4].mountPath XNAT prearchive Volume mount path
-## @param volumeMounts[4].subPath XNAT prearchive Volume sub path
+## @param volumeMounts[4].name XNAT OpenID configuration Volume name
+## @param volumeMounts[4].mountPath XNAT OpenID configuration Volume mount path
+## @param volumeMounts[4].readOnly XNAT OpenID configuration Volume read only
+## @param volumeMounts[4].subPath XNAT OpenID configuration Volume sub path
+## @param volumeMounts[5].name XNAT prearchive Volume name
+## @param volumeMounts[5].mountPath XNAT prearchive Volume mount path
+## @param volumeMounts[5].subPath XNAT prearchive Volume sub path
 volumeMounts:
   - name: node-conf
     mountPath: /data/xnat/home/config
@@ -144,6 +153,10 @@ volumeMounts:
     mountPath: /data/xnat/home/config/xnat-conf.properties
     readOnly: true
     subPath: xnat-conf.properties
+  - name: xnat-openid-config
+    mountPath: /data/xnat/home/config/auth/openid-conf.properties
+    readOnly: true
+    subPath: openid-conf.properties
   - name: xnat-prearchive
     mountPath: /data/xnat/prearchive
     subPath:
@@ -164,6 +177,17 @@ postgresql:
 
 ## @section XNAT Web parameters
 web:
+  ## @param web.auth.openid.clientId OpenID client ID
+  ## @param web.auth.openid.clientSecret OpenID client secret
+  ## @param web.auth.openid.accessTokenUri OpenID access token URI
+  ## @param web.auth.openid.userAuthUri OpenID user authentication URI
+  auth:
+    openid:
+      clientId: ""
+      clientSecret: ""
+      accessTokenUri: ""
+      userAuthUri: ""
+
   ## @param web.podAnnotations Annotations to add to the web pod
   podAnnotations: {}
 

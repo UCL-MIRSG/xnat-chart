@@ -1,5 +1,5 @@
 ---
-name: Publish image and chart
+name: Publish chart
 
 on:
   push:
@@ -34,3 +34,15 @@ jobs:
           helm dependency build
           helm package .
           helm push ./*.tgz oci://${{ env.REGISTRY }}/${{ env.REPO_OWNER }}/charts
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@cae68fefc6b5f367a0275617c9f83181ba54714f # v1.7.0
+        with:
+          charts_dir: ./chart
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}

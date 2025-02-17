@@ -53,13 +53,13 @@ helm template xnat-core ./xnat-0.0.1.tgz > build/chart.yaml
 | `replicaCount`                 | Number of replicas                                      | `1`                                                  |
 | `image.digest`                 | Image digest in the way sha256:aa...                    | `""`                                                 |
 | `image.pullPolicy`             | image pull policy                                       | `IfNotPresent`                                       |
-| `image.pullSecret`             | Name of secret used to pull image                       | `ghcr-secret`                                        |
-| `image.registry`               | Image registry                                          | `ghcr.io`                                            |
-| `image.repository`             | Image repository                                        | `ghcr.io/ucl-mirsg/xnat-core`                        |
+| `image.pullSecret`             | Name of secret used to pull image                       | `""`                                                 |
+| `image.registry`               | Image registry                                          | `""`                                                 |
+| `image.repository`             | Image repository                                        | `""`                                                 |
 | `image.tag`                    | Image tag                                               | `latest`                                             |
-| `imageCredentials.registry`    | Image registry                                          | `ghcr.io`                                            |
-| `imageCredentials.username`    | Image registry username                                 | `username`                                           |
-| `imageCredentials.password`    | Image registry password                                 | `password`                                           |
+| `imageCredentials.registry`    | Image registry                                          | `""`                                                 |
+| `imageCredentials.username`    | Image registry username                                 | `""`                                                 |
+| `imageCredentials.password`    | Image registry password                                 | `""`                                                 |
 | `imageCredentials.email`       | Image registry email                                    | `""`                                                 |
 | `nameOverride`                 | Override name                                           | `""`                                                 |
 | `fullnameOverride`             | Override fullname                                       | `""`                                                 |

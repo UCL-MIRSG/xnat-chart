@@ -17,9 +17,9 @@ replicaCount: 1
 image:
   digest: ""
   pullPolicy: IfNotPresent
-  pullSecret: ghcr-secret
-  registry: ghcr.io
-  repository: ghcr.io/ucl-mirsg/xnat-core
+  pullSecret: ""
+  registry: ""
+  repository: ""
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
 
@@ -29,9 +29,9 @@ image:
 ## @param imageCredentials.email Image registry email
 ##
 imageCredentials:
-  registry: ghcr.io
-  username: username
-  password: password
+  registry: ""
+  username: ""
+  password: ""
   email: ""
 
 ## @param nameOverride Override name

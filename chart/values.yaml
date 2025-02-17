@@ -183,12 +183,14 @@ web:
   ## @param web.auth.openid.clientSecret OpenID client secret
   ## @param web.auth.openid.accessTokenUri OpenID access token URI
   ## @param web.auth.openid.userAuthUri OpenID user authentication URI
+  ## @param web.auth.openid.link OpenID link
   auth:
     openid:
       clientId: ""
       clientSecret: ""
       accessTokenUri: ""
       userAuthUri: ""
+      link: ""
 
   ## @param web.podAnnotations Annotations to add to the web pod
   podAnnotations: {}

@@ -132,6 +132,7 @@ helm template xnat-core ./xnat-0.0.1.tgz > build/chart.yaml
 | `web.auth.openid.clientSecret`                   | OpenID client secret                     | `""`                       |
 | `web.auth.openid.accessTokenUri`                 | OpenID access token URI                  | `""`                       |
 | `web.auth.openid.userAuthUri`                    | OpenID user authentication URI           | `""`                       |
+| `web.auth.openid.link`                           | OpenID link                              | `""`                       |
 | `web.podAnnotations`                             | Annotations to add to the web pod        | `{}`                       |
 | `web.podLabels`                                  | Labels to add to the web pod             | `{}`                       |
 | `web.podSecurityContext`                         | Pod security context                     | `{}`                       |

@@ -57,6 +57,7 @@ helm template xnat-core ./xnat-0.0.1.tgz > build/chart.yaml
 | `image.registry`               | Image registry                                          | `""`                                                 |
 | `image.repository`             | Image repository                                        | `""`                                                 |
 | `image.tag`                    | Image tag                                               | `latest`                                             |
+| `imageCredentials.enabled`     | Enable or disable image pull secret                     | `false`                                              |
 | `imageCredentials.registry`    | Image registry                                          | `""`                                                 |
 | `imageCredentials.username`    | Image registry username                                 | `""`                                                 |
 | `imageCredentials.password`    | Image registry password                                 | `""`                                                 |

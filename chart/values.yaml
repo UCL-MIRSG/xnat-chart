@@ -23,12 +23,14 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
 
+## @param imageCredentials.enabled Enable or disable image pull secret
 ## @param imageCredentials.registry Image registry
 ## @param imageCredentials.username Image registry username
 ## @param imageCredentials.password Image registry password
 ## @param imageCredentials.email Image registry email
 ##
 imageCredentials:
+  enabled: false
   registry: ""
   username: ""
   password: ""

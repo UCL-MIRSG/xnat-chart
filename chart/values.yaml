@@ -17,21 +17,23 @@ replicaCount: 1
 image:
   digest: ""
   pullPolicy: IfNotPresent
-  pullSecret: ghcr-secret
-  registry: ghcr.io
-  repository: ghcr.io/ucl-mirsg/xnat-core
+  pullSecret: ""
+  registry: ""
+  repository: ""
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
 
+## @param imageCredentials.enabled Enable or disable image pull secret
 ## @param imageCredentials.registry Image registry
 ## @param imageCredentials.username Image registry username
 ## @param imageCredentials.password Image registry password
 ## @param imageCredentials.email Image registry email
 ##
 imageCredentials:
-  registry: ghcr.io
-  username: username
-  password: password
+  enabled: false
+  registry: ""
+  username: ""
+  password: ""
   email: ""
 
 ## @param nameOverride Override name
@@ -181,12 +183,14 @@ web:
   ## @param web.auth.openid.clientSecret OpenID client secret
   ## @param web.auth.openid.accessTokenUri OpenID access token URI
   ## @param web.auth.openid.userAuthUri OpenID user authentication URI
+  ## @param web.auth.openid.link OpenID link
   auth:
     openid:
       clientId: ""
       clientSecret: ""
       accessTokenUri: ""
       userAuthUri: ""
+      link: ""
 
   ## @param web.podAnnotations Annotations to add to the web pod
   podAnnotations: {}

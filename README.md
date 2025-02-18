@@ -2,47 +2,26 @@
 
 Helm Chart for XNAT
 
-## Local Installation
+## Usage
 
-Create a cluster into which the chart will be installed using your preferred
-method. For example, using [kind](https://kind.sigs.k8s.io/):
+[Helm](https://helm.sh) must be installed to use the charts. Please refer to
+Helm's [documentation](https://helm.sh/docs) to get started.
 
-```shell
-kind create cluster --name xnat
-```
+Once Helm has been set up correctly, add the repo as follows:
 
-To install a local copy of the chart, first create a package:
+helm repo add mirsg-xnat <https://ucl-mirsg.github.io/xnat-chart>
 
-```shell
-helm package --dependency-update chart
-```
+If you had already added this repo earlier, run `helm repo update` to retrieve
+the latest versions of the packages. You can then run
+`helm search repo mirsg-xnat` to see the charts.
 
-Install the packaged chart in the cluster with the following command:
+To install the xnat chart:
 
-```shell
-helm install \
---set imageCredentials.username=<GH Username>\
---set imageCredentials.password=<GH Personal Access Token>\
---set postgresql.auth.password=<POSTGRES_PASSWORD>\
---namespace xnat-core \
---create-namespace
-xnat-core xnat-0.0.1.tgz
-```
+    helm install my-xnat mirsg-xnat/xnat
 
-Note that omitting the `namespace` option and `create-namespace` flag will
-result in the resources being created in the `default` namespace.
+To uninstall the chart:
 
-Uninstall the chart using the following command:
-
-```shell
-helm uninstall xnat-core
-```
-
-The chart can be rendered using the default values with the following command:
-
-```shell
-helm template xnat-core ./xnat-0.0.1.tgz > build/chart.yaml
-```
+    helm uninstall my-xnat
 
 ## Parameters
 

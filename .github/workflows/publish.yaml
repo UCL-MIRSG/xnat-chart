@@ -53,3 +53,4 @@ jobs:
           charts_dir: ./chart
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CR_RELEASE_NAME_TEMPLATE: "{{ .Version }}"

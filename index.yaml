@@ -14,7 +14,7 @@ entries:
       name: xnat
       type: application
       urls:
-        - https://ucl-mirsg.github.io/xnat-chart/releases/download/0.0.4/xnat-0.0.4.tgz
+        - https://ucl-mirsg.github.io/xnat-chart/releases/download/xnat-0.0.4/xnat-0.0.4.tgz
       version: 0.0.4
     - apiVersion: v2
       appVersion: 1.8.10

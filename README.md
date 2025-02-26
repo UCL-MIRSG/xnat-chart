@@ -21,12 +21,13 @@ Install the packaged chart in the cluster with the following command:
 
 ```shell
 helm install \
+--set imageCredentials.registry=ghcr.io \
 --set imageCredentials.username=<GH Username>\
 --set imageCredentials.password=<GH Personal Access Token>\
 --set postgresql.auth.password=<POSTGRES_PASSWORD>\
 --namespace xnat-core \
 --create-namespace
-xnat-core xnat-0.0.1.tgz
+xnat-core xnat-0.0.5.tgz
 ```
 
 Note that omitting the `namespace` option and `create-namespace` flag will
@@ -41,7 +42,7 @@ helm uninstall xnat-core
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.1.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.5.tgz > build/chart.yaml
 ```
 
 ## Parameters

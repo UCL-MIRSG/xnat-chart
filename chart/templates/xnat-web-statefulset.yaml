@@ -25,7 +25,11 @@ spec:
         {{- end }}
     spec:
       imagePullSecrets:
+      {{- if .Values.imageCredentials.enabled }}
+        - name: image-pull-secret
+      {{- else }}
         - name: {{ .Values.image.pullSecret | quote }}
+      {{- end }}
       serviceAccountName: {{ include "xnat.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.web.podSecurityContext | nindent 8 }}

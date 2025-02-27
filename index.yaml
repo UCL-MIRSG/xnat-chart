@@ -1,49 +1,64 @@
 apiVersion: v1
 entries:
   xnat:
-    - apiVersion: v2
-      appVersion: 1.8.10
-      created: "2025-02-26T19:40:13.961883Z"
-      dependencies:
-        - condition: postgresql.enabled
-          name: postgresql
-          repository: oci://registry-1.docker.io/bitnamicharts
-          version: 15.5.28
-      description: A Helm chart for deploying XNAT on Kubernetes
-      digest: bc1afd3e3d9fa4c272e20da280286cbff823a2b2e71d6214f1b6b16b7f652865
-      name: xnat
-      type: application
-      urls:
-        - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.5/xnat-0.0.5.tgz
-      version: 0.0.5
-    - apiVersion: v2
-      appVersion: 1.8.10
-      created: "2025-02-17T20:51:58.305695Z"
-      dependencies:
-        - condition: postgresql.enabled
-          name: postgresql
-          repository: oci://registry-1.docker.io/bitnamicharts
-          version: 15.5.28
-      description: A Helm chart for deploying XNAT on Kubernetes
-      digest: ea79e10eda03f874c13495e7d34084c006509c26ab30be504e33436cae77056d
-      name: xnat
-      type: application
-      urls:
-        - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.4/xnat-0.0.4.tgz
-      version: 0.0.4
-    - apiVersion: v2
-      appVersion: 1.8.10
-      created: "2025-02-17T20:51:58.302302Z"
-      dependencies:
-        - condition: postgresql.enabled
-          name: postgresql
-          repository: oci://registry-1.docker.io/bitnamicharts
-          version: 15.5.28
-      description: A Helm chart for deploying XNAT on Kubernetes
-      digest: 0ebd88a0dd0a5520975b46b2ee4ea42a2ac03286b1e8730de218261c73a8a945
-      name: xnat
-      type: application
-      urls:
-        - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.1/xnat-0.0.1.tgz
-      version: 0.0.1
-generated: "2025-02-26T19:40:13.961914Z"
+  - apiVersion: v2
+    appVersion: 1.8.10
+    created: "2025-02-27T16:11:37.905015516Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 15.5.28
+    description: A Helm chart for deploying XNAT on Kubernetes
+    digest: d1eace2c0d170e06a530223caa921b35c77766a6f90451d0336009260e32e642
+    name: xnat
+    type: application
+    urls:
+    - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.6/xnat-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 1.8.10
+    created: "2025-02-26T19:40:13.961883Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 15.5.28
+    description: A Helm chart for deploying XNAT on Kubernetes
+    digest: bc1afd3e3d9fa4c272e20da280286cbff823a2b2e71d6214f1b6b16b7f652865
+    name: xnat
+    type: application
+    urls:
+    - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.5/xnat-0.0.5.tgz
+    version: 0.0.5
+  - apiVersion: v2
+    appVersion: 1.8.10
+    created: "2025-02-17T20:51:58.305695Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 15.5.28
+    description: A Helm chart for deploying XNAT on Kubernetes
+    digest: ea79e10eda03f874c13495e7d34084c006509c26ab30be504e33436cae77056d
+    name: xnat
+    type: application
+    urls:
+    - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.4/xnat-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: 1.8.10
+    created: "2025-02-17T20:51:58.302302Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 15.5.28
+    description: A Helm chart for deploying XNAT on Kubernetes
+    digest: 0ebd88a0dd0a5520975b46b2ee4ea42a2ac03286b1e8730de218261c73a8a945
+    name: xnat
+    type: application
+    urls:
+    - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.1/xnat-0.0.1.tgz
+    version: 0.0.1
+generated: "2025-02-27T16:11:37.90503924Z"

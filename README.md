@@ -128,6 +128,7 @@ helm template xnat-core ./xnat-0.0.1.tgz > build/chart.yaml
 
 | Name                                             | Description                              | Value                      |
 | ------------------------------------------------ | ---------------------------------------- | -------------------------- |
+| `web.siteUrl`                                    | Site URL                                 | `""`                       |
 | `web.auth.openid.clientId`                       | OpenID client ID                         | `""`                       |
 | `web.auth.openid.clientSecret`                   | OpenID client secret                     | `""`                       |
 | `web.auth.openid.accessTokenUri`                 | OpenID access token URI                  | `""`                       |

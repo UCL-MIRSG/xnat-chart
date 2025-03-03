@@ -4,6 +4,8 @@ Helm Chart for XNAT
 
 ## Local Installation
 
+### Create a local cluster
+
 Create a cluster into which the chart will be installed using your preferred
 method. For example, using [kind](https://kind.sigs.k8s.io/):
 
@@ -11,27 +13,44 @@ method. For example, using [kind](https://kind.sigs.k8s.io/):
 kind create cluster --name xnat
 ```
 
+### Package the chart
+
 To install a local copy of the chart, first create a package:
 
 ```shell
 helm package --dependency-update chart
 ```
 
+### Install the chart
+
 Install the packaged chart in the cluster with the following command:
 
 ```shell
 helm install \
+--set image.tag=0.0.1 \
+--set imageCredentials.enabled=true \
 --set imageCredentials.registry=ghcr.io \
---set imageCredentials.username=<GH Username>\
---set imageCredentials.password=<GH Personal Access Token>\
---set postgresql.auth.password=<POSTGRES_PASSWORD>\
+--set imageCredentials.username=<GH_USERNAME> \
+--set imageCredentials.password=<GH_PAT> \
+--set postgresql.auth.password=xnat \
 --namespace xnat-core \
---create-namespace
-xnat-core xnat-0.0.5.tgz
+--create-namespace \
+xnat-core xnat-0.0.6.tgz
 ```
 
 Note that omitting the `namespace` option and `create-namespace` flag will
 result in the resources being created in the `default` namespace.
+
+Set `image.tag` to the version of the
+[XNAT image](https://github.com/UCL-MIRSG/xnat-image/pkgs/container/xnat-core)
+you would like to use.
+
+[Create a PAT](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic)
+with `read:packages` scope. Use the PAT to set `imageCredentials.password`.
+
+Set `imageCredential.username` to be your GitHub username.
+
+### Uninstall the chart
 
 Uninstall the chart using the following command:
 
@@ -39,10 +58,12 @@ Uninstall the chart using the following command:
 helm uninstall xnat-core
 ```
 
+### Render the chart
+
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.5.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 ```
 
 ## Parameters
@@ -52,11 +73,11 @@ helm template xnat-core ./xnat-0.0.5.tgz > build/chart.yaml
 | Name                           | Description                                             | Value                                                |
 | ------------------------------ | ------------------------------------------------------- | ---------------------------------------------------- |
 | `replicaCount`                 | Number of replicas                                      | `1`                                                  |
-| `image.digest`                 | Image digest in the way sha256:aa...                    | `""`                                                 |
 | `image.pullPolicy`             | image pull policy                                       | `IfNotPresent`                                       |
 | `image.pullSecret`             | Name of secret used to pull image                       | `""`                                                 |
-| `image.registry`               | Image registry                                          | `""`                                                 |
-| `image.repository`             | Image repository                                        | `""`                                                 |
+| `image.registry`               | Image registry                                          | `ghcr.io`                                            |
+| `image.namespace`              | Image registry namespace                                | `ucl-mirsg`                                          |
+| `image.name`                   | Name of the image in the registry                       | `xnat-core`                                          |
 | `image.tag`                    | Image tag                                               | `latest`                                             |
 | `imageCredentials.enabled`     | Enable or disable image pull secret                     | `false`                                              |
 | `imageCredentials.registry`    | Image registry                                          | `""`                                                 |

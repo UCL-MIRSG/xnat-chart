@@ -37,7 +37,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.web.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -57,7 +57,7 @@ spec:
               /usr/local/tomcat/bin/catalina.sh run
       initContainers:
         - name: node-conf
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - 'bash'

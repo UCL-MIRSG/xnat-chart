@@ -7,20 +7,19 @@
 ## @param replicaCount Number of replicas
 replicaCount: 1
 
-## @param image.digest Image digest in the way sha256:aa...
 ## @param image.pullPolicy image pull policy
 ## @param image.pullSecret Name of secret used to pull image
 ## @param image.registry Image registry
-## @param image.repository Image repository
+## @param image.namespace Image registry namespace
+## @param image.name Name of the image in the registry
 ## @param image.tag Image tag
 ##
 image:
-  digest: ""
   pullPolicy: IfNotPresent
   pullSecret: ""
-  registry: ""
-  repository: ""
-  # Overrides the image tag whose default is the chart appVersion.
+  registry: "ghcr.io"
+  namespace: "ucl-mirsg"
+  name: "xnat-core"
   tag: latest
 
 ## @param imageCredentials.enabled Enable or disable image pull secret
@@ -28,7 +27,6 @@ image:
 ## @param imageCredentials.username Image registry username
 ## @param imageCredentials.password Image registry password
 ## @param imageCredentials.email Image registry email
-##
 imageCredentials:
   enabled: false
   registry: ""
@@ -94,7 +92,6 @@ persistence:
 ## @param volumes[5].persistent XNAT prearchive Volume persistent
 ## @param volumes[5].size XNAT prearchive Volume size
 ## @param volumes[5].storageClass XNAT prearchive Volume storageClass
-##
 volumes:
   - name: node-conf
   - name: wait-for-postgres

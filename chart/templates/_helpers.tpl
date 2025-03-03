@@ -61,6 +61,16 @@ Create the name of the service account to use
 {{- end }}
 {{- end }}
 
+
+{{/*
+Create the url for the image
+*/}}
+{{- define "xnat.image" }}
+{{- with .Values.image }}
+{{- printf "%s/%s/%s:%s" .registry .namespace .name .tag }}
+{{- end }}
+{{- end }}
+
 {{/*
 Create image pull secret
 */}}

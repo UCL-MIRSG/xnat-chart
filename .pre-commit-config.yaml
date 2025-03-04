@@ -1,19 +1,16 @@
 ---
 repos:
   - repo: https://github.com/UCL-MIRSG/.github
-    rev: v0.181.0
+    rev: v0.200.0
     hooks:
       - id: mirsg-hooks
-        exclude: |-
-          (?x)^(
-            chart/.*
-          )$
+        exclude: chart/
   - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.25
+    rev: v0.1.26
     hooks:
       - id: helmlint
   - repo: https://github.com/bitnami/readme-generator-for-helm
-    rev: 2.6.1
+    rev: 2.7.0
     hooks:
       - id: helm-readme-generator
         # in order to run helm-readme-generator only once

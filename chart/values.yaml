@@ -74,6 +74,7 @@ persistence:
 ## @param volumes[0].name XNAT node configuration Volume name
 ## @param volumes[1].name Wait for PostgreSQL Volume name
 ## @param volumes[1].configMap.name Wait for PostgreSQL Volume name
+## @param volumes[1].configMap.defaultMode Wait for PostgreSQL Volume permissions
 ## @param volumes[2].name XNAT archive Volume name
 ## @param volumes[2].accessModes XNAT archive Volume access modes
 ## @param volumes[2].annotations XNAT archive Volume annotations
@@ -97,6 +98,7 @@ volumes:
   - name: wait-for-postgres
     configMap:
       name: wait-for-postgres
+      defaultMode: 0777
   - name: xnat-archive
     accessModes:
       - ReadWriteOnce
@@ -124,6 +126,7 @@ volumes:
 ## @param volumeMounts[0].mountPath XNAT node configuration Volume mount path
 ## @param volumeMounts[1].name Wait for PostgreSQL Volume name
 ## @param volumeMounts[1].mountPath Wait for PostgreSQL Volume mount path
+## @param volumeMounts[1].subPath Wait for PostgreSQL Volume sub path
 ## @param volumeMounts[1].readOnly Wait for PostgreSQL Volume read only
 ## @param volumeMounts[2].name XNAT archive Volume name
 ## @param volumeMounts[2].mountPath XNAT archive Volume mount path
@@ -144,6 +147,7 @@ volumeMounts:
     mountPath: /data/xnat/home/config
   - name: wait-for-postgres
     mountPath: /usr/local/bin/wait-for-postgres.sh
+    subPath: wait-for-postgres.sh
     readOnly: true
   - name: xnat-archive
     mountPath: /data/xnat/archive

@@ -168,7 +168,7 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 | `web.auth.openid.link`                           | OpenID link                              | `""`                       |
 | `web.podAnnotations`                             | Annotations to add to the web pod        | `{}`                       |
 | `web.podLabels`                                  | Labels to add to the web pod             | `{}`                       |
-| `web.podSecurityContext`                         | Pod security context                     | `{}`                       |
+| `web.podSecurityContext.runAsUser`               | Pod security context runAsUser           | `1000`                     |
 | `web.securityContext`                            | Pod security context                     | `{}`                       |
 | `web.ingress.enabled`                            | Enable or disable the ingress deployment | `false`                    |
 | `web.ingress.className`                          | Ingress class name                       | `""`                       |

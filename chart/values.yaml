@@ -173,6 +173,10 @@ volumeMounts:
 ## @param postgresql.auth.password PostgreSQL password. Make sure to override this.
 ## @param postgresql.auth.postgresPassword PostgreSQL password. Make sure to override this.
 ## @param postgresql.image.tag PostgreSQL image tag
+## @param postgresql.primary.resources.requests.cpu CPU request
+## @param postgresql.primary.resources.requests.memory Memory request
+## @param postgresql.primary.resources.limits.cpu CPU limit
+## @param postgresql.primary.resources.limits.memory Memory limit
 postgresql:
   enabled: true
   auth:
@@ -182,15 +186,14 @@ postgresql:
     postgresPassword: postgres
   image:
     tag: 14.17.0-debian-12-r2
-  #primary:
-    #resourcesPreset: "small"
-    #resources:
-    #  requests:
-    #    cpu: 1
-    #    memory: 4000Mi
-    #  limits:
-    #    cpu: 2
-    #    memory: 4000Mi
+  primary:
+    resources:
+      requests:
+        cpu: 1
+        memory: 4000Mi
+      limits:
+        cpu: 2
+        memory: 4000Mi
 
 ## @section XNAT Web parameters
 web:

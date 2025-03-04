@@ -141,14 +141,18 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 
 ### XNAT Database parameters
 
-| Name                               | Description                                      | Value                  |
-| ---------------------------------- | ------------------------------------------------ | ---------------------- |
-| `postgresql.enabled`               | Enable or disable the PostgreSQL deployment      | `true`                 |
-| `postgresql.auth.database`         | PostgreSQL database name                         | `xnat`                 |
-| `postgresql.auth.username`         | PostgreSQL username                              | `xnat`                 |
-| `postgresql.auth.password`         | PostgreSQL password. Make sure to override this. | `xnat`                 |
-| `postgresql.auth.postgresPassword` | PostgreSQL password. Make sure to override this. | `postgres`             |
-| `postgresql.image.tag`             | PostgreSQL image tag                             | `14.17.0-debian-12-r2` |
+| Name                                           | Description                                      | Value                  |
+| ---------------------------------------------- | ------------------------------------------------ | ---------------------- |
+| `postgresql.enabled`                           | Enable or disable the PostgreSQL deployment      | `true`                 |
+| `postgresql.auth.database`                     | PostgreSQL database name                         | `xnat`                 |
+| `postgresql.auth.username`                     | PostgreSQL username                              | `xnat`                 |
+| `postgresql.auth.password`                     | PostgreSQL password. Make sure to override this. | `xnat`                 |
+| `postgresql.auth.postgresPassword`             | PostgreSQL password. Make sure to override this. | `postgres`             |
+| `postgresql.image.tag`                         | PostgreSQL image tag                             | `14.17.0-debian-12-r2` |
+| `postgresql.primary.resources.requests.cpu`    | CPU request                                      | `1`                    |
+| `postgresql.primary.resources.requests.memory` | Memory request                                   | `4000Mi`               |
+| `postgresql.primary.resources.limits.cpu`      | CPU limit                                        | `2`                    |
+| `postgresql.primary.resources.limits.memory`   | Memory limit                                     | `4000Mi`               |
 
 ### XNAT Web parameters
 

@@ -117,8 +117,6 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 | `volumes[5].persistent`            | XNAT prearchive Volume persistent                       | `true`                                               |
 | `volumes[5].size`                  | XNAT prearchive Volume size                             | `8Gi`                                                |
 | `volumes[5].storageClass`          | XNAT prearchive Volume storageClass                     | `nil`                                                |
-| `volumes[6].name`                  | XNAT instance initialisation Volume name                | `xnat-prefs-init`                                    |
-| `volumes[6].configMap.name`        | XNAT instance initialisation configMap name             | `xnat-prefs-init`                                    |
 | `volumeMounts[0].name`             | XNAT node configuration Volume name                     | `node-conf`                                          |
 | `volumeMounts[0].mountPath`        | XNAT node configuration Volume mount path               | `/data/xnat/home/config/node-conf.properties`        |
 | `volumeMounts[0].subPath`          | XNAT node configuration Volume sub path                 | `node-conf.properties`                               |
@@ -140,10 +138,6 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 | `volumeMounts[5].name`             | XNAT prearchive Volume name                             | `xnat-prearchive`                                    |
 | `volumeMounts[5].mountPath`        | XNAT prearchive Volume mount path                       | `/data/xnat/prearchive`                              |
 | `volumeMounts[5].subPath`          | XNAT prearchive Volume sub path                         | `nil`                                                |
-| `volumeMounts[6].name`             | XNAT instance initialisation Volume name                | `xnat-prefs-init`                                    |
-| `volumeMounts[6].mountPath`        | XNAT instance initialisation Volume mount path          | `/data/xnat/home/config/prefs-init.ini`              |
-| `volumeMounts[6].readOnly`         | XNAT instance initialisation Volume read only           | `true`                                               |
-| `volumeMounts[6].subPath`          | XNAT instance initialisation Volume sub path            | `prefs-init.ini`                                     |
 
 ### XNAT Database parameters
 
@@ -195,6 +189,7 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 | `web.startupProbe.httpGet.path`                  | Startup probe httpGet path               | `/app/template/Login.vm#!` |
 | `web.startupProbe.httpGet.port`                  | Startup probe httpGet port               | `http`                     |
 | `web.startupProbe.periodSeconds`                 | Startup probe period seconds             | `10`                       |
+| `web.startupProbe.initialDelaySeconds`           | Startup probe initial delay seconds      | `20`                       |
 | `web.autoscaling.enabled`                        | Enable or disable the autoscaling        | `false`                    |
 | `web.autoscaling.minReplicas`                    | Minimum number of replicas               | `1`                        |
 | `web.autoscaling.maxReplicas`                    | Maximum number of replicas               | `100`                      |

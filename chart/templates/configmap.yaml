@@ -10,38 +10,10 @@ data:
 
     set -e
 
-    cmd="$@"
-
-    PGPASSWORD={{ .Values.postgresql.auth.database }} until psql -U {{ .Values.postgresql.auth.username }} -h {{ template "xnat.postgresql.svc" . }}  -c '\q'; do
+    until PGPASSWORD={{ .Values.postgresql.auth.database }} psql -U {{ .Values.postgresql.auth.username }} -h {{ template "xnat.postgresql.svc" . }} -c '\q'; do
     >&2 echo "Postgres is unavailable - sleeping"
     sleep 20
     done
 
-    >&2 echo "Postgres is up - executing command \"$cmd\""
-    exec $cmd
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: xnat-prefs-init
-data:
-  prefs-init.ini: |
+    >&2 echo "Postgres is up"
 
-    [siteConfig]
-
-    siteId=XNAT
-    siteUrl=http://127.0.0.1
-    adminEmail=xnat.admin@cs.ucl.ac.uk
-
-    archivePath=/data/xnat/archive
-    prearchivePath=/data/xnat/prearchive
-    cachePath=/data/xnat/cache
-    buildPath=/data/xnat/build
-    ftpPath=/data/xnat/ftp
-    pipelinePath=/data/xnat/pipeline
-
-    requireLogin=true
-    userRegistration=false
-    enableCsrfToken=false
-    sessionTimeout=1 hour
-    initialized=false

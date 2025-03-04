@@ -93,8 +93,6 @@ persistence:
 ## @param volumes[5].persistent XNAT prearchive Volume persistent
 ## @param volumes[5].size XNAT prearchive Volume size
 ## @param volumes[5].storageClass XNAT prearchive Volume storageClass
-## @param volumes[6].name XNAT instance initialisation Volume name
-## @param volumes[6].configMap.name XNAT instance initialisation configMap name
 volumes:
   - name: node-conf
   - name: wait-for-postgres
@@ -123,9 +121,6 @@ volumes:
     persistent: true
     size: 8Gi
     storageClass:
-  - name: xnat-prefs-init
-    configMap:
-      name: xnat-prefs-init
 
 ## @param volumeMounts[0].name XNAT node configuration Volume name
 ## @param volumeMounts[0].mountPath XNAT node configuration Volume mount path
@@ -148,10 +143,6 @@ volumes:
 ## @param volumeMounts[5].name XNAT prearchive Volume name
 ## @param volumeMounts[5].mountPath XNAT prearchive Volume mount path
 ## @param volumeMounts[5].subPath XNAT prearchive Volume sub path
-## @param volumeMounts[6].name XNAT instance initialisation Volume name
-## @param volumeMounts[6].mountPath XNAT instance initialisation Volume mount path
-## @param volumeMounts[6].readOnly XNAT instance initialisation Volume read only
-## @param volumeMounts[6].subPath XNAT instance initialisation Volume sub path
 volumeMounts:
   - name: node-conf
     mountPath: /data/xnat/home/config/node-conf.properties
@@ -174,10 +165,6 @@ volumeMounts:
   - name: xnat-prearchive
     mountPath: /data/xnat/prearchive
     subPath:
-  - name: xnat-prefs-init
-    mountPath: /data/xnat/home/config/prefs-init.ini
-    readOnly: true
-    subPath: prefs-init.ini
 
 ## @section XNAT Database parameters
 ## @param postgresql.enabled Enable or disable the PostgreSQL deployment
@@ -195,6 +182,15 @@ postgresql:
     postgresPassword: postgres
   image:
     tag: 14.17.0-debian-12-r2
+  #primary:
+    #resourcesPreset: "small"
+    #resources:
+    #  requests:
+    #    cpu: 1
+    #    memory: 4000Mi
+    #  limits:
+    #    cpu: 2
+    #    memory: 4000Mi
 
 ## @section XNAT Web parameters
 web:
@@ -301,12 +297,14 @@ web:
   ## @param web.startupProbe.httpGet.path Startup probe httpGet path
   ## @param web.startupProbe.httpGet.port Startup probe httpGet port
   ## @param web.startupProbe.periodSeconds Startup probe period seconds
+  ## @param web.startupProbe.initialDelaySeconds Startup probe initial delay seconds
   startupProbe:
     failureThreshold: 15
     httpGet:
       path: /app/template/Login.vm#!
       port: http
     periodSeconds: 10
+    initialDelaySeconds: 20
 
   ## @param web.autoscaling.enabled Enable or disable the autoscaling
   ## @param web.autoscaling.minReplicas Minimum number of replicas

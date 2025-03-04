@@ -4,7 +4,10 @@ repos:
     rev: v0.200.0
     hooks:
       - id: mirsg-hooks
-        exclude: chart/
+        exclude: |
+          (?x)^(
+              chart/.*
+          )$
   - repo: https://github.com/gruntwork-io/pre-commit
     rev: v0.1.26
     hooks:

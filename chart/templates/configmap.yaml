@@ -19,7 +19,7 @@ data:
 
     >&2 echo "Postgres is up - executing command \"$cmd\""
     exec $cmd
-
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:

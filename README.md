@@ -27,6 +27,7 @@ Install the packaged chart in the cluster with the following command:
 
 ```shell
 helm install \
+--set image.name=xnat-core
 --set image.tag=0.0.1 \
 --set imageCredentials.enabled=true \
 --set imageCredentials.registry=ghcr.io \
@@ -77,7 +78,7 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 | `image.pullSecret`             | Name of secret used to pull image                       | `""`                                                 |
 | `image.registry`               | Image registry                                          | `ghcr.io`                                            |
 | `image.namespace`              | Image registry namespace                                | `ucl-mirsg`                                          |
-| `image.name`                   | Name of the image in the registry                       | `xnat-core`                                          |
+| `image.name`                   | Name of the image in the registry                       | `""`                                                 |
 | `image.tag`                    | Image tag                                               | `latest`                                             |
 | `imageCredentials.enabled`     | Enable or disable image pull secret                     | `false`                                              |
 | `imageCredentials.registry`    | Image registry                                          | `""`                                                 |

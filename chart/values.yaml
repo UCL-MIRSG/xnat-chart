@@ -19,7 +19,7 @@ image:
   pullSecret: ""
   registry: "ghcr.io"
   namespace: "ucl-mirsg"
-  name: "xnat-core"
+  name: ""
   tag: latest
 
 ## @param imageCredentials.enabled Enable or disable image pull secret

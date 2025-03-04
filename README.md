@@ -117,6 +117,8 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 | `volumes[5].persistent`            | XNAT prearchive Volume persistent                       | `true`                                               |
 | `volumes[5].size`                  | XNAT prearchive Volume size                             | `8Gi`                                                |
 | `volumes[5].storageClass`          | XNAT prearchive Volume storageClass                     | `nil`                                                |
+| `volumes[6].name`                  | XNAT instance initialisation Volume name                | `xnat-prefs-init`                                    |
+| `volumes[6].configMap.name`        | XNAT instance initialisation configMap name             | `xnat-prefs-init`                                    |
 | `volumeMounts[0].name`             | XNAT node configuration Volume name                     | `node-conf`                                          |
 | `volumeMounts[0].mountPath`        | XNAT node configuration Volume mount path               | `/data/xnat/home/config`                             |
 | `volumeMounts[1].name`             | Wait for PostgreSQL Volume name                         | `wait-for-postgres`                                  |
@@ -137,6 +139,10 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 | `volumeMounts[5].name`             | XNAT prearchive Volume name                             | `xnat-prearchive`                                    |
 | `volumeMounts[5].mountPath`        | XNAT prearchive Volume mount path                       | `/data/xnat/prearchive`                              |
 | `volumeMounts[5].subPath`          | XNAT prearchive Volume sub path                         | `nil`                                                |
+| `volumeMounts[6].name`             | XNAT instance initialisation Volume name                | `xnat-prefs-init`                                    |
+| `volumeMounts[6].mountPath`        | XNAT instance initialisation Volume mount path          | `/data/xnat/home/config/prefs-init.ini`              |
+| `volumeMounts[6].readOnly`         | XNAT instance initialisation Volume read only           | `true`                                               |
+| `volumeMounts[6].subPath`          | XNAT instance initialisation Volume sub path            | `prefs-init.ini`                                     |
 
 ### XNAT Database parameters
 

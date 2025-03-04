@@ -70,7 +70,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.postgresql.auth.existingSecret }}
-                  key: userPasswordKey
+                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
               {{- else }}
               value: {{ .Values.postgresql.auth.password | quote }}
               {{- end }}

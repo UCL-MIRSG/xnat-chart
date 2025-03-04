@@ -14,7 +14,7 @@ data:
 
     PGPASSWORD={{ .Values.postgresql.auth.database }} until psql -U {{ .Values.postgresql.auth.username }} -h {{ template "xnat.postgresql.svc" . }}  -c '\q'; do
     >&2 echo "Postgres is unavailable - sleeping"
-    sleep 5
+    sleep 20
     done
 
     >&2 echo "Postgres is up - executing command \"$cmd\""

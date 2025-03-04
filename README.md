@@ -120,7 +120,8 @@ helm template xnat-core ./xnat-0.0.6.tgz > build/chart.yaml
 | `volumes[6].name`                  | XNAT instance initialisation Volume name                | `xnat-prefs-init`                                    |
 | `volumes[6].configMap.name`        | XNAT instance initialisation configMap name             | `xnat-prefs-init`                                    |
 | `volumeMounts[0].name`             | XNAT node configuration Volume name                     | `node-conf`                                          |
-| `volumeMounts[0].mountPath`        | XNAT node configuration Volume mount path               | `/data/xnat/home/config`                             |
+| `volumeMounts[0].mountPath`        | XNAT node configuration Volume mount path               | `/data/xnat/home/config/node-conf.properties`        |
+| `volumeMounts[0].subPath`          | XNAT node configuration Volume sub path                 | `node-conf.properties`                               |
 | `volumeMounts[1].name`             | Wait for PostgreSQL Volume name                         | `wait-for-postgres`                                  |
 | `volumeMounts[1].mountPath`        | Wait for PostgreSQL Volume mount path                   | `/usr/local/bin/wait-for-postgres.sh`                |
 | `volumeMounts[1].subPath`          | Wait for PostgreSQL Volume sub path                     | `wait-for-postgres.sh`                               |

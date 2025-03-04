@@ -129,6 +129,7 @@ volumes:
 
 ## @param volumeMounts[0].name XNAT node configuration Volume name
 ## @param volumeMounts[0].mountPath XNAT node configuration Volume mount path
+## @param volumeMounts[0].subPath XNAT node configuration Volume sub path
 ## @param volumeMounts[1].name Wait for PostgreSQL Volume name
 ## @param volumeMounts[1].mountPath Wait for PostgreSQL Volume mount path
 ## @param volumeMounts[1].subPath Wait for PostgreSQL Volume sub path
@@ -153,7 +154,8 @@ volumes:
 ## @param volumeMounts[6].subPath XNAT instance initialisation Volume sub path
 volumeMounts:
   - name: node-conf
-    mountPath: /data/xnat/home/config
+    mountPath: /data/xnat/home/config/node-conf.properties
+    subPath: node-conf.properties
   - name: wait-for-postgres
     mountPath: /usr/local/bin/wait-for-postgres.sh
     subPath: wait-for-postgres.sh

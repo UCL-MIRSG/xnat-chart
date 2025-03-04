@@ -3,4 +3,5 @@
 .vscode
 
 build
+chart/charts
 .cr-release-packages/

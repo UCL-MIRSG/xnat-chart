@@ -45,6 +45,12 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.web.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.web.readinessProbe | nindent 12 }}
+          startupProbe:
+            {{- toYaml .Values.web.startupProbe | nindent 12 }}
           volumeMounts:
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}

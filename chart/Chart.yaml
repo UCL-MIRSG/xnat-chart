@@ -3,12 +3,12 @@ apiVersion: v2
 name: xnat
 description: A Helm chart for deploying XNAT on Kubernetes
 type: application
-version: 0.0.6
+version: 0.0.7
 # XNAT version deployed in the chart
 appVersion: 1.8.10
 
 dependencies:
   - name: postgresql
-    version: 15.5.28
+    version: 16.4.14
     repository: oci://registry-1.docker.io/bitnamicharts
     condition: postgresql.enabled

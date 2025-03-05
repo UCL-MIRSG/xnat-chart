@@ -4,6 +4,8 @@ Helm Chart for XNAT
 
 ## Local Installation
 
+### Create a local cluster
+
 Create a cluster into which the chart will be installed using your preferred
 method. For example, using [kind](https://kind.sigs.k8s.io/):
 
@@ -11,38 +13,58 @@ method. For example, using [kind](https://kind.sigs.k8s.io/):
 kind create cluster --name xnat
 ```
 
+### Package the chart
+
 To install a local copy of the chart, first create a package:
 
 ```shell
 helm package --dependency-update chart
 ```
 
+### Install the chart
+
 Install the packaged chart in the cluster with the following command:
 
 ```shell
 helm install \
+--set image.name=xnat-core
+--set image.tag=0.0.1 \
+--set imageCredentials.enabled=true \
 --set imageCredentials.registry=ghcr.io \
---set imageCredentials.username=<GH Username>\
---set imageCredentials.password=<GH Personal Access Token>\
---set postgresql.auth.password=<POSTGRES_PASSWORD>\
+--set imageCredentials.username=<GH_USERNAME> \
+--set imageCredentials.password=<GH_PAT> \
+--set postgresql.auth.password=xnat \
 --namespace xnat-core \
---create-namespace
-xnat-core xnat-0.0.5.tgz
+--create-namespace \
+xnat-core xnat-0.0.7.tgz
 ```
 
 Note that omitting the `namespace` option and `create-namespace` flag will
 result in the resources being created in the `default` namespace.
 
+Set `image.tag` to the version of the
+[XNAT image](https://github.com/UCL-MIRSG/xnat-image/pkgs/container/xnat-core)
+you would like to use.
+
+[Create a PAT](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic)
+with `read:packages` scope. Use the PAT to set `imageCredentials.password`.
+
+Set `imageCredential.username` to be your GitHub username.
+
+### Uninstall the chart
+
 Uninstall the chart using the following command:
 
 ```shell
-helm uninstall xnat-core
+helm uninstall xnat-core -n xnat-core
 ```
+
+### Render the chart
 
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.5.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.7.tgz > build/chart.yaml
 ```
 
 ## Parameters
@@ -52,11 +74,11 @@ helm template xnat-core ./xnat-0.0.5.tgz > build/chart.yaml
 | Name                           | Description                                             | Value                                                |
 | ------------------------------ | ------------------------------------------------------- | ---------------------------------------------------- |
 | `replicaCount`                 | Number of replicas                                      | `1`                                                  |
-| `image.digest`                 | Image digest in the way sha256:aa...                    | `""`                                                 |
 | `image.pullPolicy`             | image pull policy                                       | `IfNotPresent`                                       |
 | `image.pullSecret`             | Name of secret used to pull image                       | `""`                                                 |
-| `image.registry`               | Image registry                                          | `""`                                                 |
-| `image.repository`             | Image repository                                        | `""`                                                 |
+| `image.registry`               | Image registry                                          | `ghcr.io`                                            |
+| `image.namespace`              | Image registry namespace                                | `ucl-mirsg`                                          |
+| `image.name`                   | Name of the image in the registry                       | `""`                                                 |
 | `image.tag`                    | Image tag                                               | `latest`                                             |
 | `imageCredentials.enabled`     | Enable or disable image pull secret                     | `false`                                              |
 | `imageCredentials.registry`    | Image registry                                          | `""`                                                 |
@@ -75,55 +97,56 @@ helm template xnat-core ./xnat-0.0.5.tgz > build/chart.yaml
 | `persistence.storageClass`     | Persistent volume storage class                         | `nil`                                                |
 | `persistence.annotations`      | Persistent volume annotations                           | `{}`                                                 |
 | `volumes[0].name`              | XNAT node configuration Volume name                     | `node-conf`                                          |
-| `volumes[1].name`              | Wait for PostgreSQL Volume name                         | `wait-for-postgres`                                  |
-| `volumes[1].configMap.name`    | Wait for PostgreSQL Volume name                         | `wait-for-postgres`                                  |
-| `volumes[2].name`              | XNAT archive Volume name                                | `xnat-archive`                                       |
-| `volumes[2].accessModes`       | XNAT archive Volume access modes                        | `["ReadWriteOnce"]`                                  |
-| `volumes[2].annotations`       | XNAT archive Volume annotations                         | `{}`                                                 |
-| `volumes[2].existingClaim`     | XNAT archive Volume existingClaim                       | `nil`                                                |
-| `volumes[2].persistent`        | XNAT archive Volume persistent                          | `true`                                               |
-| `volumes[2].size`              | XNAT archive Volume size                                | `8Gi`                                                |
-| `volumes[2].storageClass`      | XNAT archive Volume storageClass                        | `nil`                                                |
-| `volumes[3].name`              | XNAT instance configuration Volume name                 | `xnat-config`                                        |
-| `volumes[3].secret.secretName` | XNAT instance configuration Volume secret name          | `xnat-conf`                                          |
-| `volumes[4].name`              | XNAT OpenID configuration Volume name                   | `xnat-openid-config`                                 |
-| `volumes[4].secret.secretName` | XNAT OpenID configuration Volume secret name            | `openid-conf`                                        |
-| `volumes[5].name`              | XNAT prearchive Volume name                             | `xnat-prearchive`                                    |
-| `volumes[5].accessModes`       | XNAT prearchive Volume access modes                     | `["ReadWriteOnce"]`                                  |
-| `volumes[5].annotations`       | XNAT prearchive Volume annotations                      | `{}`                                                 |
-| `volumes[5].existingClaim`     | XNAT prearchive Volume existingClaim                    | `nil`                                                |
-| `volumes[5].persistent`        | XNAT prearchive Volume persistent                       | `true`                                               |
-| `volumes[5].size`              | XNAT prearchive Volume size                             | `8Gi`                                                |
-| `volumes[5].storageClass`      | XNAT prearchive Volume storageClass                     | `nil`                                                |
+| `volumes[1].name`              | XNAT archive Volume name                                | `xnat-archive`                                       |
+| `volumes[1].accessModes`       | XNAT archive Volume access modes                        | `["ReadWriteOnce"]`                                  |
+| `volumes[1].annotations`       | XNAT archive Volume annotations                         | `{}`                                                 |
+| `volumes[1].existingClaim`     | XNAT archive Volume existingClaim                       | `nil`                                                |
+| `volumes[1].persistent`        | XNAT archive Volume persistent                          | `true`                                               |
+| `volumes[1].size`              | XNAT archive Volume size                                | `8Gi`                                                |
+| `volumes[1].storageClass`      | XNAT archive Volume storageClass                        | `nil`                                                |
+| `volumes[2].name`              | XNAT instance configuration Volume name                 | `xnat-config`                                        |
+| `volumes[2].secret.secretName` | XNAT instance configuration Volume secret name          | `xnat-conf`                                          |
+| `volumes[3].name`              | XNAT OpenID configuration Volume name                   | `xnat-openid-config`                                 |
+| `volumes[3].secret.secretName` | XNAT OpenID configuration Volume secret name            | `openid-conf`                                        |
+| `volumes[4].name`              | XNAT prearchive Volume name                             | `xnat-prearchive`                                    |
+| `volumes[4].accessModes`       | XNAT prearchive Volume access modes                     | `["ReadWriteOnce"]`                                  |
+| `volumes[4].annotations`       | XNAT prearchive Volume annotations                      | `{}`                                                 |
+| `volumes[4].existingClaim`     | XNAT prearchive Volume existingClaim                    | `nil`                                                |
+| `volumes[4].persistent`        | XNAT prearchive Volume persistent                       | `true`                                               |
+| `volumes[4].size`              | XNAT prearchive Volume size                             | `8Gi`                                                |
+| `volumes[4].storageClass`      | XNAT prearchive Volume storageClass                     | `nil`                                                |
 | `volumeMounts[0].name`         | XNAT node configuration Volume name                     | `node-conf`                                          |
-| `volumeMounts[0].mountPath`    | XNAT node configuration Volume mount path               | `/data/xnat/home/config`                             |
-| `volumeMounts[1].name`         | Wait for PostgreSQL Volume name                         | `wait-for-postgres`                                  |
-| `volumeMounts[1].mountPath`    | Wait for PostgreSQL Volume mount path                   | `/usr/local/bin/wait-for-postgres.sh`                |
-| `volumeMounts[1].readOnly`     | Wait for PostgreSQL Volume read only                    | `true`                                               |
-| `volumeMounts[2].name`         | XNAT archive Volume name                                | `xnat-archive`                                       |
-| `volumeMounts[2].mountPath`    | XNAT archive Volume mount path                          | `/data/xnat/archive`                                 |
-| `volumeMounts[2].subPath`      | XNAT archive Volume sub path                            | `nil`                                                |
-| `volumeMounts[3].name`         | XNAT instance configuration Volume name                 | `xnat-config`                                        |
-| `volumeMounts[3].mountPath`    | XNAT instance configuration Volume mount path           | `/data/xnat/home/config/xnat-conf.properties`        |
-| `volumeMounts[3].readOnly`     | XNAT instance configuration Volume read only            | `true`                                               |
-| `volumeMounts[3].subPath`      | XNAT instance configuration Volume sub path             | `xnat-conf.properties`                               |
-| `volumeMounts[4].name`         | XNAT OpenID configuration Volume name                   | `xnat-openid-config`                                 |
-| `volumeMounts[4].mountPath`    | XNAT OpenID configuration Volume mount path             | `/data/xnat/home/config/auth/openid-conf.properties` |
-| `volumeMounts[4].readOnly`     | XNAT OpenID configuration Volume read only              | `true`                                               |
-| `volumeMounts[4].subPath`      | XNAT OpenID configuration Volume sub path               | `openid-conf.properties`                             |
-| `volumeMounts[5].name`         | XNAT prearchive Volume name                             | `xnat-prearchive`                                    |
-| `volumeMounts[5].mountPath`    | XNAT prearchive Volume mount path                       | `/data/xnat/prearchive`                              |
-| `volumeMounts[5].subPath`      | XNAT prearchive Volume sub path                         | `nil`                                                |
+| `volumeMounts[0].mountPath`    | XNAT node configuration Volume mount path               | `/data/xnat/home/config/node-conf.properties`        |
+| `volumeMounts[0].subPath`      | XNAT node configuration Volume sub path                 | `node-conf.properties`                               |
+| `volumeMounts[1].name`         | XNAT archive Volume name                                | `xnat-archive`                                       |
+| `volumeMounts[1].mountPath`    | XNAT archive Volume mount path                          | `/data/xnat/archive`                                 |
+| `volumeMounts[1].subPath`      | XNAT archive Volume sub path                            | `nil`                                                |
+| `volumeMounts[2].name`         | XNAT instance configuration Volume name                 | `xnat-config`                                        |
+| `volumeMounts[2].mountPath`    | XNAT instance configuration Volume mount path           | `/data/xnat/home/config/xnat-conf.properties`        |
+| `volumeMounts[2].readOnly`     | XNAT instance configuration Volume read only            | `true`                                               |
+| `volumeMounts[2].subPath`      | XNAT instance configuration Volume sub path             | `xnat-conf.properties`                               |
+| `volumeMounts[3].name`         | XNAT OpenID configuration Volume name                   | `xnat-openid-config`                                 |
+| `volumeMounts[3].mountPath`    | XNAT OpenID configuration Volume mount path             | `/data/xnat/home/config/auth/openid-conf.properties` |
+| `volumeMounts[3].readOnly`     | XNAT OpenID configuration Volume read only              | `true`                                               |
+| `volumeMounts[3].subPath`      | XNAT OpenID configuration Volume sub path               | `openid-conf.properties`                             |
+| `volumeMounts[4].name`         | XNAT prearchive Volume name                             | `xnat-prearchive`                                    |
+| `volumeMounts[4].mountPath`    | XNAT prearchive Volume mount path                       | `/data/xnat/prearchive`                              |
+| `volumeMounts[4].subPath`      | XNAT prearchive Volume sub path                         | `nil`                                                |
 
 ### XNAT Database parameters
 
-| Name                               | Description                                      | Value      |
-| ---------------------------------- | ------------------------------------------------ | ---------- |
-| `postgresql.enabled`               | Enable or disable the PostgreSQL deployment      | `true`     |
-| `postgresql.auth.database`         | PostgreSQL database name                         | `xnat`     |
-| `postgresql.auth.username`         | PostgreSQL username                              | `xnat`     |
-| `postgresql.auth.password`         | PostgreSQL password. Make sure to override this. | `xnat`     |
-| `postgresql.auth.postgresPassword` | PostgreSQL password. Make sure to override this. | `postgres` |
+| Name                                           | Description                                      | Value                  |
+| ---------------------------------------------- | ------------------------------------------------ | ---------------------- |
+| `postgresql.enabled`                           | Enable or disable the PostgreSQL deployment      | `true`                 |
+| `postgresql.auth.database`                     | PostgreSQL database name                         | `xnat`                 |
+| `postgresql.auth.username`                     | PostgreSQL username                              | `xnat`                 |
+| `postgresql.auth.password`                     | PostgreSQL password. Make sure to override this. | `xnat`                 |
+| `postgresql.auth.postgresPassword`             | PostgreSQL password. Make sure to override this. | `postgres`             |
+| `postgresql.image.tag`                         | PostgreSQL image tag                             | `14.17.0-debian-12-r2` |
+| `postgresql.primary.resources.requests.cpu`    | CPU request                                      | `1`                    |
+| `postgresql.primary.resources.requests.memory` | Memory request                                   | `4000Mi`               |
+| `postgresql.primary.resources.limits.cpu`      | CPU limit                                        | `2`                    |
+| `postgresql.primary.resources.limits.memory`   | Memory limit                                     | `4000Mi`               |
 
 ### XNAT Web parameters
 
@@ -137,7 +160,7 @@ helm template xnat-core ./xnat-0.0.5.tgz > build/chart.yaml
 | `web.auth.openid.link`                           | OpenID link                              | `""`                       |
 | `web.podAnnotations`                             | Annotations to add to the web pod        | `{}`                       |
 | `web.podLabels`                                  | Labels to add to the web pod             | `{}`                       |
-| `web.podSecurityContext`                         | Pod security context                     | `{}`                       |
+| `web.podSecurityContext.runAsUser`               | Pod security context runAsUser           | `1000`                     |
 | `web.securityContext`                            | Pod security context                     | `{}`                       |
 | `web.ingress.enabled`                            | Enable or disable the ingress deployment | `false`                    |
 | `web.ingress.className`                          | Ingress class name                       | `""`                       |
@@ -164,6 +187,7 @@ helm template xnat-core ./xnat-0.0.5.tgz > build/chart.yaml
 | `web.startupProbe.httpGet.path`                  | Startup probe httpGet path               | `/app/template/Login.vm#!` |
 | `web.startupProbe.httpGet.port`                  | Startup probe httpGet port               | `http`                     |
 | `web.startupProbe.periodSeconds`                 | Startup probe period seconds             | `10`                       |
+| `web.startupProbe.initialDelaySeconds`           | Startup probe initial delay seconds      | `20`                       |
 | `web.autoscaling.enabled`                        | Enable or disable the autoscaling        | `false`                    |
 | `web.autoscaling.minReplicas`                    | Minimum number of replicas               | `1`                        |
 | `web.autoscaling.maxReplicas`                    | Maximum number of replicas               | `100`                      |

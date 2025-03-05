@@ -37,7 +37,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.web.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
@@ -45,6 +45,12 @@ spec:
               protocol: TCP
           resources:
             {{- toYaml .Values.web.resources | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.web.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.web.readinessProbe | nindent 12 }}
+          startupProbe:
+            {{- toYaml .Values.web.startupProbe | nindent 12 }}
           volumeMounts:
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
@@ -53,11 +59,33 @@ spec:
             - /bin/sh
             - -c
             - |
-              /usr/local/bin/wait-for-postgres.sh
               /usr/local/tomcat/bin/catalina.sh run
       initContainers:
+        - name: wait-for-postgres
+          image: {{ include "xnat.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PGPASSWORD
+              {{- if .Values.postgresql.auth.existingSecret }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.auth.existingSecret }}
+                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
+              {{- else }}
+              value: {{ .Values.postgresql.auth.password | quote }}
+              {{- end }}
+          command:
+            - 'bash'
+            - '-c'
+            - |
+              set -e
+              until psql -U {{ .Values.postgresql.auth.username }} -h {{ template "xnat.postgresql.svc" . }} -c '\q'; do
+                >&2 echo "Postgres is unavailable - sleeping"
+                sleep 30
+              done
+              >&2 echo "Postgres is up"
         - name: node-conf
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - 'bash'

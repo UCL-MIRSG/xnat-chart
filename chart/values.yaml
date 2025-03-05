@@ -7,20 +7,19 @@
 ## @param replicaCount Number of replicas
 replicaCount: 1
 
-## @param image.digest Image digest in the way sha256:aa...
 ## @param image.pullPolicy image pull policy
 ## @param image.pullSecret Name of secret used to pull image
 ## @param image.registry Image registry
-## @param image.repository Image repository
+## @param image.namespace Image registry namespace
+## @param image.name Name of the image in the registry
 ## @param image.tag Image tag
 ##
 image:
-  digest: ""
   pullPolicy: IfNotPresent
   pullSecret: ""
-  registry: ""
-  repository: ""
-  # Overrides the image tag whose default is the chart appVersion.
+  registry: "ghcr.io"
+  namespace: "ucl-mirsg"
+  name: ""
   tag: latest
 
 ## @param imageCredentials.enabled Enable or disable image pull secret
@@ -28,7 +27,6 @@ image:
 ## @param imageCredentials.username Image registry username
 ## @param imageCredentials.password Image registry password
 ## @param imageCredentials.email Image registry email
-##
 imageCredentials:
   enabled: false
   registry: ""
@@ -74,32 +72,26 @@ persistence:
   annotations: {}
 
 ## @param volumes[0].name XNAT node configuration Volume name
-## @param volumes[1].name Wait for PostgreSQL Volume name
-## @param volumes[1].configMap.name Wait for PostgreSQL Volume name
-## @param volumes[2].name XNAT archive Volume name
-## @param volumes[2].accessModes XNAT archive Volume access modes
-## @param volumes[2].annotations XNAT archive Volume annotations
-## @param volumes[2].existingClaim XNAT archive Volume existingClaim
-## @param volumes[2].persistent XNAT archive Volume persistent
-## @param volumes[2].size XNAT archive Volume size
-## @param volumes[2].storageClass XNAT archive Volume storageClass
-## @param volumes[3].name XNAT instance configuration Volume name
-## @param volumes[3].secret.secretName XNAT instance configuration Volume secret name
-## @param volumes[4].name XNAT OpenID configuration Volume name
-## @param volumes[4].secret.secretName XNAT OpenID configuration Volume secret name
-## @param volumes[5].name XNAT prearchive Volume name
-## @param volumes[5].accessModes XNAT prearchive Volume access modes
-## @param volumes[5].annotations XNAT prearchive Volume annotations
-## @param volumes[5].existingClaim XNAT prearchive Volume existingClaim
-## @param volumes[5].persistent XNAT prearchive Volume persistent
-## @param volumes[5].size XNAT prearchive Volume size
-## @param volumes[5].storageClass XNAT prearchive Volume storageClass
-##
+## @param volumes[1].name XNAT archive Volume name
+## @param volumes[1].accessModes XNAT archive Volume access modes
+## @param volumes[1].annotations XNAT archive Volume annotations
+## @param volumes[1].existingClaim XNAT archive Volume existingClaim
+## @param volumes[1].persistent XNAT archive Volume persistent
+## @param volumes[1].size XNAT archive Volume size
+## @param volumes[1].storageClass XNAT archive Volume storageClass
+## @param volumes[2].name XNAT instance configuration Volume name
+## @param volumes[2].secret.secretName XNAT instance configuration Volume secret name
+## @param volumes[3].name XNAT OpenID configuration Volume name
+## @param volumes[3].secret.secretName XNAT OpenID configuration Volume secret name
+## @param volumes[4].name XNAT prearchive Volume name
+## @param volumes[4].accessModes XNAT prearchive Volume access modes
+## @param volumes[4].annotations XNAT prearchive Volume annotations
+## @param volumes[4].existingClaim XNAT prearchive Volume existingClaim
+## @param volumes[4].persistent XNAT prearchive Volume persistent
+## @param volumes[4].size XNAT prearchive Volume size
+## @param volumes[4].storageClass XNAT prearchive Volume storageClass
 volumes:
   - name: node-conf
-  - name: wait-for-postgres
-    configMap:
-      name: wait-for-postgres
   - name: xnat-archive
     accessModes:
       - ReadWriteOnce
@@ -125,29 +117,25 @@ volumes:
 
 ## @param volumeMounts[0].name XNAT node configuration Volume name
 ## @param volumeMounts[0].mountPath XNAT node configuration Volume mount path
-## @param volumeMounts[1].name Wait for PostgreSQL Volume name
-## @param volumeMounts[1].mountPath Wait for PostgreSQL Volume mount path
-## @param volumeMounts[1].readOnly Wait for PostgreSQL Volume read only
-## @param volumeMounts[2].name XNAT archive Volume name
-## @param volumeMounts[2].mountPath XNAT archive Volume mount path
-## @param volumeMounts[2].subPath XNAT archive Volume sub path
-## @param volumeMounts[3].name XNAT instance configuration Volume name
-## @param volumeMounts[3].mountPath XNAT instance configuration Volume mount path
-## @param volumeMounts[3].readOnly XNAT instance configuration Volume read only
-## @param volumeMounts[3].subPath XNAT instance configuration Volume sub path
-## @param volumeMounts[4].name XNAT OpenID configuration Volume name
-## @param volumeMounts[4].mountPath XNAT OpenID configuration Volume mount path
-## @param volumeMounts[4].readOnly XNAT OpenID configuration Volume read only
-## @param volumeMounts[4].subPath XNAT OpenID configuration Volume sub path
-## @param volumeMounts[5].name XNAT prearchive Volume name
-## @param volumeMounts[5].mountPath XNAT prearchive Volume mount path
-## @param volumeMounts[5].subPath XNAT prearchive Volume sub path
+## @param volumeMounts[0].subPath XNAT node configuration Volume sub path
+## @param volumeMounts[1].name XNAT archive Volume name
+## @param volumeMounts[1].mountPath XNAT archive Volume mount path
+## @param volumeMounts[1].subPath XNAT archive Volume sub path
+## @param volumeMounts[2].name XNAT instance configuration Volume name
+## @param volumeMounts[2].mountPath XNAT instance configuration Volume mount path
+## @param volumeMounts[2].readOnly XNAT instance configuration Volume read only
+## @param volumeMounts[2].subPath XNAT instance configuration Volume sub path
+## @param volumeMounts[3].name XNAT OpenID configuration Volume name
+## @param volumeMounts[3].mountPath XNAT OpenID configuration Volume mount path
+## @param volumeMounts[3].readOnly XNAT OpenID configuration Volume read only
+## @param volumeMounts[3].subPath XNAT OpenID configuration Volume sub path
+## @param volumeMounts[4].name XNAT prearchive Volume name
+## @param volumeMounts[4].mountPath XNAT prearchive Volume mount path
+## @param volumeMounts[4].subPath XNAT prearchive Volume sub path
 volumeMounts:
   - name: node-conf
-    mountPath: /data/xnat/home/config
-  - name: wait-for-postgres
-    mountPath: /usr/local/bin/wait-for-postgres.sh
-    readOnly: true
+    mountPath: /data/xnat/home/config/node-conf.properties
+    subPath: node-conf.properties
   - name: xnat-archive
     mountPath: /data/xnat/archive
     subPath:
@@ -169,6 +157,11 @@ volumeMounts:
 ## @param postgresql.auth.username PostgreSQL username
 ## @param postgresql.auth.password PostgreSQL password. Make sure to override this.
 ## @param postgresql.auth.postgresPassword PostgreSQL password. Make sure to override this.
+## @param postgresql.image.tag PostgreSQL image tag
+## @param postgresql.primary.resources.requests.cpu CPU request
+## @param postgresql.primary.resources.requests.memory Memory request
+## @param postgresql.primary.resources.limits.cpu CPU limit
+## @param postgresql.primary.resources.limits.memory Memory limit
 postgresql:
   enabled: true
   auth:
@@ -176,6 +169,16 @@ postgresql:
     username: xnat
     password: xnat
     postgresPassword: postgres
+  image:
+    tag: 14.17.0-debian-12-r2
+  primary:
+    resources:
+      requests:
+        cpu: 1
+        memory: 4000Mi
+      limits:
+        cpu: 2
+        memory: 4000Mi
 
 ## @section XNAT Web parameters
 web:
@@ -201,8 +204,9 @@ web:
   ## @param web.podLabels Labels to add to the web pod
   podLabels: {}
 
-  ## @param web.podSecurityContext Pod security context
-  podSecurityContext: {}
+  ## @param web.podSecurityContext.runAsUser Pod security context runAsUser
+  podSecurityContext:
+    runAsUser: 1000
 
   ## @param web.securityContext Pod security context
   securityContext:
@@ -281,12 +285,14 @@ web:
   ## @param web.startupProbe.httpGet.path Startup probe httpGet path
   ## @param web.startupProbe.httpGet.port Startup probe httpGet port
   ## @param web.startupProbe.periodSeconds Startup probe period seconds
+  ## @param web.startupProbe.initialDelaySeconds Startup probe initial delay seconds
   startupProbe:
     failureThreshold: 15
     httpGet:
       path: /app/template/Login.vm#!
       port: http
     periodSeconds: 10
+    initialDelaySeconds: 20
 
   ## @param web.autoscaling.enabled Enable or disable the autoscaling
   ## @param web.autoscaling.minReplicas Minimum number of replicas

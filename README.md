@@ -13,7 +13,20 @@ method. For example, using [kind](https://kind.sigs.k8s.io/):
 kind create cluster --name xnat
 ```
 
-### Package the chart
+### Install the CNPG Operator
+
+We use the [CNPG Operator](https://github.com/cloudnative-pg/cloudnative-pg) to
+deploy Postgres. The operator can be installed using Helm:
+
+```bash
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm upgrade --install cnpg \
+  --namespace cnpg-system \
+  --create-namespace \
+  cnpg/cloudnative-pg
+```
+
+### Package and install `xnat-chart`
 
 To install a local copy of the chart, first create a package:
 
@@ -21,9 +34,7 @@ To install a local copy of the chart, first create a package:
 helm package --dependency-update chart
 ```
 
-### Install the chart
-
-Install the packaged chart in the cluster with the following command:
+Then install the packaged chart in the cluster with the following command:
 
 ```shell
 helm install \

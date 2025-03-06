@@ -48,7 +48,7 @@ helm install \
 --set postgresql.cluster.initdb.createSecret=true \
 --namespace xnat-core \
 --create-namespace \
-xnat-core xnat-0.0.7.tgz
+xnat-core xnat-0.0.8.tgz
 ```
 
 Note that omitting the `namespace` option and `create-namespace` flag will
@@ -76,7 +76,7 @@ helm uninstall xnat-core -n xnat-core
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.7.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.8.tgz > build/chart.yaml
 ```
 
 ## Parameters

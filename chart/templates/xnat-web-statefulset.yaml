@@ -65,25 +65,59 @@ spec:
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: PGPASSWORD
-              {{- if .Values.postgresql.auth.existingSecret }}
+            - name: PGUSER
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.postgresql.auth.existingSecret }}
-                  key: {{ .Values.postgresql.auth.secretKeys.userPasswordKey }}
-              {{- else }}
-              value: {{ .Values.postgresql.auth.password | quote }}
-              {{- end }}
+                  name: {{ .Values.postgresql.cluster.initdb.secret.name }}
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.cluster.initdb.secret.name }}
+                  key: password
           command:
             - 'bash'
             - '-c'
             - |
               set -e
-              until psql -U {{ .Values.postgresql.auth.username }} -h {{ template "xnat.postgresql.svc" . }} -c '\q'; do
+              until psql -h {{ template "xnat.postgresql.svc" . }} -c '\q'; do
                 >&2 echo "Postgres is unavailable - sleeping"
                 sleep 30
               done
               >&2 echo "Postgres is up"
+        - name: xnat-datasource
+          image: {{ include "xnat.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: XNAT_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.cluster.initdb.secret.name }}
+                  key: username
+            - name: XNAT_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.postgresql.cluster.initdb.secret.name }}
+                  key: password
+          command:
+            - 'bash'
+            - '-c'
+            - |
+              set -x
+              cat <<EOF > /xnat/xnat-conf.properties
+              datasource.driver=org.postgresql.Driver
+              datasource.url=jdbc:postgresql://{{ template "xnat.postgresql.svc" . }}/{{ .Values.postgresql.cluster.initdb.database }}
+              datasource.username=$XNAT_DATASOURCE_USERNAME
+              datasource.password=$XNAT_DATASOURCE_PASSWORD
+              hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
+              hibernate.hbm2ddl.auto=update
+              hibernate.show_sql=false
+              hibernate.cache.use_second_level_cache=true
+              hibernate.cache.use_query_cache=true
+              EOF
+          volumeMounts:
+            - name: xnat-config
+              mountPath: /xnat
         - name: node-conf
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}

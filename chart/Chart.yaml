@@ -8,7 +8,8 @@ version: 0.0.7
 appVersion: 1.8.10
 
 dependencies:
-  - name: postgresql
-    version: 16.4.14
-    repository: oci://registry-1.docker.io/bitnamicharts
+  - name: cluster
+    alias: postgresql
+    version: 0.2.1
+    repository: https://cloudnative-pg.github.io/charts
     condition: postgresql.enabled

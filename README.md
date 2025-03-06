@@ -26,6 +26,25 @@ helm upgrade --install cnpg \
   cnpg/cloudnative-pg
 ```
 
+### Create a namespace to install the chart
+
+Create a manifest for the namespace:
+
+```bash
+cat <<EOF > namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: xnat-core
+EOF
+```
+
+Create the namespace:
+
+```bash
+kubectl apply -f namespace.yaml
+```
+
 ### Create a secret containing Postgres credentials
 
 Create a manifest for the secret:

@@ -317,9 +317,9 @@ web:
     existingSecret: ""
     image:
       pullPolicy: ""
-      name: "xnat-config"
-      namespace: "ucl-mirsg"
-      registry: "ghcr.io"
-      tag: "latest"
+      name: xnat-config
+      namespace: ucl-mirsg
+      registry: ghcr.io
+      tag: latest
     adminPassword: ""
     serviceAdminPassword: ""

@@ -27,13 +27,15 @@ Install the packaged chart in the cluster with the following command:
 
 ```shell
 helm install \
---set image.name=xnat-core
+--set image.name=xnat-core \
 --set image.tag=0.0.1 \
 --set imageCredentials.enabled=true \
 --set imageCredentials.registry=ghcr.io \
 --set imageCredentials.username=<GH_USERNAME> \
 --set imageCredentials.password=<GH_PAT> \
 --set postgresql.auth.password=xnat \
+--set web.config.adminPassword=<ADMIN_USER_PASSWORD> \
+--set web.config.serviceAdminPassword=<SERVICE_USER_PASSWORD> \
 --namespace xnat-core \
 --create-namespace \
 xnat-core xnat-0.0.7.tgz
@@ -147,6 +149,7 @@ helm template xnat-core ./xnat-0.0.7.tgz > build/chart.yaml
 | Name                                             | Description                              | Value                      |
 | ------------------------------------------------ | ---------------------------------------- | -------------------------- |
 | `web.siteUrl`                                    | Site URL                                 | `""`                       |
+| `web.auth.openid.provider`                       | OpenID provider name                     | `openid1`                  |
 | `web.auth.openid.enabled`                        | Enable or disable the config             | `false`                    |
 | `web.auth.openid.clientId`                       | OpenID client ID                         | `""`                       |
 | `web.auth.openid.clientSecret`                   | OpenID client secret                     | `""`                       |

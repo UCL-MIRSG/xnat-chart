@@ -172,6 +172,7 @@ web:
   ## @param web.siteUrl Site URL
   siteUrl: ""
 
+  ## @param web.auth.openid.provider OpenID provider name
   ## @param web.auth.openid.enabled Enable or disable the config
   ## @param web.auth.openid.clientId OpenID client ID
   ## @param web.auth.openid.clientSecret OpenID client secret
@@ -180,6 +181,7 @@ web:
   ## @param web.auth.openid.link OpenID link
   auth:
     openid:
+      provider: openid1
       enabled: false
       clientId: ""
       clientSecret: ""

@@ -71,67 +71,61 @@ helm template xnat-core ./xnat-0.0.7.tgz > build/chart.yaml
 
 ### Common parameters
 
-| Name                           | Description                                             | Value                                                |
-| ------------------------------ | ------------------------------------------------------- | ---------------------------------------------------- |
-| `replicaCount`                 | Number of replicas                                      | `1`                                                  |
-| `image.pullPolicy`             | image pull policy                                       | `IfNotPresent`                                       |
-| `image.pullSecret`             | Name of secret used to pull image                       | `""`                                                 |
-| `image.registry`               | Image registry                                          | `ghcr.io`                                            |
-| `image.namespace`              | Image registry namespace                                | `ucl-mirsg`                                          |
-| `image.name`                   | Name of the image in the registry                       | `""`                                                 |
-| `image.tag`                    | Image tag                                               | `latest`                                             |
-| `imageCredentials.enabled`     | Enable or disable image pull secret                     | `false`                                              |
-| `imageCredentials.registry`    | Image registry                                          | `""`                                                 |
-| `imageCredentials.username`    | Image registry username                                 | `""`                                                 |
-| `imageCredentials.password`    | Image registry password                                 | `""`                                                 |
-| `imageCredentials.email`       | Image registry email                                    | `""`                                                 |
-| `nameOverride`                 | Override name                                           | `""`                                                 |
-| `fullnameOverride`             | Override fullname                                       | `""`                                                 |
-| `serviceAccount.create`        | Specifies whether a service account should be created   | `true`                                               |
-| `serviceAccount.automount`     | Automatically mount a ServiceAccount's API credentials? | `true`                                               |
-| `serviceAccount.annotations`   | Annotations to add to the service account               | `{}`                                                 |
-| `serviceAccount.name`          | The name of the service account to use.                 | `""`                                                 |
-| `service.port`                 | Service port                                            | `80`                                                 |
-| `service.type`                 | Service type                                            | `ClusterIP`                                          |
-| `service.targetPort`           | Service target port                                     | `8080`                                               |
-| `persistence.storageClass`     | Persistent volume storage class                         | `nil`                                                |
-| `persistence.annotations`      | Persistent volume annotations                           | `{}`                                                 |
-| `volumes[0].name`              | XNAT node configuration Volume name                     | `node-conf`                                          |
-| `volumes[1].name`              | XNAT archive Volume name                                | `xnat-archive`                                       |
-| `volumes[1].accessModes`       | XNAT archive Volume access modes                        | `["ReadWriteOnce"]`                                  |
-| `volumes[1].annotations`       | XNAT archive Volume annotations                         | `{}`                                                 |
-| `volumes[1].existingClaim`     | XNAT archive Volume existingClaim                       | `nil`                                                |
-| `volumes[1].persistent`        | XNAT archive Volume persistent                          | `true`                                               |
-| `volumes[1].size`              | XNAT archive Volume size                                | `8Gi`                                                |
-| `volumes[1].storageClass`      | XNAT archive Volume storageClass                        | `nil`                                                |
-| `volumes[2].name`              | XNAT instance configuration Volume name                 | `xnat-config`                                        |
-| `volumes[2].secret.secretName` | XNAT instance configuration Volume secret name          | `xnat-conf`                                          |
-| `volumes[3].name`              | XNAT OpenID configuration Volume name                   | `xnat-openid-config`                                 |
-| `volumes[3].secret.secretName` | XNAT OpenID configuration Volume secret name            | `openid-conf`                                        |
-| `volumes[4].name`              | XNAT prearchive Volume name                             | `xnat-prearchive`                                    |
-| `volumes[4].accessModes`       | XNAT prearchive Volume access modes                     | `["ReadWriteOnce"]`                                  |
-| `volumes[4].annotations`       | XNAT prearchive Volume annotations                      | `{}`                                                 |
-| `volumes[4].existingClaim`     | XNAT prearchive Volume existingClaim                    | `nil`                                                |
-| `volumes[4].persistent`        | XNAT prearchive Volume persistent                       | `true`                                               |
-| `volumes[4].size`              | XNAT prearchive Volume size                             | `8Gi`                                                |
-| `volumes[4].storageClass`      | XNAT prearchive Volume storageClass                     | `nil`                                                |
-| `volumeMounts[0].name`         | XNAT node configuration Volume name                     | `node-conf`                                          |
-| `volumeMounts[0].mountPath`    | XNAT node configuration Volume mount path               | `/data/xnat/home/config/node-conf.properties`        |
-| `volumeMounts[0].subPath`      | XNAT node configuration Volume sub path                 | `node-conf.properties`                               |
-| `volumeMounts[1].name`         | XNAT archive Volume name                                | `xnat-archive`                                       |
-| `volumeMounts[1].mountPath`    | XNAT archive Volume mount path                          | `/data/xnat/archive`                                 |
-| `volumeMounts[1].subPath`      | XNAT archive Volume sub path                            | `nil`                                                |
-| `volumeMounts[2].name`         | XNAT instance configuration Volume name                 | `xnat-config`                                        |
-| `volumeMounts[2].mountPath`    | XNAT instance configuration Volume mount path           | `/data/xnat/home/config/xnat-conf.properties`        |
-| `volumeMounts[2].readOnly`     | XNAT instance configuration Volume read only            | `true`                                               |
-| `volumeMounts[2].subPath`      | XNAT instance configuration Volume sub path             | `xnat-conf.properties`                               |
-| `volumeMounts[3].name`         | XNAT OpenID configuration Volume name                   | `xnat-openid-config`                                 |
-| `volumeMounts[3].mountPath`    | XNAT OpenID configuration Volume mount path             | `/data/xnat/home/config/auth/openid-conf.properties` |
-| `volumeMounts[3].readOnly`     | XNAT OpenID configuration Volume read only              | `true`                                               |
-| `volumeMounts[3].subPath`      | XNAT OpenID configuration Volume sub path               | `openid-conf.properties`                             |
-| `volumeMounts[4].name`         | XNAT prearchive Volume name                             | `xnat-prearchive`                                    |
-| `volumeMounts[4].mountPath`    | XNAT prearchive Volume mount path                       | `/data/xnat/prearchive`                              |
-| `volumeMounts[4].subPath`      | XNAT prearchive Volume sub path                         | `nil`                                                |
+| Name                           | Description                                             | Value                                         |
+| ------------------------------ | ------------------------------------------------------- | --------------------------------------------- |
+| `replicaCount`                 | Number of replicas                                      | `1`                                           |
+| `image.pullPolicy`             | image pull policy                                       | `IfNotPresent`                                |
+| `image.pullSecret`             | Name of secret used to pull image                       | `""`                                          |
+| `image.registry`               | Image registry                                          | `ghcr.io`                                     |
+| `image.namespace`              | Image registry namespace                                | `ucl-mirsg`                                   |
+| `image.name`                   | Name of the image in the registry                       | `""`                                          |
+| `image.tag`                    | Image tag                                               | `latest`                                      |
+| `imageCredentials.enabled`     | Enable or disable image pull secret                     | `false`                                       |
+| `imageCredentials.registry`    | Image registry                                          | `""`                                          |
+| `imageCredentials.username`    | Image registry username                                 | `""`                                          |
+| `imageCredentials.password`    | Image registry password                                 | `""`                                          |
+| `imageCredentials.email`       | Image registry email                                    | `""`                                          |
+| `nameOverride`                 | Override name                                           | `""`                                          |
+| `fullnameOverride`             | Override fullname                                       | `""`                                          |
+| `serviceAccount.create`        | Specifies whether a service account should be created   | `true`                                        |
+| `serviceAccount.automount`     | Automatically mount a ServiceAccount's API credentials? | `true`                                        |
+| `serviceAccount.annotations`   | Annotations to add to the service account               | `{}`                                          |
+| `serviceAccount.name`          | The name of the service account to use.                 | `""`                                          |
+| `service.port`                 | Service port                                            | `80`                                          |
+| `service.type`                 | Service type                                            | `ClusterIP`                                   |
+| `service.targetPort`           | Service target port                                     | `8080`                                        |
+| `persistence.storageClass`     | Persistent volume storage class                         | `nil`                                         |
+| `persistence.annotations`      | Persistent volume annotations                           | `{}`                                          |
+| `volumes[0].name`              | XNAT node configuration Volume name                     | `node-conf`                                   |
+| `volumes[1].name`              | XNAT archive Volume name                                | `xnat-archive`                                |
+| `volumes[1].accessModes`       | XNAT archive Volume access modes                        | `["ReadWriteOnce"]`                           |
+| `volumes[1].annotations`       | XNAT archive Volume annotations                         | `{}`                                          |
+| `volumes[1].existingClaim`     | XNAT archive Volume existingClaim                       | `nil`                                         |
+| `volumes[1].persistent`        | XNAT archive Volume persistent                          | `true`                                        |
+| `volumes[1].size`              | XNAT archive Volume size                                | `8Gi`                                         |
+| `volumes[1].storageClass`      | XNAT archive Volume storageClass                        | `nil`                                         |
+| `volumes[2].name`              | XNAT instance configuration Volume name                 | `xnat-config`                                 |
+| `volumes[2].secret.secretName` | XNAT instance configuration Volume secret name          | `xnat-conf`                                   |
+| `volumes[3].name`              | XNAT prearchive Volume name                             | `xnat-prearchive`                             |
+| `volumes[3].accessModes`       | XNAT prearchive Volume access modes                     | `["ReadWriteOnce"]`                           |
+| `volumes[3].annotations`       | XNAT prearchive Volume annotations                      | `{}`                                          |
+| `volumes[3].existingClaim`     | XNAT prearchive Volume existingClaim                    | `nil`                                         |
+| `volumes[3].persistent`        | XNAT prearchive Volume persistent                       | `true`                                        |
+| `volumes[3].size`              | XNAT prearchive Volume size                             | `8Gi`                                         |
+| `volumes[3].storageClass`      | XNAT prearchive Volume storageClass                     | `nil`                                         |
+| `volumeMounts[0].name`         | XNAT node configuration Volume name                     | `node-conf`                                   |
+| `volumeMounts[0].mountPath`    | XNAT node configuration Volume mount path               | `/data/xnat/home/config/node-conf.properties` |
+| `volumeMounts[0].subPath`      | XNAT node configuration Volume sub path                 | `node-conf.properties`                        |
+| `volumeMounts[1].name`         | XNAT archive Volume name                                | `xnat-archive`                                |
+| `volumeMounts[1].mountPath`    | XNAT archive Volume mount path                          | `/data/xnat/archive`                          |
+| `volumeMounts[1].subPath`      | XNAT archive Volume sub path                            | `nil`                                         |
+| `volumeMounts[2].name`         | XNAT instance configuration Volume name                 | `xnat-config`                                 |
+| `volumeMounts[2].mountPath`    | XNAT instance configuration Volume mount path           | `/data/xnat/home/config/xnat-conf.properties` |
+| `volumeMounts[2].readOnly`     | XNAT instance configuration Volume read only            | `true`                                        |
+| `volumeMounts[2].subPath`      | XNAT instance configuration Volume sub path             | `xnat-conf.properties`                        |
+| `volumeMounts[3].name`         | XNAT prearchive Volume name                             | `xnat-prearchive`                             |
+| `volumeMounts[3].mountPath`    | XNAT prearchive Volume mount path                       | `/data/xnat/prearchive`                       |
+| `volumeMounts[3].subPath`      | XNAT prearchive Volume sub path                         | `nil`                                         |
 
 ### XNAT Database parameters
 
@@ -153,6 +147,7 @@ helm template xnat-core ./xnat-0.0.7.tgz > build/chart.yaml
 | Name                                             | Description                              | Value                      |
 | ------------------------------------------------ | ---------------------------------------- | -------------------------- |
 | `web.siteUrl`                                    | Site URL                                 | `""`                       |
+| `web.auth.openid.enabled`                        | Enable or disable the config             | `false`                    |
 | `web.auth.openid.clientId`                       | OpenID client ID                         | `""`                       |
 | `web.auth.openid.clientSecret`                   | OpenID client secret                     | `""`                       |
 | `web.auth.openid.accessTokenUri`                 | OpenID access token URI                  | `""`                       |
@@ -195,3 +190,12 @@ helm template xnat-core ./xnat-0.0.7.tgz > build/chart.yaml
 | `web.nodeSelector`                               | Node selector                            | `{}`                       |
 | `web.tolerations`                                | Tolerations to add to the web pod        | `[]`                       |
 | `web.affinity`                                   | Affinity to add to the web pod           | `{}`                       |
+| `web.config.enabled`                             | Enable or disable the config             | `true`                     |
+| `web.config.existingSecret`                      | Existing secret name                     | `""`                       |
+| `web.config.image.pullPolicy`                    | Image pull policy                        | `""`                       |
+| `web.config.image.name`                          | Image name                               | `xnat-config`              |
+| `web.config.image.namespace`                     | Image namespace                          | `ucl-mirsg`                |
+| `web.config.image.registry`                      | Image registry                           | `ghcr.io`                  |
+| `web.config.image.tag`                           | Image tag                                | `latest`                   |
+| `web.config.adminPassword`                       | Admin password                           | `""`                       |
+| `web.config.serviceAdminPassword`                | Service admin password                   | `""`                       |

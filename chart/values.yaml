@@ -81,15 +81,13 @@ persistence:
 ## @param volumes[1].storageClass XNAT archive Volume storageClass
 ## @param volumes[2].name XNAT instance configuration Volume name
 ## @param volumes[2].secret.secretName XNAT instance configuration Volume secret name
-## @param volumes[3].name XNAT OpenID configuration Volume name
-## @param volumes[3].secret.secretName XNAT OpenID configuration Volume secret name
-## @param volumes[4].name XNAT prearchive Volume name
-## @param volumes[4].accessModes XNAT prearchive Volume access modes
-## @param volumes[4].annotations XNAT prearchive Volume annotations
-## @param volumes[4].existingClaim XNAT prearchive Volume existingClaim
-## @param volumes[4].persistent XNAT prearchive Volume persistent
-## @param volumes[4].size XNAT prearchive Volume size
-## @param volumes[4].storageClass XNAT prearchive Volume storageClass
+## @param volumes[3].name XNAT prearchive Volume name
+## @param volumes[3].accessModes XNAT prearchive Volume access modes
+## @param volumes[3].annotations XNAT prearchive Volume annotations
+## @param volumes[3].existingClaim XNAT prearchive Volume existingClaim
+## @param volumes[3].persistent XNAT prearchive Volume persistent
+## @param volumes[3].size XNAT prearchive Volume size
+## @param volumes[3].storageClass XNAT prearchive Volume storageClass
 volumes:
   - name: node-conf
   - name: xnat-archive
@@ -103,9 +101,6 @@ volumes:
   - name: xnat-config
     secret:
       secretName: xnat-conf
-  - name: xnat-openid-config
-    secret:
-      secretName: openid-conf
   - name: xnat-prearchive
     accessModes:
       - ReadWriteOnce
@@ -125,13 +120,9 @@ volumes:
 ## @param volumeMounts[2].mountPath XNAT instance configuration Volume mount path
 ## @param volumeMounts[2].readOnly XNAT instance configuration Volume read only
 ## @param volumeMounts[2].subPath XNAT instance configuration Volume sub path
-## @param volumeMounts[3].name XNAT OpenID configuration Volume name
-## @param volumeMounts[3].mountPath XNAT OpenID configuration Volume mount path
-## @param volumeMounts[3].readOnly XNAT OpenID configuration Volume read only
-## @param volumeMounts[3].subPath XNAT OpenID configuration Volume sub path
-## @param volumeMounts[4].name XNAT prearchive Volume name
-## @param volumeMounts[4].mountPath XNAT prearchive Volume mount path
-## @param volumeMounts[4].subPath XNAT prearchive Volume sub path
+## @param volumeMounts[3].name XNAT prearchive Volume name
+## @param volumeMounts[3].mountPath XNAT prearchive Volume mount path
+## @param volumeMounts[3].subPath XNAT prearchive Volume sub path
 volumeMounts:
   - name: node-conf
     mountPath: /data/xnat/home/config/node-conf.properties
@@ -143,10 +134,6 @@ volumeMounts:
     mountPath: /data/xnat/home/config/xnat-conf.properties
     readOnly: true
     subPath: xnat-conf.properties
-  - name: xnat-openid-config
-    mountPath: /data/xnat/home/config/auth/openid-conf.properties
-    readOnly: true
-    subPath: openid-conf.properties
   - name: xnat-prearchive
     mountPath: /data/xnat/prearchive
     subPath:
@@ -185,6 +172,7 @@ web:
   ## @param web.siteUrl Site URL
   siteUrl: ""
 
+  ## @param web.auth.openid.enabled Enable or disable the config
   ## @param web.auth.openid.clientId OpenID client ID
   ## @param web.auth.openid.clientSecret OpenID client secret
   ## @param web.auth.openid.accessTokenUri OpenID access token URI
@@ -192,6 +180,7 @@ web:
   ## @param web.auth.openid.link OpenID link
   auth:
     openid:
+      enabled: false
       clientId: ""
       clientSecret: ""
       accessTokenUri: ""
@@ -313,3 +302,24 @@ web:
 
   ## @param web.affinity Affinity to add to the web pod
   affinity: {}
+
+  ## @param web.config.enabled Enable or disable the config
+  ## @param web.config.existingSecret Existing secret name
+  ## @param web.config.image.pullPolicy Image pull policy
+  ## @param web.config.image.name Image name
+  ## @param web.config.image.namespace Image namespace
+  ## @param web.config.image.registry Image registry
+  ## @param web.config.image.tag Image tag
+  ## @param web.config.adminPassword Admin password
+  ## @param web.config.serviceAdminPassword Service admin password
+  config:
+    enabled: true
+    existingSecret: ""
+    image:
+      pullPolicy: ""
+      name: "xnat-config"
+      namespace: "ucl-mirsg"
+      registry: "ghcr.io"
+      tag: "latest"
+    adminPassword: ""
+    serviceAdminPassword: ""

@@ -52,6 +52,12 @@ spec:
           startupProbe:
             {{- toYaml .Values.web.startupProbe | nindent 12 }}
           volumeMounts:
+          {{- if .Values.web.auth.openid.enabled }}
+            - name: xnat-openid-config
+              mountPath: /data/xnat/home/config/auth/openid-conf.properties
+              readOnly: true
+              subPath: openid-conf.properties
+          {{- end }}
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -109,6 +115,11 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+      {{- if .Values.web.auth.openid.enabled }}
+        - name: xnat-openid-config
+          secret:
+            secretName: openid-conf
+      {{- end }}
       {{- range .Values.volumes }}
         - name: {{ .name }}
         {{- if and .persistent .existingClaim }}

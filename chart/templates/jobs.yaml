@@ -1,0 +1,65 @@
+{{ if .Values.web.config.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-configure
+  labels:
+    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app.kubernetes.io/instance: {{ .Release.Name | quote }}
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+spec:
+  template:
+    metadata:
+      name: {{ .Release.Name }}-configure
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    spec:
+      backoffLimit: 0
+      restartPolicy: Never
+      imagePullSecrets:
+      {{- if .Values.imageCredentials.enabled }}
+      - name: image-pull-secret
+      {{- else }}
+      - name: {{ .Values.image.pullSecret | quote }}
+      {{- end }}
+      containers:
+      - name: post-install-job
+        image: "{{ .Values.web.config.image.registry }}/{{ .Values.web.config.image.namespace }}/{{ .Values.web.config.image.name }}:{{ .Values.web.config.image.tag }}"
+        {{- if .Values.web.config.existingSecret }}
+        env:
+        - name: XNAT_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.web.config.existingSecret }}
+              key: admin_password
+        - name: XNAT_SERVICE_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.web.config.existingSecret }}
+              key: service_admin_password
+        {{- end }}
+        command: ["ansible-playbook"]
+        args:
+          - configure-xnat.yaml
+          - --extra-vars
+          - xnat_url=http://{{ include "xnat.fullname" . }}
+          {{- if .Values.web.config.existingSecret }}
+          - --extra-vars
+          - xnat_admin_password=$XNAT_ADMIN_PASSWORD
+          - --extra-vars
+          - xnat_service_admin_password=$XNAT_SERVICE_ADMIN_PASSWORD
+          {{- else }}
+          - --extra-vars
+          - xnat_admin_password={{ .Values.web.config.adminPassword }}
+          - --extra-vars
+          - xnat_service_admin_password={{ .Values.web.config.serviceAdminPassword }}
+          {{- end }}
+          - --extra-vars
+          {{- if .Values.web.auth.openid.enabled }}
+          - '{"xnat_enabled_providers": ["localdb", {{ .Values.web.auth.openid.provider | quote }}]}'
+          {{- end }}
+          - -v
+{{- end }}

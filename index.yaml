@@ -3,6 +3,22 @@ entries:
   xnat:
   - apiVersion: v2
     appVersion: 1.8.10
+    created: "2025-03-10T16:25:51.646707441Z"
+    dependencies:
+    - alias: postgresql
+      condition: postgresql.enabled
+      name: cluster
+      repository: https://cloudnative-pg.github.io/charts
+      version: 0.2.1
+    description: A Helm chart for deploying XNAT on Kubernetes
+    digest: bdd8e96ca7acc758d3f0be8561c639798922a343c0bedefcad29d3b2b6157ccd
+    name: xnat
+    type: application
+    urls:
+    - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.8/xnat-0.0.8.tgz
+    version: 0.0.8
+  - apiVersion: v2
+    appVersion: 1.8.10
     created: "2025-03-05T07:33:45.565189445Z"
     dependencies:
     - condition: postgresql.enabled
@@ -76,4 +92,4 @@ entries:
     urls:
     - https://github.com/UCL-MIRSG/xnat-chart/releases/download/0.0.1/xnat-0.0.1.tgz
     version: 0.0.1
-generated: "2025-03-05T07:33:45.56521375Z"
+generated: "2025-03-10T16:25:51.646736155Z"

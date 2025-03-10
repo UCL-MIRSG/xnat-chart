@@ -26,6 +26,10 @@ jobs:
         with:
           version: v3.17.0
 
+      - name: Add Helm repos for dependencies
+        run: |
+          helm repo add cnpg https://cloudnative-pg.github.io/charts
+
       - name: Lowercase repository owner
         run: echo "REPO_OWNER=${GITHUB_REPOSITORY_OWNER@L}" >> "${GITHUB_ENV}"
 

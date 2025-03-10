@@ -80,7 +80,6 @@ persistence:
 ## @param volumes[1].size XNAT archive Volume size
 ## @param volumes[1].storageClass XNAT archive Volume storageClass
 ## @param volumes[2].name XNAT instance configuration Volume name
-## @param volumes[2].secret.secretName XNAT instance configuration Volume secret name
 ## @param volumes[3].name XNAT OpenID configuration Volume name
 ## @param volumes[3].secret.secretName XNAT OpenID configuration Volume secret name
 ## @param volumes[4].name XNAT prearchive Volume name
@@ -101,8 +100,6 @@ volumes:
     size: 8Gi
     storageClass:
   - name: xnat-config
-    secret:
-      secretName: xnat-conf
   - name: xnat-openid-config
     secret:
       secretName: openid-conf
@@ -123,7 +120,6 @@ volumes:
 ## @param volumeMounts[1].subPath XNAT archive Volume sub path
 ## @param volumeMounts[2].name XNAT instance configuration Volume name
 ## @param volumeMounts[2].mountPath XNAT instance configuration Volume mount path
-## @param volumeMounts[2].readOnly XNAT instance configuration Volume read only
 ## @param volumeMounts[2].subPath XNAT instance configuration Volume sub path
 ## @param volumeMounts[3].name XNAT OpenID configuration Volume name
 ## @param volumeMounts[3].mountPath XNAT OpenID configuration Volume mount path
@@ -141,7 +137,6 @@ volumeMounts:
     subPath:
   - name: xnat-config
     mountPath: /data/xnat/home/config/xnat-conf.properties
-    readOnly: true
     subPath: xnat-conf.properties
   - name: xnat-openid-config
     mountPath: /data/xnat/home/config/auth/openid-conf.properties
@@ -150,35 +145,6 @@ volumeMounts:
   - name: xnat-prearchive
     mountPath: /data/xnat/prearchive
     subPath:
-
-## @section XNAT Database parameters
-## @param postgresql.enabled Enable or disable the PostgreSQL deployment
-## @param postgresql.auth.database PostgreSQL database name
-## @param postgresql.auth.username PostgreSQL username
-## @param postgresql.auth.password PostgreSQL password. Make sure to override this.
-## @param postgresql.auth.postgresPassword PostgreSQL password. Make sure to override this.
-## @param postgresql.image.tag PostgreSQL image tag
-## @param postgresql.primary.resources.requests.cpu CPU request
-## @param postgresql.primary.resources.requests.memory Memory request
-## @param postgresql.primary.resources.limits.cpu CPU limit
-## @param postgresql.primary.resources.limits.memory Memory limit
-postgresql:
-  enabled: true
-  auth:
-    database: xnat
-    username: xnat
-    password: xnat
-    postgresPassword: postgres
-  image:
-    tag: 14.17.0-debian-12-r2
-  primary:
-    resources:
-      requests:
-        cpu: 1
-        memory: 4000Mi
-      limits:
-        cpu: 2
-        memory: 4000Mi
 
 ## @section XNAT Web parameters
 web:
@@ -313,3 +279,75 @@ web:
 
   ## @param web.affinity Affinity to add to the web pod
   affinity: {}
+
+### @section XNAT Database parameters
+### @param postgresql.enabled Enable or disable the PostgreSQL deployment
+### @param postgresql.auth.database PostgreSQL database name
+### @param postgresql.auth.username PostgreSQL username
+### @param postgresql.auth.password PostgreSQL password. Make sure to override this.
+### @param postgresql.auth.postgresPassword PostgreSQL password. Make sure to override this.
+### @param postgresql.image.tag PostgreSQL image tag
+### @param postgresql.primary.resources.requests.cpu CPU request
+### @param postgresql.primary.resources.requests.memory Memory request
+### @param postgresql.primary.resources.limits.cpu CPU limit
+### @param postgresql.primary.resources.limits.memory Memory limit
+#postgresql:
+#  enabled: true
+#  auth:
+#    database: xnat
+#    username: xnat
+#    password: xnat
+#    postgresPassword: postgres
+#  image:
+#    tag: 14.17.0-debian-12-r2
+#  primary:
+#    resources:
+#      requests:
+#        cpu: 1
+#        memory: 4000Mi
+#      limits:
+#        cpu: 2
+#        memory: 4000Mi
+#
+
+### @section XNAT Database parameters
+## @param postgresql.enabled Whether to deploy a PostgreSQL cluster
+## @param postgresql.backups.enabled Whether to enable database backups
+## @param postgresql.cluster.imageName Name of the PostgreSQL container image
+## @param postgresql.cluster.instances Number of PostgreSQL instances
+## @param postgresql.cluster.postgresql.parameters.shared_buffers Amount of memory used for shared buffers
+## @param postgresql.cluster.resources.requests.cpu CPU request
+## @param postgresql.cluster.resources.requests.memory Memory request
+## @param postgresql.cluster.resources.limits.cpu CPU limit
+## @param postgresql.cluster.resources.limits.memory Memory limit
+## @param postgresql.cluster.storage.size Size of the storage
+## @param postgresql.cluster.initdb.database PostgreSQL database name
+## @param postgresql.cluster.initdb.owner PostgreSQL owner
+## @param postgresql.cluster.initdb.secret.name Name of the secret containing credentials for the database
+## @param postgresql.cluster.version.postgresql PostgreSQL major version to use
+postgresql:
+  enabled: true
+  backups:
+    enabled: false
+  cluster:
+    imageName: ghcr.io/cloudnative-pg/postgresql:14.17-standard-bookworm
+    instances: 3
+    postgresql:
+      parameters:
+        shared_buffers: "512MB"
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: 1
+      limits:
+        memory: "4Gi"
+        cpu: 2
+    storage:
+      size: "8Gi"
+    initdb:
+      database: xnat
+      owner: xnat
+      secret:
+        name: pg-user-secret
+    version:
+      postgresql: "14"

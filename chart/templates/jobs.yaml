@@ -57,8 +57,8 @@ spec:
           - --extra-vars
           - xnat_service_admin_password={{ .Values.web.config.serviceAdminPassword }}
           {{- end }}
-          - --extra-vars
           {{- if .Values.web.auth.openid.enabled }}
+          - --extra-vars
           - '{"xnat_enabled_providers": ["localdb", {{ .Values.web.auth.openid.provider | quote }}]}'
           {{- end }}
           - -v

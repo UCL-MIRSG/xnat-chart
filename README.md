@@ -90,7 +90,6 @@ helm install \
 --set postgresql.cluster.initdb.password=xnat \
 --set postgresql.cluster.initdb.createSecret=true \
 --namespace xnat-core \
---create-namespace \
 xnat-core xnat-0.0.8.tgz
 ```
 

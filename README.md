@@ -58,6 +58,7 @@ stringData:
 kind: Secret
 metadata:
   name: pg-user-secret
+  namespace: xnat-core
 type: kubernetes.io/basic-auth
 EOF
 ```

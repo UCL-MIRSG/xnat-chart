@@ -185,8 +185,7 @@ helm template xnat-core ./xnat-0.0.9.tgz > build/chart.yaml
 | `web.siteUrl`                                             | Site URL                                                   | `""`                                                        |
 | `web.auth.openid.provider`                                | OpenID provider name                                       | `openid1`                                                   |
 | `web.auth.openid.enabled`                                 | Enable or disable the config                               | `false`                                                     |
-| `web.auth.openid.clientId`                                | OpenID client ID                                           | `""`                                                        |
-| `web.auth.openid.clientSecret`                            | OpenID client secret                                       | `""`                                                        |
+| `web.auth.openid.secretName`                              | Name of secret with clientID and clientSecret              | `openid-secret`                                             |
 | `web.auth.openid.accessTokenUri`                          | OpenID access token URI                                    | `""`                                                        |
 | `web.auth.openid.userAuthUri`                             | OpenID user authentication URI                             | `""`                                                        |
 | `web.auth.openid.link`                                    | OpenID link                                                | `""`                                                        |

@@ -136,6 +136,47 @@ spec:
           volumeMounts:
             - name: node-conf
               mountPath: /xnat
+        {{- if .Values.web.auth.openid.enabled }}
+        - name: openid-conf
+          image: {{ include "xnat.image" . }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: OPENID_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.web.auth.openid.secretName }}
+                  key: clientId
+            - name: OPENID_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.web.auth.openid.secretName }}
+                  key: clientSecret
+          command:
+            - 'bash'
+            - '-c'
+            - |
+              set -x
+              cat <<EOF > /xnat/openid-conf.properties
+              name="UCL SSO"
+              provider.id={{- .Values.web.auth.openid.provider }}
+              auth.method=OpenID
+              auto.enabled=false
+              auto.verified=false
+              siteUrl={{ .Values.web.siteUrl }}
+              openid.{{- .Values.web.auth.openid.provider -}}.clientId=$OPENID_CLIENT_ID
+              openid.{{- .Values.web.auth.openid.provider -}}.clientSecret=$OPENID_CLIENT_SECRET
+              openid.{{- .Values.web.auth.openid.provider -}}.accessTokenUri={{ .Values.web.auth.openid.accessTokenUri }}
+              openid.{{- .Values.web.auth.openid.provider -}}.userAuthUri={{ .Values.web.auth.openid.userAuthUri }}
+              openid.{{- .Values.web.auth.openid.provider -}}.link=<a href="/openid-login?providerId={{- .Values.web.auth.openid.provider -}}">{{ .Values.web.auth.openid.link }}</a>
+              openid.{{- .Values.web.auth.openid.provider -}}.forceUserCreate=true
+              openid.{{- .Values.web.auth.openid.provider -}}.emailProperty=email
+              openid.{{- .Values.web.auth.openid.provider -}}.givenNameProperty=name
+              openid.{{- .Values.web.auth.openid.provider -}}.familyNameProperty=deliberately_unknown_property
+              EOF
+          volumeMounts:
+            - name: openid-conf
+              mountPath: /xnat/openid-conf.properties
+        {{- end }}
       {{- with .Values.web.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -151,8 +192,6 @@ spec:
       volumes:
       {{- if .Values.web.auth.openid.enabled }}
         - name: xnat-openid-config
-          secret:
-            secretName: openid-conf
       {{- end }}
       {{- range .Values.volumes }}
         - name: {{ .name }}

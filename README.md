@@ -92,7 +92,7 @@ helm install \
 --set web.config.adminPassword=<ADMIN_USER_PASSWORD> \
 --set web.config.serviceAdminPassword=<SERVICE_USER_PASSWORD> \
 --namespace xnat-core \
-xnat-core xnat-0.0.8.tgz
+xnat-core xnat-0.0.9.tgz
 ```
 
 Set `image.tag` to the version of the
@@ -117,7 +117,7 @@ helm uninstall xnat-core -n xnat-core
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.8.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.9.tgz > build/chart.yaml
 ```
 
 ## Parameters

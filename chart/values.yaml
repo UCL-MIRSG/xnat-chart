@@ -140,8 +140,7 @@ web:
 
   ## @param web.auth.openid.provider OpenID provider name
   ## @param web.auth.openid.enabled Enable or disable the config
-  ## @param web.auth.openid.clientId OpenID client ID
-  ## @param web.auth.openid.clientSecret OpenID client secret
+  ## @param web.auth.openid.secretName Name of secret with clientID and clientSecret
   ## @param web.auth.openid.accessTokenUri OpenID access token URI
   ## @param web.auth.openid.userAuthUri OpenID user authentication URI
   ## @param web.auth.openid.link OpenID link
@@ -149,8 +148,7 @@ web:
     openid:
       provider: openid1
       enabled: false
-      clientId: ""
-      clientSecret: ""
+      secretName: openid-secret
       accessTokenUri: ""
       userAuthUri: ""
       link: ""

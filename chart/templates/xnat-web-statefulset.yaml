@@ -52,6 +52,12 @@ spec:
           startupProbe:
             {{- toYaml .Values.web.startupProbe | nindent 12 }}
           volumeMounts:
+            - name: node-conf
+              mountPath: /data/xnat/home/config/node-conf.properties
+              subPath: node-conf.properties
+            - name: xnat-config
+              mountPath: /data/xnat/home/config/xnat-conf.properties
+              subPath: xnat-conf.properties
           {{- if .Values.web.auth.openid.enabled }}
             - name: xnat-openid-config
               mountPath: /data/xnat/home/config/auth/openid-conf.properties
@@ -190,6 +196,8 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        - name: node-conf
+        - name: xnat-config
       {{- if .Values.web.auth.openid.enabled }}
         - name: xnat-openid-config
       {{- end }}

@@ -144,6 +144,7 @@ web:
   ## @param web.auth.openid.accessTokenUri OpenID access token URI
   ## @param web.auth.openid.userAuthUri OpenID user authentication URI
   ## @param web.auth.openid.link OpenID link
+  ## @param web.auth.localdb.secretName Name of secret with adminPassword and serviceAdminPassword
   auth:
     openid:
       provider: openid1
@@ -152,6 +153,8 @@ web:
       accessTokenUri: ""
       userAuthUri: ""
       link: ""
+    localdb:
+      secretName: localdb-secret
 
   ## @param web.podAnnotations Annotations to add to the web pod
   podAnnotations: {}
@@ -270,25 +273,19 @@ web:
   affinity: {}
 
   ## @param web.config.enabled Enable or disable the config
-  ## @param web.config.existingSecret Existing secret name
   ## @param web.config.image.pullPolicy Image pull policy
   ## @param web.config.image.name Image name
   ## @param web.config.image.namespace Image namespace
   ## @param web.config.image.registry Image registry
   ## @param web.config.image.tag Image tag
-  ## @param web.config.adminPassword Admin password
-  ## @param web.config.serviceAdminPassword Service admin password
   config:
     enabled: true
-    existingSecret: ""
     image:
       pullPolicy: ""
       name: xnat-config
       namespace: ucl-mirsg
       registry: ghcr.io
       tag: latest
-    adminPassword: ""
-    serviceAdminPassword: ""
 
 ### @section XNAT Database parameters
 ## @param postgresql.enabled Whether to deploy a PostgreSQL cluster

@@ -45,12 +45,12 @@ Create the namespace:
 kubectl apply -f namespace.yaml
 ```
 
-### Create a secret containing Postgres credentials
+### Create a secret containing Postgres and XNAT credentials
 
 Create a manifest for the secret:
 
 ```bash
-cat <<EOF > secret.yaml
+cat <<EOF > secrets.yaml
 apiVersion: v1
 stringData:
   username: xnat
@@ -60,13 +60,23 @@ metadata:
   name: pg-user-secret
   namespace: xnat-core
 type: kubernetes.io/basic-auth
+---
+apiVersion: v1
+stringData:
+  adminPassword: strongPassword
+  serviceAdminPassword: anotherStrongPassword
+kind: Secret
+metadata:
+  name: localdb-secret
+  namespace: xnat-core
+type: kubernetes.io/basic-auth
 EOF
 ```
 
 Create the secret:
 
 ```bash
-kubectl apply -f secret.yaml --namespace xnat-core
+kubectl apply -f secrets.yaml
 ```
 
 ### Package and install `xnat-chart`
@@ -82,17 +92,13 @@ Then install the packaged chart in the cluster with the following command:
 ```shell
 helm install \
 --set image.name=xnat-core \
---set image.name=xnat-core \
---set image.tag=0.0.1 \
+--set image.tag=0.0.2 \
 --set imageCredentials.enabled=true \
 --set imageCredentials.registry=ghcr.io \
 --set imageCredentials.username=<GH_USERNAME> \
 --set imageCredentials.password=<GH_PAT> \
---set postgresql.auth.password=xnat \
---set web.config.adminPassword=<ADMIN_USER_PASSWORD> \
---set web.config.serviceAdminPassword=<SERVICE_USER_PASSWORD> \
 --namespace xnat-core \
-xnat-core xnat-0.0.10.tgz
+xnat-core xnat-0.0.11.tgz
 ```
 
 Set `image.tag` to the version of the
@@ -117,7 +123,7 @@ helm uninstall xnat-core -n xnat-core
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.10.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.11.tgz > build/chart.yaml
 ```
 
 ## Parameters
@@ -189,6 +195,7 @@ helm template xnat-core ./xnat-0.0.10.tgz > build/chart.yaml
 | `web.auth.openid.accessTokenUri`                          | OpenID access token URI                                    | `""`                                                        |
 | `web.auth.openid.userAuthUri`                             | OpenID user authentication URI                             | `""`                                                        |
 | `web.auth.openid.link`                                    | OpenID link                                                | `""`                                                        |
+| `web.auth.localdb.secretName`                             | Name of secret with adminPassword and serviceAdminPassword | `localdb-secret`                                            |
 | `web.podAnnotations`                                      | Annotations to add to the web pod                          | `{}`                                                        |
 | `web.podLabels`                                           | Labels to add to the web pod                               | `{}`                                                        |
 | `web.podSecurityContext.runAsUser`                        | Pod security context runAsUser                             | `1000`                                                      |
@@ -227,14 +234,11 @@ helm template xnat-core ./xnat-0.0.10.tgz > build/chart.yaml
 | `web.tolerations`                                         | Tolerations to add to the web pod                          | `[]`                                                        |
 | `web.affinity`                                            | Affinity to add to the web pod                             | `{}`                                                        |
 | `web.config.enabled`                                      | Enable or disable the config                               | `true`                                                      |
-| `web.config.existingSecret`                               | Existing secret name                                       | `""`                                                        |
 | `web.config.image.pullPolicy`                             | Image pull policy                                          | `""`                                                        |
 | `web.config.image.name`                                   | Image name                                                 | `xnat-config`                                               |
 | `web.config.image.namespace`                              | Image namespace                                            | `ucl-mirsg`                                                 |
 | `web.config.image.registry`                               | Image registry                                             | `ghcr.io`                                                   |
 | `web.config.image.tag`                                    | Image tag                                                  | `latest`                                                    |
-| `web.config.adminPassword`                                | Admin password                                             | `""`                                                        |
-| `web.config.serviceAdminPassword`                         | Service admin password                                     | `""`                                                        |
 | `postgresql.enabled`                                      | Whether to deploy a PostgreSQL cluster                     | `true`                                                      |
 | `postgresql.backups.enabled`                              | Whether to enable database backups                         | `false`                                                     |
 | `postgresql.cluster.imageName`                            | Name of the PostgreSQL container image                     | `ghcr.io/cloudnative-pg/postgresql:14.17-standard-bookworm` |

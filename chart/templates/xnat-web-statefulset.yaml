@@ -205,9 +205,7 @@ spec:
         - name: {{ .name }}
         {{- if and .persistent .existingClaim }}
           persistentVolumeClaim:
-          {{- with .existingClaim }}
-            claimName: {{ tpl . $ }}
-          {{- end }}
+            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) .name }}
         {{- else if not .persistent }}
           {{- if or .configMap .secret }}
           {{- range $key, $value := . }}
@@ -223,7 +221,7 @@ spec:
       {{- end }}
   volumeClaimTemplates:
   {{- range .Values.volumes }}
-    {{- if and .persistent (not .existingClaim) }}
+  {{- if and .persistent (not .existingClaim) }}
     - metadata:
         name: {{ .name }}
       {{- with .annotations }}
@@ -233,10 +231,7 @@ spec:
         {{- end }}
       {{- end }}
       spec:
-        accessModes:
-        {{- range .accessModes }}
-          - {{ . }}
-        {{- end }}
+        accessModes: [ {{ .accessMode | quote }} ]
         resources:
           requests:
             storage: {{ .size | quote }}

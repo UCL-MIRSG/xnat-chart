@@ -233,6 +233,7 @@ helm template xnat-core ./xnat-0.0.11.tgz > build/chart.yaml
 | `web.nodeSelector`                                        | Node selector                                              | `{}`                                                        |
 | `web.tolerations`                                         | Tolerations to add to the web pod                          | `[]`                                                        |
 | `web.affinity`                                            | Affinity to add to the web pod                             | `{}`                                                        |
+| `web.tomcat.catalinaOpts`                                 | Override default CATALINA_OPTS                             | `""`                                                        |
 | `web.config.enabled`                                      | Enable or disable the config                               | `true`                                                      |
 | `web.config.image.pullPolicy`                             | Image pull policy                                          | `""`                                                        |
 | `web.config.image.name`                                   | Image name                                                 | `xnat-config`                                               |

@@ -64,50 +64,40 @@ service:
   port: 80
   targetPort: 8080
 
-## @param persistence.storageClass Persistent volume storage class
-## @param persistence.annotations Persistent volume annotations
-##
-persistence:
-  storageClass:
-  annotations: {}
-
-## @param volumes[0].name XNAT build volume name
-## @param volumes[0].accessMode XNAT build volume access modes
-## @param volumes[0].annotations XNAT build volume annotations
-## @param volumes[0].existingClaim XNAT build volume existingClaim
-## @param volumes[0].persistent XNAT build volume persistent
-## @param volumes[0].size XNAT build volume size
-## @param volumes[0].storageClass XNAT build volume storageClass
-## @param volumes[1].name XNAT cache volume name
-## @param volumes[1].accessMode XNAT cache volume access modes
-## @param volumes[1].annotations XNAT cache volume annotations
-## @param volumes[1].existingClaim XNAT cache volume existingClaim
-## @param volumes[1].persistent XNAT cache volume persistent
-## @param volumes[1].size XNAT cache volume size
-## @param volumes[1].storageClass XNAT cache volume storageClass
-## @param volumes[2].name XNAT home volume name
-## @param volumes[2].accessMode XNAT home volume access modes
-## @param volumes[2].annotations XNAT home volume annotations
-## @param volumes[2].existingClaim XNAT home volume existingClaim
-## @param volumes[2].persistent XNAT home volume persistent
-## @param volumes[2].size XNAT home volume size
-## @param volumes[2].storageClass XNAT home volume storageClass
+## @param volumes.xnat-build.accessMode XNAT build volume access modes
+## @param volumes.xnat-build.annotations XNAT build volume annotations
+## @param volumes.xnat-build.existingClaim XNAT build volume existingClaim
+## @param volumes.xnat-build.persistent XNAT build volume persistent
+## @param volumes.xnat-build.size XNAT build volume size
+## @param volumes.xnat-build.storageClass XNAT build volume storageClass
+## @param volumes.xnat-cache.accessMode XNAT cache volume access modes
+## @param volumes.xnat-cache.annotations XNAT cache volume annotations
+## @param volumes.xnat-cache.existingClaim XNAT cache volume existingClaim
+## @param volumes.xnat-cache.persistent XNAT cache volume persistent
+## @param volumes.xnat-cache.size XNAT cache volume size
+## @param volumes.xnat-cache.storageClass XNAT cache volume storageClass
+## @param volumes.xnat-home.accessMode XNAT home volume access modes
+## @param volumes.xnat-home.annotations XNAT home volume annotations
+## @param volumes.xnat-home.existingClaim XNAT home volume existingClaim
+## @param volumes.xnat-home.persistent XNAT home volume persistent
+## @param volumes.xnat-home.size XNAT home volume size
+## @param volumes.xnat-home.storageClass XNAT home volume storageClass
 volumes:
-  - name: xnat-build
+  xnat-build:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 1Gi
     storageClass: # e.g. local-path for k3s default storage class
-  - name: xnat-cache
+  xnat-cache:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
-  - name: xnat-home
+  xnat-home:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
@@ -115,63 +105,58 @@ volumes:
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
 
-## @param volumeMounts[0].name XNAT build volume name
-## @param volumeMounts[0].mountPath XNAT build volume mount path
-## @param volumeMounts[0].subPath XNAT build volume sub path
-## @param volumeMounts[1].name XNAT cache volume name
-## @param volumeMounts[1].mountPath XNAT cache volume mount path
-## @param volumeMounts[1].subPath XNAT cache volume sub path
-## @param volumeMounts[2].name XNAT home volume name
-## @param volumeMounts[2].mountPath XNAT prearchive volume mount path
-## @param volumeMounts[2].subPath XNAT prearchive volume sub path
+## @param volumeMounts.xnat-build.mountPath XNAT build volume mount path
+## @param volumeMounts.xnat-build.subPath XNAT build volume sub path
+## @param volumeMounts.xnat-cache.mountPath XNAT cache volume mount path
+## @param volumeMounts.xnat-cache.subPath XNAT cache volume sub path
+## @param volumeMounts.xnat-home.mountPath XNAT home volume mount path
+## @param volumeMounts.xnat-home.subPath XNAT home volume sub path
 volumeMounts:
-  - name: xnat-build
+  xnat-build:
     mountPath: /data/xnat/build
     subPath:
-  - name: xnat-cache
+  xnat-cache:
     mountPath: /data/xnat/cache
     subPath:
-  - name: xnat-home
+  xnat-home:
     mountPath: /data/xnat/home
     subPath:
 
-## @param extraVolumes[0].name XNAT archive volume name
-## @param extraVolumes[0].accessMode XNAT archive volume access modes
-## @param extraVolumes[0].annotations XNAT archive volume annotations
-## @param extraVolumes[0].existingClaim XNAT archive volume existingClaim
-## @param extraVolumes[0].persistent XNAT archive volume persistent
-## @param extraVolumes[0].size XNAT archive volume size
-## @param extraVolumes[0].storageClass XNAT archive volume storageClass
-## @param extraVolumes[1].name XNAT prearchive volume name
-## @param extraVolumes[1].accessMode XNAT prearchive volume access modes
-## @param extraVolumes[1].annotations XNAT prearchive volume annotations
-## @param extraVolumes[1].existingClaim XNAT prearchive volume existingClaim
-## @param extraVolumes[1].persistent XNAT prearchive volume persistent
-## @param extraVolumes[1].size XNAT prearchive volume size
-## @param extraVolumes[1].storageClass XNAT prearchive volume storageClass
+## @param extraVolumes.xnat-archive.accessMode XNAT archive volume access modes
+## @param extraVolumes.xnat-archive.annotations XNAT archive volume annotations
+## @param extraVolumes.xnat-archive.existingClaim XNAT archive volume existingClaim
+## @param extraVolumes.xnat-archive.persistent XNAT archive volume persistent
+## @param extraVolumes.xnat-archive.size XNAT archive volume size
+## @param extraVolumes.xnat-archive.storageClass XNAT archive volume storageClass
+## @param extraVolumes.xnat-prearchive.accessMode XNAT prearchive volume access modes
+## @param extraVolumes.xnat-prearchive.annotations XNAT prearchive volume annotations
+## @param extraVolumes.xnat-prearchive.existingClaim XNAT prearchive volume existingClaim
+## @param extraVolumes.xnat-prearchive.persistent XNAT prearchive volume persistent
+## @param extraVolumes.xnat-prearchive.size XNAT prearchive volume size
+## @param extraVolumes.xnat-prearchive.storageClass XNAT prearchive volume storageClass
 extraVolumes:
-  # - name: xnat-archive-project01
+  # xnat-archive-project01:
   #   accessMode: ReadWriteMany
   #   annotations: {}
   #   existingClaim: true
   #   persistent: true
   #   size: 8Gi
   #   storageClass: smb
-  # - name: xnat-prearchive-project01
+  # xnat-prearchive-project01:
   #   accessMode: ReadWriteMany
   #   annotations: {}
   #   existingClaim: true
   #   persistent: true
   #   size: 8Gi
   #   storageClass: smb
-  - name: xnat-archive
+  xnat-archive:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
-  - name: xnat-prearchive
+  xnat-prearchive:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
@@ -179,23 +164,21 @@ extraVolumes:
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
 
-## @param extraVolumeMounts[0].name XNAT archive volume name
-## @param extraVolumeMounts[0].mountPath XNAT archive volume mount path
-## @param extraVolumeMounts[0].subPath XNAT archive volume sub path
-## @param extraVolumeMounts[1].name XNAT prearchive volume name
-## @param extraVolumeMounts[1].mountPath XNAT prearchive volume mount path
-## @param extraVolumeMounts[1].subPath XNAT prearchive volume sub path
+## @param extraVolumeMounts.xnat-archive.mountPath XNAT archive volume mount path
+## @param extraVolumeMounts.xnat-archive.subPath XNAT archive volume sub path
+## @param extraVolumeMounts.xnat-prearchive.mountPath XNAT prearchive volume mount path
+## @param extraVolumeMounts.xnat-prearchive.subPath XNAT prearchive volume sub path
 extraVolumeMounts:
-  # - name: xnat-archive-project01
+  # xnat-archive-project01:
   #   mountPath: /data/xnat/archive/project01
   #   subPath:
-  # - name: xnat-prearchive-project01
+  # xnat-prearchive-project01:
   #   mountPath: /data/xnat/prearchive/project01
   #   subPath:
-  - name: xnat-archive
+  xnat-archive:
     mountPath: /data/xnat/archive
     subPath:
-  - name: xnat-prearchive
+  xnat-prearchive:
     mountPath: /data/xnat/prearchive
     subPath:
 

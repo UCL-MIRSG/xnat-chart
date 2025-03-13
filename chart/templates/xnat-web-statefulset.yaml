@@ -69,8 +69,10 @@ spec:
               readOnly: true
               subPath: openid-conf.properties
           {{- end }}
-          {{- with (concat .Values.volumeMounts .Values.extraVolumeMounts) }}
-            {{- toYaml . | nindent 12 }}
+          {{- range $name, $prop := (merge .Values.volumeMounts .Values.extraVolumeMounts) }}
+            - name: {{ $name }}
+              mountPath: {{ $prop.mountPath }}
+              subPath: {{ $prop.subPath }}
           {{- end }}
           command:
             - /bin/sh
@@ -206,14 +208,14 @@ spec:
       {{- if .Values.web.auth.openid.enabled }}
         - name: xnat-openid-config
       {{- end }}
-      {{- range (concat .Values.volumes .Values.extraVolumes) }}
-        - name: {{ .name }}
-        {{- if and .persistent .existingClaim }}
+      {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
+        - name: {{ $name }}
+        {{- if and $prop.persistent $prop.existingClaim }}
           persistentVolumeClaim:
-            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) .name }}
-        {{- else if not .persistent }}
+            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) $name }}
+        {{- else if not $prop.persistent }}
           {{- if or .configMap .secret }}
-          {{- range $key, $value := . }}
+          {{- range $key, $value := $prop }}
             {{- if not (eq $key "name") }}
           {{ $key }}:
           {{- toYaml $value | nindent 12 }}
@@ -225,26 +227,26 @@ spec:
         {{- end }}
       {{- end }}
   volumeClaimTemplates:
-  {{- range .Values.volumes }}
-  {{- if and .persistent (not .existingClaim) }}
+  {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
+  {{- if and $prop.persistent (not $prop.existingClaim) }}
     - metadata:
-        name: {{ .name }}
-      {{- with .annotations }}
+        name: {{ $name }}
+      {{- with $prop.annotations }}
         annotations:
         {{- range $key, $value := . }}
           {{ $key }}: {{ $value }}
         {{- end }}
       {{- end }}
       spec:
-        accessModes: [ {{ .accessMode | quote }} ]
+        accessModes: [ {{ $prop.accessMode | quote }} ]
         resources:
           requests:
-            storage: {{ .size | quote }}
-      {{- if .storageClass }}
-        {{- if (eq "-" .storageClass) }}
+            storage: {{ $prop.size | quote }}
+      {{- if $prop.storageClass }}
+        {{- if (eq "-" $prop.storageClass) }}
         storageClassName: ""
         {{- else }}
-        storageClassName: "{{ .storageClass }}"
+        storageClassName: "{{ $prop.storageClass }}"
         {{- end }}
       {{- end }}
     {{- end }}

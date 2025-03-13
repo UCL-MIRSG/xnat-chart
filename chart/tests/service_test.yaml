@@ -1,0 +1,8 @@
+templates:
+  - templates/service.yaml
+
+tests:
+  - it: service manifest should match snapshot
+    asserts:
+      - matchSnapshot:
+          path: spec

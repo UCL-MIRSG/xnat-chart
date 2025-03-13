@@ -1,0 +1,9 @@
+templates:
+  - NOTES.txt
+
+tests:
+  - it: notes should match snapshot
+    set:
+      web.ingress.enabled: true
+    asserts:
+      - matchSnapshotRaw: {}

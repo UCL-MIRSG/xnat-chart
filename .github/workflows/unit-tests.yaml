@@ -1,0 +1,31 @@
+---
+name: Helm unittest
+
+on:
+  push:
+    branches:
+      - main
+      - renovate/**
+  pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - reopened
+      - synchronize
+
+concurrency:
+  cancel-in-progress: true
+  group: >-
+    ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+
+jobs:
+  helm-unittest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Run helm unittest
+        run: |
+          docker run --rm -v "$(pwd)/chart":/apps/chart helmunittest/helm-unittest:3.11.1-0.3.0 /apps/chart

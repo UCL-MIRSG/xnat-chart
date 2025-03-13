@@ -1,0 +1,200 @@
+xnat-web-statefulst manifest should match snapshot:
+  1: |
+    containers:
+      - command:
+          - /bin/sh
+          - -c
+          - |
+            /usr/local/tomcat/bin/catalina.sh run
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /app/template/Login.vm#!
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 5
+        name: xnat
+        ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+        readinessProbe:
+          failureThreshold: 1
+          httpGet:
+            path: /app/template/Login.vm#!
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+        resources:
+          limits:
+            cpu: 2
+            memory: 4000Mi
+          requests:
+            cpu: 1
+            memory: 4000Mi
+        securityContext: {}
+        startupProbe:
+          failureThreshold: 15
+          httpGet:
+            path: /app/template/Login.vm#!
+            port: http
+          initialDelaySeconds: 20
+          periodSeconds: 10
+        volumeMounts:
+          - mountPath: /data/xnat/home/config/auth/openid-conf.properties
+            name: xnat-openid-config
+            readOnly: true
+            subPath: openid-conf.properties
+          - mountPath: /data/xnat/home/config/node-conf.properties
+            name: node-conf
+            subPath: node-conf.properties
+          - mountPath: /data/xnat/archive
+            name: xnat-archive
+            subPath: null
+          - mountPath: /data/xnat/home/config/xnat-conf.properties
+            name: xnat-config
+            subPath: xnat-conf.properties
+          - mountPath: /data/xnat/prearchive
+            name: xnat-prearchive
+            subPath: null
+    imagePullSecrets:
+      - name: ""
+    initContainers:
+      - command:
+          - bash
+          - -c
+          - |
+            set -e
+            until psql -h RELEASE-NAME-postgresql-rw -c '\q'; do
+              >&2 echo "Postgres is unavailable - sleeping"
+              sleep 30
+            done
+            >&2 echo "Postgres is up"
+        env:
+          - name: PGUSER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: pg-user-secret
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: pg-user-secret
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
+        imagePullPolicy: IfNotPresent
+        name: wait-for-postgres
+      - command:
+          - bash
+          - -c
+          - |
+            set -x
+            cat <<EOF > /xnat/xnat-conf.properties
+            datasource.driver=org.postgresql.Driver
+            datasource.url=jdbc:postgresql://RELEASE-NAME-postgresql-rw/xnat
+            datasource.username=$XNAT_DATASOURCE_USERNAME
+            datasource.password=$XNAT_DATASOURCE_PASSWORD
+            hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
+            hibernate.hbm2ddl.auto=update
+            hibernate.show_sql=false
+            hibernate.cache.use_second_level_cache=true
+            hibernate.cache.use_query_cache=true
+            EOF
+        env:
+          - name: XNAT_DATASOURCE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: pg-user-secret
+          - name: XNAT_DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: pg-user-secret
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
+        imagePullPolicy: IfNotPresent
+        name: xnat-datasource
+        volumeMounts:
+          - mountPath: /xnat
+            name: xnat-config
+      - command:
+          - bash
+          - -c
+          - |
+            set -x
+            echo "node.id=$HOSTNAME" > /xnat/node-conf.properties
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
+        imagePullPolicy: IfNotPresent
+        name: node-conf
+        volumeMounts:
+          - mountPath: /xnat
+            name: node-conf
+      - command:
+          - bash
+          - -c
+          - |
+            set -x
+            cat <<EOF > /xnat/openid-conf.properties
+            name="UCL SSO"
+            provider.id=openid1
+            auth.method=OpenID
+            auto.enabled=false
+            auto.verified=false
+            siteUrl=
+            openid.openid1.clientId=$OPENID_CLIENT_ID
+            openid.openid1.clientSecret=$OPENID_CLIENT_SECRET
+            openid.openid1.accessTokenUri=
+            openid.openid1.userAuthUri=
+            openid.openid1.link=<a href="/openid-login?providerId=openid1"></a>
+            openid.openid1.forceUserCreate=true
+            openid.openid1.emailProperty=email
+            openid.openid1.givenNameProperty=name
+            openid.openid1.familyNameProperty=deliberately_unknown_property
+            EOF
+        env:
+          - name: OPENID_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: clientId
+                name: openid-secret
+          - name: OPENID_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: clientSecret
+                name: openid-secret
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
+        imagePullPolicy: IfNotPresent
+        name: openid-conf
+        volumeMounts:
+          - mountPath: /xnat/openid-conf.properties
+            name: openid-conf
+    securityContext:
+      runAsUser: 1000
+    serviceAccountName: RELEASE-NAME-xnat
+    volumes:
+      - name: xnat-openid-config
+      - emptyDir: {}
+        name: node-conf
+      - name: xnat-archive
+      - emptyDir: {}
+        name: xnat-config
+      - name: xnat-prearchive
+  2: |
+    - metadata:
+        name: xnat-archive
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 8Gi
+    - metadata:
+        name: xnat-prearchive
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 8Gi

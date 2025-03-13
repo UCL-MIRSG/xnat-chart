@@ -98,7 +98,7 @@ helm install \
 --set imageCredentials.username=<GH_USERNAME> \
 --set imageCredentials.password=<GH_PAT> \
 --namespace xnat-core \
-xnat-core xnat-0.0.11.tgz
+xnat-core xnat-0.0.12.tgz
 ```
 
 Set `image.tag` to the version of the
@@ -123,7 +123,7 @@ helm uninstall xnat-core -n xnat-core
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.11.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.12.tgz > build/chart.yaml
 ```
 
 ## Parameters

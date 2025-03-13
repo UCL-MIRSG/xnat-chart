@@ -30,10 +30,10 @@ xnat-web-statefulst manifest should match snapshot:
         resources:
           limits:
             cpu: 2
-            memory: 4000Mi
+            memory: 6000Mi
           requests:
             cpu: 1
-            memory: 4000Mi
+            memory: 6000Mi
         securityContext: {}
         startupProbe:
           failureThreshold: 15
@@ -43,19 +43,28 @@ xnat-web-statefulst manifest should match snapshot:
           initialDelaySeconds: 20
           periodSeconds: 10
         volumeMounts:
+          - mountPath: /data/xnat/home/config/node-conf.properties
+            name: node-conf
+            subPath: node-conf.properties
+          - mountPath: /data/xnat/home/config/xnat-conf.properties
+            name: xnat-config
+            subPath: xnat-conf.properties
           - mountPath: /data/xnat/home/config/auth/openid-conf.properties
             name: xnat-openid-config
             readOnly: true
             subPath: openid-conf.properties
-          - mountPath: /data/xnat/home/config/node-conf.properties
-            name: node-conf
-            subPath: node-conf.properties
           - mountPath: /data/xnat/archive
             name: xnat-archive
             subPath: null
-          - mountPath: /data/xnat/home/config/xnat-conf.properties
-            name: xnat-config
-            subPath: xnat-conf.properties
+          - mountPath: /data/xnat/build
+            name: xnat-build
+            subPath: null
+          - mountPath: /data/xnat/cache
+            name: xnat-cache
+            subPath: null
+          - mountPath: /data/xnat/home
+            name: xnat-home
+            subPath: null
           - mountPath: /data/xnat/prearchive
             name: xnat-prearchive
             subPath: null
@@ -174,12 +183,13 @@ xnat-web-statefulst manifest should match snapshot:
       runAsUser: 1000
     serviceAccountName: RELEASE-NAME-xnat
     volumes:
+      - name: node-conf
+      - name: xnat-config
       - name: xnat-openid-config
-      - emptyDir: {}
-        name: node-conf
       - name: xnat-archive
-      - emptyDir: {}
-        name: xnat-config
+      - name: xnat-build
+      - name: xnat-cache
+      - name: xnat-home
       - name: xnat-prearchive
   2: |
     - metadata:
@@ -189,7 +199,31 @@ xnat-web-statefulst manifest should match snapshot:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 8Gi
+            storage: 10Gi
+    - metadata:
+        name: xnat-build
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: xnat-cache
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: xnat-home
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
     - metadata:
         name: xnat-prearchive
       spec:
@@ -197,4 +231,4 @@ xnat-web-statefulst manifest should match snapshot:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 8Gi
+            storage: 10Gi

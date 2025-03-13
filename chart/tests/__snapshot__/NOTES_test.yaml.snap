@@ -1,0 +1,5 @@
+notes should match snapshot:
+  1: |
+    |
+      1. Get the application URL by running these commands:
+        http://chart-example.local/

@@ -1,0 +1,31 @@
+jobs manifest should match snapshot:
+  1: |
+    backoffLimit: 0
+    containers:
+      - args:
+          - configure-xnat.yaml
+          - --extra-vars
+          - xnat_url=http://RELEASE-NAME-xnat
+          - --extra-vars
+          - xnat_admin_password=$XNAT_ADMIN_PASSWORD
+          - --extra-vars
+          - xnat_service_admin_password=$XNAT_SERVICE_ADMIN_PASSWORD
+          - -v
+        command:
+          - ansible-playbook
+        env:
+          - name: XNAT_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: adminPassword
+                name: localdb-secret
+          - name: XNAT_SERVICE_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: serviceAdminPassword
+                name: localdb-secret
+        image: ghcr.io/ucl-mirsg/xnat-config:latest
+        name: post-install-job
+    imagePullSecrets:
+      - name: ""
+    restartPolicy: Never

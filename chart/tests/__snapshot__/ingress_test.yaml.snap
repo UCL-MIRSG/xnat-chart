@@ -1,0 +1,14 @@
+ingress manifest should match snapshot:
+  1: |
+    ingressClassName: null
+    rules:
+      - host: chart-example.local
+        http:
+          paths:
+            - backend:
+                service:
+                  name: RELEASE-NAME-xnat-headless
+                  port:
+                    number: 80
+              path: /
+              pathType: Prefix

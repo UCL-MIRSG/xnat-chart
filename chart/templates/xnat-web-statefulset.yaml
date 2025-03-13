@@ -64,10 +64,7 @@ spec:
               readOnly: true
               subPath: openid-conf.properties
           {{- end }}
-          {{- with .Values.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
-          {{- end }}
-          {{- with .Values.extraVolumeMounts }}
+          {{- with (concat .Values.volumeMounts .Values.extraVolumeMounts) }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
           command:
@@ -204,25 +201,7 @@ spec:
       {{- if .Values.web.auth.openid.enabled }}
         - name: xnat-openid-config
       {{- end }}
-      {{- range .Values.volumes }}
-        - name: {{ .name }}
-        {{- if and .persistent .existingClaim }}
-          persistentVolumeClaim:
-            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) .name }}
-        {{- else if not .persistent }}
-          {{- if or .configMap .secret }}
-          {{- range $key, $value := . }}
-            {{- if not (eq $key "name") }}
-          {{ $key }}:
-          {{- toYaml $value | nindent 12 }}
-            {{- end }}
-          {{- end }}
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
-        {{- end }}
-      {{- end }}
-      {{- range .Values.extraVolumes }}
+      {{- range (concat .Values.volumes .Values.extraVolumes) }}
         - name: {{ .name }}
         {{- if and .persistent .existingClaim }}
           persistentVolumeClaim:

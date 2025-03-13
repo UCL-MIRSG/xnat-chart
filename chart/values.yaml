@@ -272,6 +272,10 @@ web:
   ## @param web.affinity Affinity to add to the web pod
   affinity: {}
 
+  ## @param web.tomcat.catalinaOpts Override default CATALINA_OPTS
+  tomcat:
+    catalinaOpts: ""
+
   ## @param web.config.enabled Enable or disable the config
   ## @param web.config.image.pullPolicy Image pull policy
   ## @param web.config.image.name Image name

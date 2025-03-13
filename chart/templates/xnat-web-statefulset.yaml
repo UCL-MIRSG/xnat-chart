@@ -67,6 +67,9 @@ spec:
           {{- with .Values.volumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
+          {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           command:
             - /bin/sh
             - -c
@@ -202,6 +205,24 @@ spec:
         - name: xnat-openid-config
       {{- end }}
       {{- range .Values.volumes }}
+        - name: {{ .name }}
+        {{- if and .persistent .existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) .name }}
+        {{- else if not .persistent }}
+          {{- if or .configMap .secret }}
+          {{- range $key, $value := . }}
+            {{- if not (eq $key "name") }}
+          {{ $key }}:
+          {{- toYaml $value | nindent 12 }}
+            {{- end }}
+          {{- end }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- range .Values.extraVolumes }}
         - name: {{ .name }}
         {{- if and .persistent .existingClaim }}
           persistentVolumeClaim:

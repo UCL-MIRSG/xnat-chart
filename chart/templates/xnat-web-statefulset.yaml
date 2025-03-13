@@ -39,6 +39,11 @@ spec:
             {{- toYaml .Values.web.securityContext | nindent 12 }}
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.web.tomcat.catalinaOpts }}
+          env:
+            - name: CATALINA_OPTS
+              value: {{ .Values.web.tomcat.catalinaOpts | quote }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080

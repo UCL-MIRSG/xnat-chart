@@ -97,21 +97,21 @@ volumes:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
-    persistent: false
+    persistent: true
     size: 1Gi
     storageClass: # e.g. local-path for k3s default storage class
   - name: xnat-cache
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
-    persistent: false
+    persistent: true
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
   - name: xnat-home
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
-    persistent: false
+    persistent: true
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
 
@@ -168,14 +168,14 @@ extraVolumes:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
-    persistent: false
+    persistent: true
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
   - name: xnat-prearchive
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
-    persistent: false
+    persistent: true
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
 

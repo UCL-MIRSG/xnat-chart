@@ -173,21 +173,21 @@ manually create the persistent volume claims before deploying the chart.
 | `volumes[0].accessMode`          | XNAT build volume access modes                          | `ReadWriteOnce`         |
 | `volumes[0].annotations`         | XNAT build volume annotations                           | `{}`                    |
 | `volumes[0].existingClaim`       | XNAT build volume existingClaim                         | `false`                 |
-| `volumes[0].persistent`          | XNAT build volume persistent                            | `false`                 |
+| `volumes[0].persistent`          | XNAT build volume persistent                            | `true`                  |
 | `volumes[0].size`                | XNAT build volume size                                  | `1Gi`                   |
 | `volumes[0].storageClass`        | XNAT build volume storageClass                          | `nil`                   |
 | `volumes[1].name`                | XNAT cache volume name                                  | `xnat-cache`            |
 | `volumes[1].accessMode`          | XNAT cache volume access modes                          | `ReadWriteOnce`         |
 | `volumes[1].annotations`         | XNAT cache volume annotations                           | `{}`                    |
 | `volumes[1].existingClaim`       | XNAT cache volume existingClaim                         | `false`                 |
-| `volumes[1].persistent`          | XNAT cache volume persistent                            | `false`                 |
+| `volumes[1].persistent`          | XNAT cache volume persistent                            | `true`                  |
 | `volumes[1].size`                | XNAT cache volume size                                  | `10Gi`                  |
 | `volumes[1].storageClass`        | XNAT cache volume storageClass                          | `nil`                   |
 | `volumes[2].name`                | XNAT home volume name                                   | `xnat-home`             |
 | `volumes[2].accessMode`          | XNAT home volume access modes                           | `ReadWriteOnce`         |
 | `volumes[2].annotations`         | XNAT home volume annotations                            | `{}`                    |
 | `volumes[2].existingClaim`       | XNAT home volume existingClaim                          | `false`                 |
-| `volumes[2].persistent`          | XNAT home volume persistent                             | `false`                 |
+| `volumes[2].persistent`          | XNAT home volume persistent                             | `true`                  |
 | `volumes[2].size`                | XNAT home volume size                                   | `10Gi`                  |
 | `volumes[2].storageClass`        | XNAT home volume storageClass                           | `nil`                   |
 | `volumeMounts[0].name`           | XNAT build volume name                                  | `xnat-build`            |
@@ -203,14 +203,14 @@ manually create the persistent volume claims before deploying the chart.
 | `extraVolumes[0].accessMode`     | XNAT archive volume access modes                        | `ReadWriteOnce`         |
 | `extraVolumes[0].annotations`    | XNAT archive volume annotations                         | `{}`                    |
 | `extraVolumes[0].existingClaim`  | XNAT archive volume existingClaim                       | `false`                 |
-| `extraVolumes[0].persistent`     | XNAT archive volume persistent                          | `false`                 |
+| `extraVolumes[0].persistent`     | XNAT archive volume persistent                          | `true`                  |
 | `extraVolumes[0].size`           | XNAT archive volume size                                | `10Gi`                  |
 | `extraVolumes[0].storageClass`   | XNAT archive volume storageClass                        | `nil`                   |
 | `extraVolumes[1].name`           | XNAT prearchive volume name                             | `xnat-prearchive`       |
 | `extraVolumes[1].accessMode`     | XNAT prearchive volume access modes                     | `ReadWriteOnce`         |
 | `extraVolumes[1].annotations`    | XNAT prearchive volume annotations                      | `{}`                    |
 | `extraVolumes[1].existingClaim`  | XNAT prearchive volume existingClaim                    | `false`                 |
-| `extraVolumes[1].persistent`     | XNAT prearchive volume persistent                       | `false`                 |
+| `extraVolumes[1].persistent`     | XNAT prearchive volume persistent                       | `true`                  |
 | `extraVolumes[1].size`           | XNAT prearchive volume size                             | `10Gi`                  |
 | `extraVolumes[1].storageClass`   | XNAT prearchive volume storageClass                     | `nil`                   |
 | `extraVolumeMounts[0].name`      | XNAT archive volume name                                | `xnat-archive`          |

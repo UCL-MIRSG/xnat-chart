@@ -1,0 +1,10 @@
+templates:
+  - templates/ingress.yaml
+tests:
+  - it: ingress manifest should match snapshot
+    set:
+      web.ingress.enabled: true
+      web.ingress.className: nginx
+    asserts:
+      - matchSnapshot:
+          path: spec

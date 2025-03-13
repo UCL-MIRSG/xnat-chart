@@ -1,6 +1,6 @@
 ingress manifest should match snapshot:
   1: |
-    ingressClassName: null
+    ingressClassName: nginx
     rules:
       - host: chart-example.local
         http:

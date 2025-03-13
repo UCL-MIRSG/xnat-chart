@@ -174,7 +174,7 @@ snapshot will then be used for regression testing in future test runs.
 
 To render specific fields in the the template:
 
-```yaml .yaml
+```yaml
 templates:
   - templates/manifest.yaml # path to your template to test
 tests:

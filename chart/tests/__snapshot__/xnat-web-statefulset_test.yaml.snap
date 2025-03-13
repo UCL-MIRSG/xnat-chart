@@ -6,7 +6,7 @@ xnat-web-statefulst manifest should match snapshot:
           - -c
           - |
             /usr/local/tomcat/bin/catalina.sh run
-        image: ghcr.io/ucl-mirsg/:latest
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 1
@@ -83,7 +83,7 @@ xnat-web-statefulst manifest should match snapshot:
               secretKeyRef:
                 key: password
                 name: pg-user-secret
-        image: ghcr.io/ucl-mirsg/:latest
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
         imagePullPolicy: IfNotPresent
         name: wait-for-postgres
       - command:
@@ -113,7 +113,7 @@ xnat-web-statefulst manifest should match snapshot:
               secretKeyRef:
                 key: password
                 name: pg-user-secret
-        image: ghcr.io/ucl-mirsg/:latest
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
         imagePullPolicy: IfNotPresent
         name: xnat-datasource
         volumeMounts:
@@ -125,7 +125,7 @@ xnat-web-statefulst manifest should match snapshot:
           - |
             set -x
             echo "node.id=$HOSTNAME" > /xnat/node-conf.properties
-        image: ghcr.io/ucl-mirsg/:latest
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
         imagePullPolicy: IfNotPresent
         name: node-conf
         volumeMounts:
@@ -164,7 +164,7 @@ xnat-web-statefulst manifest should match snapshot:
               secretKeyRef:
                 key: clientSecret
                 name: openid-secret
-        image: ghcr.io/ucl-mirsg/:latest
+        image: ghcr.io/ucl-mirsg/xnat-core:latest
         imagePullPolicy: IfNotPresent
         name: openid-conf
         volumeMounts:

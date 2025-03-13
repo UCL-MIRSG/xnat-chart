@@ -126,55 +126,99 @@ The chart can be rendered using the default values with the following command:
 helm template xnat-core ./xnat-0.0.11.tgz > build/chart.yaml
 ```
 
+### Storage
+
+The default values set for `volumes` will use emptyDir volumes. This means that
+the volume shares the pod's lifetime and will be deleted when the pod is
+deleted. To persist data set `volumes.persistent` to `true` and optionally set a
+storage class with `volumes.storageClass`. For example if deploying on a local
+Kubernetes cluster with [k3d](https://k3d.io/) you can make use of the default
+storage class `local-path` to persist data to the host. Setting
+`volumes.persistent` to `true` and `volumes.storageClass` to `local-path` would
+create persistent volume claims from the `VolumeClaimTemplate` defined by the
+statefulset and dynamically provision the volumes. If you set
+`volumes.persistent` to `true` and set `volumes.existingClaim` you will need to
+manually create the persistent volume claims before deploying the chart.
+
 ## Parameters
 
 ### Common parameters
 
-| Name                         | Description                                             | Value                   |
-| ---------------------------- | ------------------------------------------------------- | ----------------------- |
-| `replicaCount`               | Number of replicas                                      | `1`                     |
-| `image.pullPolicy`           | image pull policy                                       | `IfNotPresent`          |
-| `image.pullSecret`           | Name of secret used to pull image                       | `""`                    |
-| `image.registry`             | Image registry                                          | `ghcr.io`               |
-| `image.namespace`            | Image registry namespace                                | `ucl-mirsg`             |
-| `image.name`                 | Name of the image in the registry                       | `""`                    |
-| `image.tag`                  | Image tag                                               | `latest`                |
-| `imageCredentials.enabled`   | Enable or disable image pull secret                     | `false`                 |
-| `imageCredentials.registry`  | Image registry                                          | `""`                    |
-| `imageCredentials.username`  | Image registry username                                 | `""`                    |
-| `imageCredentials.password`  | Image registry password                                 | `""`                    |
-| `imageCredentials.email`     | Image registry email                                    | `""`                    |
-| `nameOverride`               | Override name                                           | `""`                    |
-| `fullnameOverride`           | Override fullname                                       | `""`                    |
-| `serviceAccount.create`      | Specifies whether a service account should be created   | `true`                  |
-| `serviceAccount.automount`   | Automatically mount a ServiceAccount's API credentials? | `true`                  |
-| `serviceAccount.annotations` | Annotations to add to the service account               | `{}`                    |
-| `serviceAccount.name`        | The name of the service account to use.                 | `""`                    |
-| `service.port`               | Service port                                            | `80`                    |
-| `service.type`               | Service type                                            | `ClusterIP`             |
-| `service.targetPort`         | Service target port                                     | `8080`                  |
-| `persistence.storageClass`   | Persistent volume storage class                         | `nil`                   |
-| `persistence.annotations`    | Persistent volume annotations                           | `{}`                    |
-| `volumes[0].name`            | XNAT archive Volume name                                | `xnat-archive`          |
-| `volumes[0].accessModes`     | XNAT archive Volume access modes                        | `["ReadWriteOnce"]`     |
-| `volumes[0].annotations`     | XNAT archive Volume annotations                         | `{}`                    |
-| `volumes[0].existingClaim`   | XNAT archive Volume existingClaim                       | `nil`                   |
-| `volumes[0].persistent`      | XNAT archive Volume persistent                          | `true`                  |
-| `volumes[0].size`            | XNAT archive Volume size                                | `8Gi`                   |
-| `volumes[0].storageClass`    | XNAT archive Volume storageClass                        | `nil`                   |
-| `volumes[1].name`            | XNAT prearchive Volume name                             | `xnat-prearchive`       |
-| `volumes[1].accessModes`     | XNAT prearchive Volume access modes                     | `["ReadWriteOnce"]`     |
-| `volumes[1].annotations`     | XNAT prearchive Volume annotations                      | `{}`                    |
-| `volumes[1].existingClaim`   | XNAT prearchive Volume existingClaim                    | `nil`                   |
-| `volumes[1].persistent`      | XNAT prearchive Volume persistent                       | `true`                  |
-| `volumes[1].size`            | XNAT prearchive Volume size                             | `8Gi`                   |
-| `volumes[1].storageClass`    | XNAT prearchive Volume storageClass                     | `nil`                   |
-| `volumeMounts[0].name`       | XNAT node configuration Volume name                     | `xnat-archive`          |
-| `volumeMounts[0].mountPath`  | XNAT node configuration Volume mount path               | `/data/xnat/archive`    |
-| `volumeMounts[0].subPath`    | XNAT node configuration Volume sub path                 | `nil`                   |
-| `volumeMounts[1].name`       | XNAT archive Volume name                                | `xnat-prearchive`       |
-| `volumeMounts[1].mountPath`  | XNAT archive Volume mount path                          | `/data/xnat/prearchive` |
-| `volumeMounts[1].subPath`    | XNAT archive Volume sub path                            | `nil`                   |
+| Name                             | Description                                             | Value                   |
+| -------------------------------- | ------------------------------------------------------- | ----------------------- |
+| `replicaCount`                   | Number of replicas                                      | `2`                     |
+| `image.pullPolicy`               | image pull policy                                       | `IfNotPresent`          |
+| `image.pullSecret`               | Name of secret used to pull image                       | `""`                    |
+| `image.registry`                 | Image registry                                          | `ghcr.io`               |
+| `image.namespace`                | Image registry namespace                                | `ucl-mirsg`             |
+| `image.name`                     | Name of the image in the registry                       | `""`                    |
+| `image.tag`                      | Image tag                                               | `latest`                |
+| `imageCredentials.enabled`       | Enable or disable image pull secret                     | `false`                 |
+| `imageCredentials.registry`      | Image registry                                          | `""`                    |
+| `imageCredentials.username`      | Image registry username                                 | `""`                    |
+| `imageCredentials.password`      | Image registry password                                 | `""`                    |
+| `imageCredentials.email`         | Image registry email                                    | `""`                    |
+| `nameOverride`                   | Override name                                           | `""`                    |
+| `fullnameOverride`               | Override fullname                                       | `""`                    |
+| `serviceAccount.create`          | Specifies whether a service account should be created   | `true`                  |
+| `serviceAccount.automount`       | Automatically mount a ServiceAccount's API credentials? | `true`                  |
+| `serviceAccount.annotations`     | Annotations to add to the service account               | `{}`                    |
+| `serviceAccount.name`            | The name of the service account to use.                 | `""`                    |
+| `service.port`                   | Service port                                            | `80`                    |
+| `service.type`                   | Service type                                            | `ClusterIP`             |
+| `service.targetPort`             | Service target port                                     | `8080`                  |
+| `persistence.storageClass`       | Persistent volume storage class                         | `nil`                   |
+| `persistence.annotations`        | Persistent volume annotations                           | `{}`                    |
+| `volumes[0].name`                | XNAT build volume name                                  | `xnat-build`            |
+| `volumes[0].accessMode`          | XNAT build volume access modes                          | `ReadWriteOnce`         |
+| `volumes[0].annotations`         | XNAT build volume annotations                           | `{}`                    |
+| `volumes[0].existingClaim`       | XNAT build volume existingClaim                         | `false`                 |
+| `volumes[0].persistent`          | XNAT build volume persistent                            | `false`                 |
+| `volumes[0].size`                | XNAT build volume size                                  | `1Gi`                   |
+| `volumes[0].storageClass`        | XNAT build volume storageClass                          | `nil`                   |
+| `volumes[1].name`                | XNAT cache volume name                                  | `xnat-cache`            |
+| `volumes[1].accessMode`          | XNAT cache volume access modes                          | `ReadWriteOnce`         |
+| `volumes[1].annotations`         | XNAT cache volume annotations                           | `{}`                    |
+| `volumes[1].existingClaim`       | XNAT cache volume existingClaim                         | `false`                 |
+| `volumes[1].persistent`          | XNAT cache volume persistent                            | `false`                 |
+| `volumes[1].size`                | XNAT cache volume size                                  | `10Gi`                  |
+| `volumes[1].storageClass`        | XNAT cache volume storageClass                          | `nil`                   |
+| `volumes[2].name`                | XNAT home volume name                                   | `xnat-home`             |
+| `volumes[2].accessMode`          | XNAT home volume access modes                           | `ReadWriteOnce`         |
+| `volumes[2].annotations`         | XNAT home volume annotations                            | `{}`                    |
+| `volumes[2].existingClaim`       | XNAT home volume existingClaim                          | `false`                 |
+| `volumes[2].persistent`          | XNAT home volume persistent                             | `false`                 |
+| `volumes[2].size`                | XNAT home volume size                                   | `10Gi`                  |
+| `volumes[2].storageClass`        | XNAT home volume storageClass                           | `nil`                   |
+| `volumeMounts[0].name`           | XNAT build volume name                                  | `xnat-build`            |
+| `volumeMounts[0].mountPath`      | XNAT build volume mount path                            | `/data/xnat/build`      |
+| `volumeMounts[0].subPath`        | XNAT build volume sub path                              | `nil`                   |
+| `volumeMounts[1].name`           | XNAT cache volume name                                  | `xnat-cache`            |
+| `volumeMounts[1].mountPath`      | XNAT cache volume mount path                            | `/data/xnat/cache`      |
+| `volumeMounts[1].subPath`        | XNAT cache volume sub path                              | `nil`                   |
+| `volumeMounts[2].name`           | XNAT home volume name                                   | `xnat-home`             |
+| `volumeMounts[2].mountPath`      | XNAT prearchive volume mount path                       | `/data/xnat/home`       |
+| `volumeMounts[2].subPath`        | XNAT prearchive volume sub path                         | `nil`                   |
+| `extraVolumes[0].name`           | XNAT archive volume name                                | `xnat-archive`          |
+| `extraVolumes[0].accessMode`     | XNAT archive volume access modes                        | `ReadWriteOnce`         |
+| `extraVolumes[0].annotations`    | XNAT archive volume annotations                         | `{}`                    |
+| `extraVolumes[0].existingClaim`  | XNAT archive volume existingClaim                       | `false`                 |
+| `extraVolumes[0].persistent`     | XNAT archive volume persistent                          | `false`                 |
+| `extraVolumes[0].size`           | XNAT archive volume size                                | `10Gi`                  |
+| `extraVolumes[0].storageClass`   | XNAT archive volume storageClass                        | `nil`                   |
+| `extraVolumes[1].name`           | XNAT prearchive volume name                             | `xnat-prearchive`       |
+| `extraVolumes[1].accessMode`     | XNAT prearchive volume access modes                     | `ReadWriteOnce`         |
+| `extraVolumes[1].annotations`    | XNAT prearchive volume annotations                      | `{}`                    |
+| `extraVolumes[1].existingClaim`  | XNAT prearchive volume existingClaim                    | `false`                 |
+| `extraVolumes[1].persistent`     | XNAT prearchive volume persistent                       | `false`                 |
+| `extraVolumes[1].size`           | XNAT prearchive volume size                             | `10Gi`                  |
+| `extraVolumes[1].storageClass`   | XNAT prearchive volume storageClass                     | `nil`                   |
+| `extraVolumeMounts[0].name`      | XNAT archive volume name                                | `xnat-archive`          |
+| `extraVolumeMounts[0].mountPath` | XNAT archive volume mount path                          | `/data/xnat/archive`    |
+| `extraVolumeMounts[0].subPath`   | XNAT archive volume sub path                            | `nil`                   |
+| `extraVolumeMounts[1].name`      | XNAT prearchive volume name                             | `xnat-prearchive`       |
+| `extraVolumeMounts[1].mountPath` | XNAT prearchive volume mount path                       | `/data/xnat/prearchive` |
+| `extraVolumeMounts[1].subPath`   | XNAT prearchive volume sub path                         | `nil`                   |
 
 ### XNAT Web parameters
 
@@ -200,9 +244,9 @@ helm template xnat-core ./xnat-0.0.11.tgz > build/chart.yaml
 | `web.ingress.hosts[0].paths[0].pathType`                  | Ingress path type                                          | `ImplementationSpecific`                                    |
 | `web.ingress.tls`                                         | Ingress TLS                                                | `[]`                                                        |
 | `web.resources.limits.cpu`                                | CPU and memory limits                                      | `2`                                                         |
-| `web.resources.limits.memory`                             | Memory limits                                              | `4000Mi`                                                    |
+| `web.resources.limits.memory`                             | Memory limits                                              | `6000Mi`                                                    |
 | `web.resources.requests.cpu`                              | CPU and memory requests                                    | `1`                                                         |
-| `web.resources.requests.memory`                           | Memory requests                                            | `4000Mi`                                                    |
+| `web.resources.requests.memory`                           | Memory requests                                            | `6000Mi`                                                    |
 | `web.livenessProbe.failureThreshold`                      | Liveness probe failure threshold                           | `1`                                                         |
 | `web.livenessProbe.httpGet.path`                          | Liveness probe httpGet path                                | `/app/template/Login.vm#!`                                  |
 | `web.livenessProbe.httpGet.port`                          | Liveness probe httpGet port                                | `http`                                                      |
@@ -234,7 +278,7 @@ helm template xnat-core ./xnat-0.0.11.tgz > build/chart.yaml
 | `postgresql.enabled`                                      | Whether to deploy a PostgreSQL cluster                     | `true`                                                      |
 | `postgresql.backups.enabled`                              | Whether to enable database backups                         | `false`                                                     |
 | `postgresql.cluster.imageName`                            | Name of the PostgreSQL container image                     | `ghcr.io/cloudnative-pg/postgresql:14.17-standard-bookworm` |
-| `postgresql.cluster.instances`                            | Number of PostgreSQL instances                             | `3`                                                         |
+| `postgresql.cluster.instances`                            | Number of PostgreSQL instances                             | `1`                                                         |
 | `postgresql.cluster.postgresql.parameters.shared_buffers` | Amount of memory used for shared buffers                   | `512MB`                                                     |
 | `postgresql.cluster.resources.requests.cpu`               | CPU request                                                | `1`                                                         |
 | `postgresql.cluster.resources.requests.memory`            | Memory request                                             | `2Gi`                                                       |

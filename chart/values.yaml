@@ -5,7 +5,7 @@
 ## @section Common parameters
 
 ## @param replicaCount Number of replicas
-replicaCount: 1
+replicaCount: 2
 
 ## @param image.pullPolicy image pull policy
 ## @param image.pullSecret Name of secret used to pull image
@@ -71,45 +71,127 @@ persistence:
   storageClass:
   annotations: {}
 
-## @param volumes[0].name XNAT archive Volume name
-## @param volumes[0].accessModes XNAT archive Volume access modes
-## @param volumes[0].annotations XNAT archive Volume annotations
-## @param volumes[0].existingClaim XNAT archive Volume existingClaim
-## @param volumes[0].persistent XNAT archive Volume persistent
-## @param volumes[0].size XNAT archive Volume size
-## @param volumes[0].storageClass XNAT archive Volume storageClass
-## @param volumes[1].name XNAT prearchive Volume name
-## @param volumes[1].accessModes XNAT prearchive Volume access modes
-## @param volumes[1].annotations XNAT prearchive Volume annotations
-## @param volumes[1].existingClaim XNAT prearchive Volume existingClaim
-## @param volumes[1].persistent XNAT prearchive Volume persistent
-## @param volumes[1].size XNAT prearchive Volume size
-## @param volumes[1].storageClass XNAT prearchive Volume storageClass
+## @param volumes[0].name XNAT build volume name
+## @param volumes[0].accessMode XNAT build volume access modes
+## @param volumes[0].annotations XNAT build volume annotations
+## @param volumes[0].existingClaim XNAT build volume existingClaim
+## @param volumes[0].persistent XNAT build volume persistent
+## @param volumes[0].size XNAT build volume size
+## @param volumes[0].storageClass XNAT build volume storageClass
+## @param volumes[1].name XNAT cache volume name
+## @param volumes[1].accessMode XNAT cache volume access modes
+## @param volumes[1].annotations XNAT cache volume annotations
+## @param volumes[1].existingClaim XNAT cache volume existingClaim
+## @param volumes[1].persistent XNAT cache volume persistent
+## @param volumes[1].size XNAT cache volume size
+## @param volumes[1].storageClass XNAT cache volume storageClass
+## @param volumes[2].name XNAT home volume name
+## @param volumes[2].accessMode XNAT home volume access modes
+## @param volumes[2].annotations XNAT home volume annotations
+## @param volumes[2].existingClaim XNAT home volume existingClaim
+## @param volumes[2].persistent XNAT home volume persistent
+## @param volumes[2].size XNAT home volume size
+## @param volumes[2].storageClass XNAT home volume storageClass
 volumes:
-  - name: xnat-archive
-    accessModes:
-      - ReadWriteOnce
+  - name: xnat-build
+    accessMode: ReadWriteOnce
     annotations: {}
-    existingClaim:
-    persistent: true
-    size: 8Gi
-    storageClass:
-  - name: xnat-prearchive
-    accessModes:
-      - ReadWriteOnce
+    existingClaim: false
+    persistent: false
+    size: 1Gi
+    storageClass: # e.g. local-path for k3s default storage class
+  - name: xnat-cache
+    accessMode: ReadWriteOnce
     annotations: {}
-    existingClaim:
-    persistent: true
-    size: 8Gi
-    storageClass:
+    existingClaim: false
+    persistent: false
+    size: 10Gi
+    storageClass: # e.g. local-path for k3s default storage class
+  - name: xnat-home
+    accessMode: ReadWriteOnce
+    annotations: {}
+    existingClaim: false
+    persistent: false
+    size: 10Gi
+    storageClass: # e.g. local-path for k3s default storage class
 
-## @param volumeMounts[0].name XNAT node configuration Volume name
-## @param volumeMounts[0].mountPath XNAT node configuration Volume mount path
-## @param volumeMounts[0].subPath XNAT node configuration Volume sub path
-## @param volumeMounts[1].name XNAT archive Volume name
-## @param volumeMounts[1].mountPath XNAT archive Volume mount path
-## @param volumeMounts[1].subPath XNAT archive Volume sub path
+## @param volumeMounts[0].name XNAT build volume name
+## @param volumeMounts[0].mountPath XNAT build volume mount path
+## @param volumeMounts[0].subPath XNAT build volume sub path
+## @param volumeMounts[1].name XNAT cache volume name
+## @param volumeMounts[1].mountPath XNAT cache volume mount path
+## @param volumeMounts[1].subPath XNAT cache volume sub path
+## @param volumeMounts[2].name XNAT home volume name
+## @param volumeMounts[2].mountPath XNAT prearchive volume mount path
+## @param volumeMounts[2].subPath XNAT prearchive volume sub path
 volumeMounts:
+  - name: xnat-build
+    mountPath: /data/xnat/build
+    subPath:
+  - name: xnat-cache
+    mountPath: /data/xnat/cache
+    subPath:
+  - name: xnat-home
+    mountPath: /data/xnat/home
+    subPath:
+
+## @param extraVolumes[0].name XNAT archive volume name
+## @param extraVolumes[0].accessMode XNAT archive volume access modes
+## @param extraVolumes[0].annotations XNAT archive volume annotations
+## @param extraVolumes[0].existingClaim XNAT archive volume existingClaim
+## @param extraVolumes[0].persistent XNAT archive volume persistent
+## @param extraVolumes[0].size XNAT archive volume size
+## @param extraVolumes[0].storageClass XNAT archive volume storageClass
+## @param extraVolumes[1].name XNAT prearchive volume name
+## @param extraVolumes[1].accessMode XNAT prearchive volume access modes
+## @param extraVolumes[1].annotations XNAT prearchive volume annotations
+## @param extraVolumes[1].existingClaim XNAT prearchive volume existingClaim
+## @param extraVolumes[1].persistent XNAT prearchive volume persistent
+## @param extraVolumes[1].size XNAT prearchive volume size
+## @param extraVolumes[1].storageClass XNAT prearchive volume storageClass
+extraVolumes:
+  # - name: xnat-archive-project01
+  #   accessMode: ReadWriteMany
+  #   annotations: {}
+  #   existingClaim: true
+  #   persistent: true
+  #   size: 8Gi
+  #   storageClass: smb
+  # - name: xnat-prearchive-project01
+  #   accessMode: ReadWriteMany
+  #   annotations: {}
+  #   existingClaim: true
+  #   persistent: true
+  #   size: 8Gi
+  #   storageClass: smb
+  - name: xnat-archive
+    accessMode: ReadWriteOnce
+    annotations: {}
+    existingClaim: false
+    persistent: false
+    size: 10Gi
+    storageClass: # e.g. local-path for k3s default storage class
+  - name: xnat-prearchive
+    accessMode: ReadWriteOnce
+    annotations: {}
+    existingClaim: false
+    persistent: false
+    size: 10Gi
+    storageClass: # e.g. local-path for k3s default storage class
+
+## @param extraVolumeMounts[0].name XNAT archive volume name
+## @param extraVolumeMounts[0].mountPath XNAT archive volume mount path
+## @param extraVolumeMounts[0].subPath XNAT archive volume sub path
+## @param extraVolumeMounts[1].name XNAT prearchive volume name
+## @param extraVolumeMounts[1].mountPath XNAT prearchive volume mount path
+## @param extraVolumeMounts[1].subPath XNAT prearchive volume sub path
+extraVolumeMounts:
+  # - name: xnat-archive-project01
+  #   mountPath: /data/xnat/archive/project01
+  #   subPath:
+  # - name: xnat-prearchive-project01
+  #   mountPath: /data/xnat/prearchive/project01
+  #   subPath:
   - name: xnat-archive
     mountPath: /data/xnat/archive
     subPath:
@@ -192,10 +274,10 @@ web:
   resources:
     limits:
       cpu: 2
-      memory: 4000Mi
+      memory: 6000Mi
     requests:
       cpu: 1
-      memory: 4000Mi
+      memory: 6000Mi
 
   ## @param web.livenessProbe.failureThreshold Liveness probe failure threshold
   ## @param web.livenessProbe.httpGet.path Liveness probe httpGet path
@@ -292,7 +374,7 @@ postgresql:
     enabled: false
   cluster:
     imageName: ghcr.io/cloudnative-pg/postgresql:14.17-standard-bookworm
-    instances: 3
+    instances: 1
     postgresql:
       parameters:
         shared_buffers: "512MB"

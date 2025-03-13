@@ -126,6 +126,84 @@ The chart can be rendered using the default values with the following command:
 helm template xnat-core ./xnat-0.0.12.tgz > build/chart.yaml
 ```
 
+## Unit tests
+
+We are using the
+[Helm Unittest plugin](https://github.com/helm-unittest/helm-unittest) for
+regression testing the chart templates.
+
+### Running the tests
+
+You can use the Helm Unittest
+[docker image](https://hub.docker.com/r/helmunittest/helm-unittest/) to run the
+tests.
+
+From the top-level directory of this repo:
+
+```bash
+docker run -it --rm -v "$(pwd)/chart":/apps/chart helmunittest/helm-unittest /apps/chart
+```
+
+This will run all the tests in the [`charts/tests`](./chart/tests/) folder,
+comparing the rendered templates to those in
+[`charts/tests/__shapshot__`](./chart/tests/__snapshot__/).
+
+### Adding a new test
+
+To add a new test, add a YAML file to the[`charts/tests`](./chart/tests/)
+directory. The filename must end in `_test.yaml`, e.g. `manifest_test.yaml`.
+
+#### Rendering the whole template
+
+To render the entire template:
+
+```yaml
+templates:
+  - templates/manifest.yaml # path to your template to test
+tests:
+  - it: manifest should match snapshot
+    asserts:
+      - matchSnapshot: {} # render and compare all fields in the template
+```
+
+The first time you run the test, the template will be rendered and stored in the
+[`charts/test/__snapshot__`](./chart/tests/__snapshot__/) directory. This
+snapshot will then be used for regression testing in future test runs.
+
+#### Rendering specific fields
+
+To render specific fields in the the template:
+
+```yaml .yaml
+templates:
+  - templates/manifest.yaml # path to your template to test
+tests:
+  - it: manifest should match snapshot
+    asserts:
+      - matchSnapshot:
+          path: spec.template.spec # path to a field you would like rendered in the snapshot
+      - matchSnapshot:
+          path: spec.volumeClaimTemplates # path to another field you would like rendered in the snapshot
+```
+
+This is useful if other parts of the template contain information that will
+change often, e.g. the release version of this chart.
+
+#### Set template values
+
+To set values when rendering the template:
+
+```yaml
+templates:
+  - templates/manifest.yaml # path to your template to test
+tests:
+  - it: manifest should match snapshot
+    set:
+      web.config.enabled: true # override a default chart value
+    asserts:
+      - matchSnapshot: {}
+```
+
 ## Parameters
 
 ### Common parameters

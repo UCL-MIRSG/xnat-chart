@@ -204,6 +204,14 @@ tests:
       - matchSnapshot: {}
 ```
 
+#### Updating snapshots
+
+To update the snapshots, run the tests with the `-u` flag:
+
+```bash
+docker run -it --rm -v "$(pwd)/chart":/apps/chart helmunittest/helm-unittest:3.11.1-0.3.0 /apps/chart -u
+```
+
 ## Parameters
 
 ### Common parameters

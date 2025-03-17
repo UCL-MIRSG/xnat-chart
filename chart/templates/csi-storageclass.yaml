@@ -8,9 +8,9 @@ provisioner: {{ $prop.provisioner }}
 parameters:
   source: {{ $prop.source }}
   csi.storage.k8s.io/provisioner-secret-name: {{ $prop.provisionerSecretName }}
-  csi.storage.k8s.io/provisioner-secret-namespace: {{ $prop.provisionerSecretNamespace }}
+  csi.storage.k8s.io/provisioner-secret-namespace: {{ $.Release.Namespace }}
   csi.storage.k8s.io/node-stage-secret-name: {{ $prop.nodeStageSecretName }}
-  csi.storage.k8s.io/node-stage-secret-namespace: {{ $prop.nodeStageSecretNamespace }}
+  csi.storage.k8s.io/node-stage-secret-namespace: {{ $.Release.Namespace }}
 reclaimPolicy: Delete # available values: Delete, Retain
 volumeBindingMode: Immediate
 allowVolumeExpansion: true

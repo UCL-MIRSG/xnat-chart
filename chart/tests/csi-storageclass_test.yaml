@@ -7,8 +7,6 @@ tests:
       csiStorageClasses.smb.provisioner: smb.csi.k8s.io
       csiStorageClasses.smb.source: //server/share
       csiStorageClasses.smb.provisionerSecretName: smbcreds
-      csiStorageClasses.smb.provisionerSecretNamespace: smb
       csiStorageClasses.smb.nodeStageSecretName: smbcreds
-      csiStorageClasses.smb.nodeStageSecretNamespace: smb
     asserts:
       - matchSnapshot: {}

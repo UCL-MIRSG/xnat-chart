@@ -57,14 +57,22 @@ spec:
           startupProbe:
             {{- toYaml .Values.web.startupProbe | nindent 12 }}
           volumeMounts:
+            - name: node-conf
+              mountPath: /data/xnat/home/config/node-conf.properties
+              subPath: node-conf.properties
+            - name: xnat-config
+              mountPath: /data/xnat/home/config/xnat-conf.properties
+              subPath: xnat-conf.properties
           {{- if .Values.web.auth.openid.enabled }}
             - name: xnat-openid-config
               mountPath: /data/xnat/home/config/auth/openid-conf.properties
               readOnly: true
               subPath: openid-conf.properties
           {{- end }}
-          {{- with .Values.volumeMounts }}
-            {{- toYaml . | nindent 12 }}
+          {{- range $name, $prop := (merge .Values.volumeMounts .Values.extraVolumeMounts) }}
+            - name: {{ $name }}
+              mountPath: {{ $prop.mountPath }}
+              subPath: {{ $prop.subPath }}
           {{- end }}
           command:
             - /bin/sh
@@ -195,19 +203,19 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        - name: node-conf
+        - name: xnat-config
       {{- if .Values.web.auth.openid.enabled }}
         - name: xnat-openid-config
       {{- end }}
-      {{- range .Values.volumes }}
-        - name: {{ .name }}
-        {{- if and .persistent .existingClaim }}
+      {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
+        - name: {{ $name }}
+        {{- if and $prop.persistent $prop.existingClaim }}
           persistentVolumeClaim:
-          {{- with .existingClaim }}
-            claimName: {{ tpl . $ }}
-          {{- end }}
-        {{- else if not .persistent }}
+            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) $name }}
+        {{- else if not $prop.persistent }}
           {{- if or .configMap .secret }}
-          {{- range $key, $value := . }}
+          {{- range $key, $value := $prop }}
             {{- if not (eq $key "name") }}
           {{ $key }}:
           {{- toYaml $value | nindent 12 }}
@@ -219,29 +227,26 @@ spec:
         {{- end }}
       {{- end }}
   volumeClaimTemplates:
-  {{- range .Values.volumes }}
-    {{- if and .persistent (not .existingClaim) }}
+  {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
+  {{- if and $prop.persistent (not $prop.existingClaim) }}
     - metadata:
-        name: {{ .name }}
-      {{- with .annotations }}
+        name: {{ $name }}
+      {{- with $prop.annotations }}
         annotations:
         {{- range $key, $value := . }}
           {{ $key }}: {{ $value }}
         {{- end }}
       {{- end }}
       spec:
-        accessModes:
-        {{- range .accessModes }}
-          - {{ . }}
-        {{- end }}
+        accessModes: [ {{ $prop.accessMode | quote }} ]
         resources:
           requests:
-            storage: {{ .size | quote }}
-      {{- if .storageClass }}
-        {{- if (eq "-" .storageClass) }}
+            storage: {{ $prop.size | quote }}
+      {{- if $prop.storageClass }}
+        {{- if (eq "-" $prop.storageClass) }}
         storageClassName: ""
         {{- else }}
-        storageClassName: "{{ .storageClass }}"
+        storageClassName: "{{ $prop.storageClass }}"
         {{- end }}
       {{- end }}
     {{- end }}

@@ -212,7 +212,7 @@ To update the snapshots, run the tests with the `-u` flag:
 docker run -it --rm -v "$(pwd)/chart":/apps/chart helmunittest/helm-unittest:3.11.1-0.3.0 /apps/chart -u
 ```
 
-### Storage
+## Storage
 
 The default values set for `volumes` will use emptyDir volumes. This means that
 the volume shares the pod's lifetime and will be deleted when the pod is

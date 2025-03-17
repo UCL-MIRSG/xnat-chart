@@ -1,0 +1,14 @@
+templates:
+  - templates/csi-storageclass.yaml
+
+tests:
+  - it: csi-storageclass manifest should match snapshot
+    set:
+      csiStorageClasses.smb.provisioner: smb.csi.k8s.io
+      csiStorageClasses.smb.source: //server/share
+      csiStorageClasses.smb.provisionerSecretName: smbcreds
+      csiStorageClasses.smb.provisionerSecretNamespace: smb
+      csiStorageClasses.smb.nodeStageSecretName: smbcreds
+      csiStorageClasses.smb.nodeStageSecretNamespace: smb
+    asserts:
+      - matchSnapshot: {}

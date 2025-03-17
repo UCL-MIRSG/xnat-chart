@@ -293,6 +293,7 @@ manually create the persistent volume claims before deploying the chart.
 | `extraVolumeMounts.xnat-archive.subPath`      | XNAT archive volume sub path                            | `nil`                   |
 | `extraVolumeMounts.xnat-prearchive.mountPath` | XNAT prearchive volume mount path                       | `/data/xnat/prearchive` |
 | `extraVolumeMounts.xnat-prearchive.subPath`   | XNAT prearchive volume sub path                         | `nil`                   |
+| `csiStorageClasses`                           | StorageClass for CSI driver                             | `{}`                    |
 
 ### XNAT Web parameters
 

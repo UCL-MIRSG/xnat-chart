@@ -1,0 +1,21 @@
+{{- if .Values.csiStorageClasses -}}
+{{- range $name, $prop := .Values.csiStorageClasses }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ $name }}
+provisioner: {{ $prop.provisioner }}
+parameters:
+  source: {{ $prop.source }}
+  csi.storage.k8s.io/provisioner-secret-name: {{ $prop.provisionerSecretName }}
+  csi.storage.k8s.io/provisioner-secret-namespace: {{ $prop.provisionerSecretNamespace }}
+  csi.storage.k8s.io/node-stage-secret-name: {{ $prop.nodeStageSecretName }}
+  csi.storage.k8s.io/node-stage-secret-namespace: {{ $prop.nodeStageSecretNamespace }}
+reclaimPolicy: Delete # available values: Delete, Retain
+volumeBindingMode: Immediate
+allowVolumeExpansion: true
+mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+{{- end }}
+{{- end }}

@@ -62,8 +62,11 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /data/xnat/cache
             name: xnat-cache
             subPath: null
-          - mountPath: /data/xnat/home
-            name: xnat-home
+          - mountPath: /data/xnat/home/logs
+            name: xnat-home-logs
+            subPath: null
+          - mountPath: /data/xnat/home/work
+            name: xnat-home-work
             subPath: null
           - mountPath: /data/xnat/prearchive
             name: xnat-prearchive
@@ -189,7 +192,8 @@ xnat-web-statefulst manifest should match snapshot:
       - name: xnat-archive
       - name: xnat-build
       - name: xnat-cache
-      - name: xnat-home
+      - name: xnat-home-logs
+      - name: xnat-home-work
       - name: xnat-prearchive
   2: |
     - metadata:
@@ -217,7 +221,15 @@ xnat-web-statefulst manifest should match snapshot:
           requests:
             storage: 10Gi
     - metadata:
-        name: xnat-home
+        name: xnat-home-logs
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: xnat-home-work
       spec:
         accessModes:
           - ReadWriteOnce

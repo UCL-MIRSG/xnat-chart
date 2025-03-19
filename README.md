@@ -232,7 +232,7 @@ manually create the persistent volume claims before deploying the chart.
 
 | Name                                          | Description                                             | Value                   |
 | --------------------------------------------- | ------------------------------------------------------- | ----------------------- |
-| `replicaCount`                                | Number of replicas                                      | `2`                     |
+| `replicaCount`                                | Number of replicas                                      | `1`                     |
 | `image.pullPolicy`                            | image pull policy                                       | `IfNotPresent`          |
 | `image.pullSecret`                            | Name of secret used to pull image                       | `""`                    |
 | `image.registry`                              | Image registry                                          | `ghcr.io`               |
@@ -265,18 +265,26 @@ manually create the persistent volume claims before deploying the chart.
 | `volumes.xnat-cache.persistent`               | XNAT cache volume persistent                            | `true`                  |
 | `volumes.xnat-cache.size`                     | XNAT cache volume size                                  | `10Gi`                  |
 | `volumes.xnat-cache.storageClass`             | XNAT cache volume storageClass                          | `nil`                   |
-| `volumes.xnat-home.accessMode`                | XNAT home volume access modes                           | `ReadWriteOnce`         |
-| `volumes.xnat-home.annotations`               | XNAT home volume annotations                            | `{}`                    |
-| `volumes.xnat-home.existingClaim`             | XNAT home volume existingClaim                          | `false`                 |
-| `volumes.xnat-home.persistent`                | XNAT home volume persistent                             | `true`                  |
-| `volumes.xnat-home.size`                      | XNAT home volume size                                   | `10Gi`                  |
-| `volumes.xnat-home.storageClass`              | XNAT home volume storageClass                           | `nil`                   |
+| `volumes.xnat-home-logs.accessMode`           | XNAT logs volume access modes                           | `ReadWriteOnce`         |
+| `volumes.xnat-home-logs.annotations`          | XNAT logs volume annotations                            | `{}`                    |
+| `volumes.xnat-home-logs.existingClaim`        | XNAT logs volume existingClaim                          | `false`                 |
+| `volumes.xnat-home-logs.persistent`           | XNAT logs volume persistent                             | `true`                  |
+| `volumes.xnat-home-logs.size`                 | XNAT logs volume size                                   | `10Gi`                  |
+| `volumes.xnat-home-logs.storageClass`         | XNAT logs volume storageClass                           | `nil`                   |
+| `volumes.xnat-home-work.accessMode`           | XNAT work volume access modes                           | `ReadWriteOnce`         |
+| `volumes.xnat-home-work.annotations`          | XNAT work volume annotations                            | `{}`                    |
+| `volumes.xnat-home-work.existingClaim`        | XNAT work volume existingClaim                          | `false`                 |
+| `volumes.xnat-home-work.persistent`           | XNAT work volume persistent                             | `true`                  |
+| `volumes.xnat-home-work.size`                 | XNAT work volume size                                   | `10Gi`                  |
+| `volumes.xnat-home-work.storageClass`         | XNAT work volume storageClass                           | `nil`                   |
 | `volumeMounts.xnat-build.mountPath`           | XNAT build volume mount path                            | `/data/xnat/build`      |
 | `volumeMounts.xnat-build.subPath`             | XNAT build volume sub path                              | `nil`                   |
 | `volumeMounts.xnat-cache.mountPath`           | XNAT cache volume mount path                            | `/data/xnat/cache`      |
 | `volumeMounts.xnat-cache.subPath`             | XNAT cache volume sub path                              | `nil`                   |
-| `volumeMounts.xnat-home.mountPath`            | XNAT home volume mount path                             | `/data/xnat/home`       |
-| `volumeMounts.xnat-home.subPath`              | XNAT home volume sub path                               | `nil`                   |
+| `volumeMounts.xnat-home-logs.mountPath`       | XNAT home logs volume mount path                        | `/data/xnat/home/logs`  |
+| `volumeMounts.xnat-home-logs.subPath`         | XNAT home logs volume sub path                          | `nil`                   |
+| `volumeMounts.xnat-home-work.mountPath`       | XNAT home work volume mount path                        | `/data/xnat/home/work`  |
+| `volumeMounts.xnat-home-work.subPath`         | XNAT home work volume sub path                          | `nil`                   |
 | `extraVolumes.xnat-archive.accessMode`        | XNAT archive volume access modes                        | `ReadWriteOnce`         |
 | `extraVolumes.xnat-archive.annotations`       | XNAT archive volume annotations                         | `{}`                    |
 | `extraVolumes.xnat-archive.existingClaim`     | XNAT archive volume existingClaim                       | `false`                 |

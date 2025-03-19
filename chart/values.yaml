@@ -5,7 +5,7 @@
 ## @section Common parameters
 
 ## @param replicaCount Number of replicas
-replicaCount: 2
+replicaCount: 1
 
 ## @param image.pullPolicy image pull policy
 ## @param image.pullSecret Name of secret used to pull image
@@ -76,12 +76,18 @@ service:
 ## @param volumes.xnat-cache.persistent XNAT cache volume persistent
 ## @param volumes.xnat-cache.size XNAT cache volume size
 ## @param volumes.xnat-cache.storageClass XNAT cache volume storageClass
-## @param volumes.xnat-home.accessMode XNAT home volume access modes
-## @param volumes.xnat-home.annotations XNAT home volume annotations
-## @param volumes.xnat-home.existingClaim XNAT home volume existingClaim
-## @param volumes.xnat-home.persistent XNAT home volume persistent
-## @param volumes.xnat-home.size XNAT home volume size
-## @param volumes.xnat-home.storageClass XNAT home volume storageClass
+## @param volumes.xnat-home-logs.accessMode XNAT logs volume access modes
+## @param volumes.xnat-home-logs.annotations XNAT logs volume annotations
+## @param volumes.xnat-home-logs.existingClaim XNAT logs volume existingClaim
+## @param volumes.xnat-home-logs.persistent XNAT logs volume persistent
+## @param volumes.xnat-home-logs.size XNAT logs volume size
+## @param volumes.xnat-home-logs.storageClass XNAT logs volume storageClass
+## @param volumes.xnat-home-work.accessMode XNAT work volume access modes
+## @param volumes.xnat-home-work.annotations XNAT work volume annotations
+## @param volumes.xnat-home-work.existingClaim XNAT work volume existingClaim
+## @param volumes.xnat-home-work.persistent XNAT work volume persistent
+## @param volumes.xnat-home-work.size XNAT work volume size
+## @param volumes.xnat-home-work.storageClass XNAT work volume storageClass
 volumes:
   xnat-build:
     accessMode: ReadWriteOnce
@@ -97,7 +103,14 @@ volumes:
     persistent: true
     size: 10Gi
     storageClass: # e.g. local-path for k3s default storage class
-  xnat-home:
+  xnat-home-logs:
+    accessMode: ReadWriteOnce
+    annotations: {}
+    existingClaim: false
+    persistent: true
+    size: 10Gi
+    storageClass: # e.g. local-path for k3s default storage class
+  xnat-home-work:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
@@ -109,8 +122,10 @@ volumes:
 ## @param volumeMounts.xnat-build.subPath XNAT build volume sub path
 ## @param volumeMounts.xnat-cache.mountPath XNAT cache volume mount path
 ## @param volumeMounts.xnat-cache.subPath XNAT cache volume sub path
-## @param volumeMounts.xnat-home.mountPath XNAT home volume mount path
-## @param volumeMounts.xnat-home.subPath XNAT home volume sub path
+## @param volumeMounts.xnat-home-logs.mountPath XNAT home logs volume mount path
+## @param volumeMounts.xnat-home-logs.subPath XNAT home logs volume sub path
+## @param volumeMounts.xnat-home-work.mountPath XNAT home work volume mount path
+## @param volumeMounts.xnat-home-work.subPath XNAT home work volume sub path
 volumeMounts:
   xnat-build:
     mountPath: /data/xnat/build
@@ -118,8 +133,11 @@ volumeMounts:
   xnat-cache:
     mountPath: /data/xnat/cache
     subPath:
-  xnat-home:
-    mountPath: /data/xnat/home
+  xnat-home-logs:
+    mountPath: /data/xnat/home/logs
+    subPath:
+  xnat-home-work:
+    mountPath: /data/xnat/home/work
     subPath:
 
 ## @param extraVolumes.xnat-archive.accessMode XNAT archive volume access modes

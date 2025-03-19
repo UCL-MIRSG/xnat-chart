@@ -182,6 +182,16 @@ extraVolumeMounts:
     mountPath: /data/xnat/prearchive
     subPath:
 
+## @param csiStorageClasses StorageClass for CSI driver
+csiStorageClasses: {}
+  # smb-shared: # use storageclass name as key
+  #   provisioner: "" # e.g.smb.csi.k8s.io
+  #   source: "" # format //<server>/<share>
+  #   provisionerSecretName: ""
+  #   provisionerSecretNamespace: ""
+  #   nodeStageSecretName: ""
+  #   nodeStageSecretNamespace: ""
+
 ## @section XNAT Web parameters
 web:
   ## @param web.siteUrl Site URL

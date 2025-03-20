@@ -45,9 +45,9 @@ spec:
           - --extra-vars
           - xnat_url=http://{{ include "xnat.fullname" . }}
           - --extra-vars
-          - xnat_admin_password=$XNAT_ADMIN_PASSWORD
+          - xnat_admin_password="$(XNAT_ADMIN_PASSWORD)"
           - --extra-vars
-          - xnat_service_admin_password=$XNAT_SERVICE_ADMIN_PASSWORD
+          - xnat_service_admin_password="$(XNAT_SERVICE_ADMIN_PASSWORD)"
           {{- if .Values.web.auth.openid.enabled }}
           - --extra-vars
           - '{"xnat_enabled_providers": ["localdb", {{ .Values.web.auth.openid.provider | quote }}]}'

@@ -62,8 +62,11 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /data/xnat/cache
             name: xnat-cache
             subPath: null
-          - mountPath: /data/xnat/home
-            name: xnat-home
+          - mountPath: /data/xnat/home/logs
+            name: xnat-home-logs
+            subPath: null
+          - mountPath: /data/xnat/home/work
+            name: xnat-home-work
             subPath: null
           - mountPath: /data/xnat/prearchive
             name: xnat-prearchive
@@ -103,8 +106,8 @@ xnat-web-statefulst manifest should match snapshot:
             cat <<EOF > /xnat/xnat-conf.properties
             datasource.driver=org.postgresql.Driver
             datasource.url=jdbc:postgresql://RELEASE-NAME-postgresql-rw/xnat
-            datasource.username=$XNAT_DATASOURCE_USERNAME
-            datasource.password=$XNAT_DATASOURCE_PASSWORD
+            datasource.username=$(XNAT_DATASOURCE_USERNAME)
+            datasource.password=$(XNAT_DATASOURCE_PASSWORD)
             hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
             hibernate.hbm2ddl.auto=update
             hibernate.show_sql=false
@@ -152,8 +155,8 @@ xnat-web-statefulst manifest should match snapshot:
             auto.enabled=false
             auto.verified=false
             siteUrl=
-            openid.openid1.clientId=$OPENID_CLIENT_ID
-            openid.openid1.clientSecret=$OPENID_CLIENT_SECRET
+            openid.openid1.clientId=$(OPENID_CLIENT_ID)
+            openid.openid1.clientSecret=$(OPENID_CLIENT_SECRET)
             openid.openid1.accessTokenUri=
             openid.openid1.userAuthUri=
             openid.openid1.link=<a href="/openid-login?providerId=openid1"></a>
@@ -189,7 +192,8 @@ xnat-web-statefulst manifest should match snapshot:
       - name: xnat-archive
       - name: xnat-build
       - name: xnat-cache
-      - name: xnat-home
+      - name: xnat-home-logs
+      - name: xnat-home-work
       - name: xnat-prearchive
   2: |
     - metadata:
@@ -217,7 +221,15 @@ xnat-web-statefulst manifest should match snapshot:
           requests:
             storage: 10Gi
     - metadata:
-        name: xnat-home
+        name: xnat-home-logs
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: xnat-home-work
       spec:
         accessModes:
           - ReadWriteOnce

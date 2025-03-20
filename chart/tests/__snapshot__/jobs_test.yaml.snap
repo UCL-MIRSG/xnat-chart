@@ -7,9 +7,9 @@ jobs manifest should match snapshot:
           - --extra-vars
           - xnat_url=http://RELEASE-NAME-xnat
           - --extra-vars
-          - xnat_admin_password=$XNAT_ADMIN_PASSWORD
+          - xnat_admin_password="$(XNAT_ADMIN_PASSWORD)"
           - --extra-vars
-          - xnat_service_admin_password=$XNAT_SERVICE_ADMIN_PASSWORD
+          - xnat_service_admin_password="$(XNAT_SERVICE_ADMIN_PASSWORD)"
           - -v
         command:
           - ansible-playbook

@@ -94,6 +94,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgresql.cluster.initdb.secret.name }}
                   key: password
+            - name: PGDATABASE
+              value: {{ .Values.postgresql.cluster.initdb.database }}
           command:
             - 'bash'
             - '-c'

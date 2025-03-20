@@ -95,6 +95,8 @@ xnat-web-statefulst manifest should match snapshot:
               secretKeyRef:
                 key: password
                 name: pg-user-secret
+          - name: PGDATABASE
+            value: xnat
         image: ghcr.io/ucl-mirsg/xnat-core:latest
         imagePullPolicy: IfNotPresent
         name: wait-for-postgres

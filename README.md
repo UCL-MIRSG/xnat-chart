@@ -98,7 +98,7 @@ helm install \
 --set imageCredentials.username=<GH_USERNAME> \
 --set imageCredentials.password=<GH_PAT> \
 --namespace xnat-core \
-xnat-core xnat-0.0.15.tgz
+xnat-core xnat-0.0.16.tgz
 ```
 
 Set `image.tag` to the version of the
@@ -123,7 +123,7 @@ helm uninstall xnat-core -n xnat-core
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.15.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.16.tgz > build/chart.yaml
 ```
 
 ## Unit tests
@@ -305,71 +305,72 @@ manually create the persistent volume claims before deploying the chart.
 
 ### XNAT Web parameters
 
-| Name                                                      | Description                                                | Value                                                       |
-| --------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------- |
-| `web.siteUrl`                                             | Site URL                                                   | `""`                                                        |
-| `web.auth.openid.provider`                                | OpenID provider name                                       | `openid1`                                                   |
-| `web.auth.openid.enabled`                                 | Enable or disable the config                               | `false`                                                     |
-| `web.auth.openid.secretName`                              | Name of secret with clientID and clientSecret              | `openid-secret`                                             |
-| `web.auth.openid.accessTokenUri`                          | OpenID access token URI                                    | `""`                                                        |
-| `web.auth.openid.userAuthUri`                             | OpenID user authentication URI                             | `""`                                                        |
-| `web.auth.openid.link`                                    | OpenID link                                                | `""`                                                        |
-| `web.auth.localdb.secretName`                             | Name of secret with adminPassword and serviceAdminPassword | `localdb-secret`                                            |
-| `web.podAnnotations`                                      | Annotations to add to the web pod                          | `{}`                                                        |
-| `web.podLabels`                                           | Labels to add to the web pod                               | `{}`                                                        |
-| `web.podSecurityContext.runAsUser`                        | Pod security context runAsUser                             | `1000`                                                      |
-| `web.securityContext`                                     | Pod security context                                       | `{}`                                                        |
-| `web.ingress.enabled`                                     | Enable or disable the ingress deployment                   | `false`                                                     |
-| `web.ingress.className`                                   | Ingress class name                                         | `""`                                                        |
-| `web.ingress.annotations`                                 | Ingress annotations                                        | `{}`                                                        |
-| `web.ingress.hosts[0].host`                               | Ingress host                                               | `chart-example.local`                                       |
-| `web.ingress.hosts[0].paths[0].path`                      | Ingress path                                               | `/`                                                         |
-| `web.ingress.hosts[0].paths[0].pathType`                  | Ingress path type                                          | `ImplementationSpecific`                                    |
-| `web.ingress.tls`                                         | Ingress TLS                                                | `[]`                                                        |
-| `web.resources.limits.cpu`                                | CPU and memory limits                                      | `2`                                                         |
-| `web.resources.limits.memory`                             | Memory limits                                              | `6000Mi`                                                    |
-| `web.resources.requests.cpu`                              | CPU and memory requests                                    | `1`                                                         |
-| `web.resources.requests.memory`                           | Memory requests                                            | `6000Mi`                                                    |
-| `web.livenessProbe.failureThreshold`                      | Liveness probe failure threshold                           | `1`                                                         |
-| `web.livenessProbe.httpGet.path`                          | Liveness probe httpGet path                                | `/app/template/Login.vm#!`                                  |
-| `web.livenessProbe.httpGet.port`                          | Liveness probe httpGet port                                | `http`                                                      |
-| `web.livenessProbe.periodSeconds`                         | Liveness probe period seconds                              | `10`                                                        |
-| `web.livenessProbe.timeoutSeconds`                        | Liveness probe timeout seconds                             | `5`                                                         |
-| `web.readinessProbe.failureThreshold`                     | Readiness probe failure threshold                          | `1`                                                         |
-| `web.readinessProbe.httpGet.path`                         | Readiness probe httpGet path                               | `/app/template/Login.vm#!`                                  |
-| `web.readinessProbe.httpGet.port`                         | Readiness probe httpGet port                               | `http`                                                      |
-| `web.readinessProbe.periodSeconds`                        | Readiness probe period seconds                             | `10`                                                        |
-| `web.readinessProbe.timeoutSeconds`                       | Readiness probe timeout seconds                            | `3`                                                         |
-| `web.startupProbe.failureThreshold`                       | Startup probe failure threshold                            | `15`                                                        |
-| `web.startupProbe.httpGet.path`                           | Startup probe httpGet path                                 | `/app/template/Login.vm#!`                                  |
-| `web.startupProbe.httpGet.port`                           | Startup probe httpGet port                                 | `http`                                                      |
-| `web.startupProbe.periodSeconds`                          | Startup probe period seconds                               | `10`                                                        |
-| `web.startupProbe.initialDelaySeconds`                    | Startup probe initial delay seconds                        | `20`                                                        |
-| `web.autoscaling.enabled`                                 | Enable or disable the autoscaling                          | `false`                                                     |
-| `web.autoscaling.minReplicas`                             | Minimum number of replicas                                 | `1`                                                         |
-| `web.autoscaling.maxReplicas`                             | Maximum number of replicas                                 | `100`                                                       |
-| `web.autoscaling.targetCPUUtilizationPercentage`          | Target CPU utilisation percentage                          | `80`                                                        |
-| `web.nodeSelector`                                        | Node selector                                              | `{}`                                                        |
-| `web.tolerations`                                         | Tolerations to add to the web pod                          | `[]`                                                        |
-| `web.affinity`                                            | Affinity to add to the web pod                             | `{}`                                                        |
-| `web.tomcat.catalinaOpts`                                 | Override default CATALINA_OPTS                             | `""`                                                        |
-| `web.config.enabled`                                      | Enable or disable the config                               | `true`                                                      |
-| `web.config.image.pullPolicy`                             | Image pull policy                                          | `""`                                                        |
-| `web.config.image.name`                                   | Image name                                                 | `xnat-config`                                               |
-| `web.config.image.namespace`                              | Image namespace                                            | `ucl-mirsg`                                                 |
-| `web.config.image.registry`                               | Image registry                                             | `ghcr.io`                                                   |
-| `web.config.image.tag`                                    | Image tag                                                  | `latest`                                                    |
-| `postgresql.enabled`                                      | Whether to deploy a PostgreSQL cluster                     | `true`                                                      |
-| `postgresql.backups.enabled`                              | Whether to enable database backups                         | `false`                                                     |
-| `postgresql.cluster.imageName`                            | Name of the PostgreSQL container image                     | `ghcr.io/cloudnative-pg/postgresql:14.17-standard-bookworm` |
-| `postgresql.cluster.instances`                            | Number of PostgreSQL instances                             | `1`                                                         |
-| `postgresql.cluster.postgresql.parameters.shared_buffers` | Amount of memory used for shared buffers                   | `512MB`                                                     |
-| `postgresql.cluster.resources.requests.cpu`               | CPU request                                                | `1`                                                         |
-| `postgresql.cluster.resources.requests.memory`            | Memory request                                             | `2Gi`                                                       |
-| `postgresql.cluster.resources.limits.cpu`                 | CPU limit                                                  | `2`                                                         |
-| `postgresql.cluster.resources.limits.memory`              | Memory limit                                               | `4Gi`                                                       |
-| `postgresql.cluster.storage.size`                         | Size of the storage                                        | `8Gi`                                                       |
-| `postgresql.cluster.initdb.database`                      | PostgreSQL database name                                   | `xnat`                                                      |
-| `postgresql.cluster.initdb.owner`                         | PostgreSQL owner                                           | `xnat`                                                      |
-| `postgresql.cluster.initdb.secret.name`                   | Name of the secret containing credentials for the database | `pg-user-secret`                                            |
-| `postgresql.cluster.version.postgresql`                   | PostgreSQL major version to use                            | `14`                                                        |
+| Name                                                      | Description                                                                      | Value                                                       |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `web.siteUrl`                                             | Site URL                                                                         | `""`                                                        |
+| `web.auth.openid.provider`                                | OpenID provider name                                                             | `openid1`                                                   |
+| `web.auth.openid.enabled`                                 | Enable or disable the config                                                     | `false`                                                     |
+| `web.auth.openid.secretName`                              | Name of secret with clientID and clientSecret                                    | `openid-secret`                                             |
+| `web.auth.openid.accessTokenUri`                          | OpenID access token URI                                                          | `""`                                                        |
+| `web.auth.openid.userAuthUri`                             | OpenID user authentication URI                                                   | `""`                                                        |
+| `web.auth.openid.link`                                    | OpenID link                                                                      | `""`                                                        |
+| `web.auth.localdb.secretName`                             | Name of secret with adminPassword and serviceAdminPassword                       | `localdb-secret`                                            |
+| `web.podAnnotations`                                      | Annotations to add to the web pod                                                | `{}`                                                        |
+| `web.podLabels`                                           | Labels to add to the web pod                                                     | `{}`                                                        |
+| `web.podSecurityContext.runAsUser`                        | Pod security context runAsUser                                                   | `1000`                                                      |
+| `web.securityContext`                                     | Pod security context                                                             | `{}`                                                        |
+| `web.ingress.enabled`                                     | Enable or disable the ingress deployment                                         | `false`                                                     |
+| `web.ingress.className`                                   | Ingress class name                                                               | `""`                                                        |
+| `web.ingress.annotations`                                 | Ingress annotations                                                              | `{}`                                                        |
+| `web.ingress.hosts[0].host`                               | Ingress host                                                                     | `chart-example.local`                                       |
+| `web.ingress.hosts[0].paths[0].path`                      | Ingress path                                                                     | `/`                                                         |
+| `web.ingress.hosts[0].paths[0].pathType`                  | Ingress path type                                                                | `ImplementationSpecific`                                    |
+| `web.ingress.tls`                                         | Ingress TLS                                                                      | `[]`                                                        |
+| `web.resources.limits.cpu`                                | CPU and memory limits                                                            | `2`                                                         |
+| `web.resources.limits.memory`                             | Memory limits                                                                    | `6000Mi`                                                    |
+| `web.resources.requests.cpu`                              | CPU and memory requests                                                          | `1`                                                         |
+| `web.resources.requests.memory`                           | Memory requests                                                                  | `6000Mi`                                                    |
+| `web.livenessProbe.failureThreshold`                      | Liveness probe failure threshold                                                 | `1`                                                         |
+| `web.livenessProbe.httpGet.path`                          | Liveness probe httpGet path                                                      | `/app/template/Login.vm#!`                                  |
+| `web.livenessProbe.httpGet.port`                          | Liveness probe httpGet port                                                      | `http`                                                      |
+| `web.livenessProbe.periodSeconds`                         | Liveness probe period seconds                                                    | `10`                                                        |
+| `web.livenessProbe.timeoutSeconds`                        | Liveness probe timeout seconds                                                   | `5`                                                         |
+| `web.readinessProbe.failureThreshold`                     | Readiness probe failure threshold                                                | `1`                                                         |
+| `web.readinessProbe.httpGet.path`                         | Readiness probe httpGet path                                                     | `/app/template/Login.vm#!`                                  |
+| `web.readinessProbe.httpGet.port`                         | Readiness probe httpGet port                                                     | `http`                                                      |
+| `web.readinessProbe.periodSeconds`                        | Readiness probe period seconds                                                   | `10`                                                        |
+| `web.readinessProbe.timeoutSeconds`                       | Readiness probe timeout seconds                                                  | `3`                                                         |
+| `web.startupProbe.failureThreshold`                       | Startup probe failure threshold                                                  | `15`                                                        |
+| `web.startupProbe.httpGet.path`                           | Startup probe httpGet path                                                       | `/app/template/Login.vm#!`                                  |
+| `web.startupProbe.httpGet.port`                           | Startup probe httpGet port                                                       | `http`                                                      |
+| `web.startupProbe.periodSeconds`                          | Startup probe period seconds                                                     | `10`                                                        |
+| `web.startupProbe.initialDelaySeconds`                    | Startup probe initial delay seconds                                              | `20`                                                        |
+| `web.autoscaling.enabled`                                 | Enable or disable the autoscaling                                                | `false`                                                     |
+| `web.autoscaling.minReplicas`                             | Minimum number of replicas                                                       | `1`                                                         |
+| `web.autoscaling.maxReplicas`                             | Maximum number of replicas                                                       | `100`                                                       |
+| `web.autoscaling.targetCPUUtilizationPercentage`          | Target CPU utilisation percentage                                                | `80`                                                        |
+| `web.nodeSelector`                                        | Node selector                                                                    | `{}`                                                        |
+| `web.tolerations`                                         | Tolerations to add to the web pod                                                | `[]`                                                        |
+| `web.affinity`                                            | Affinity to add to the web pod                                                   | `{}`                                                        |
+| `web.tomcat.catalinaOpts`                                 | Override default CATALINA_OPTS                                                   | `""`                                                        |
+| `web.config.enabled`                                      | Enable or disable the config                                                     | `true`                                                      |
+| `web.config.image.pullPolicy`                             | Image pull policy                                                                | `""`                                                        |
+| `web.config.image.name`                                   | Image name                                                                       | `xnat-config`                                               |
+| `web.config.image.namespace`                              | Image namespace                                                                  | `ucl-mirsg`                                                 |
+| `web.config.image.registry`                               | Image registry                                                                   | `ghcr.io`                                                   |
+| `web.config.image.tag`                                    | Image tag                                                                        | `latest`                                                    |
+| `web.config.extraWait`                                    | Extra wait (in seconds) for admin account to be created after Tomcat has started | `""`                                                        |
+| `postgresql.enabled`                                      | Whether to deploy a PostgreSQL cluster                                           | `true`                                                      |
+| `postgresql.backups.enabled`                              | Whether to enable database backups                                               | `false`                                                     |
+| `postgresql.cluster.imageName`                            | Name of the PostgreSQL container image                                           | `ghcr.io/cloudnative-pg/postgresql:14.17-standard-bookworm` |
+| `postgresql.cluster.instances`                            | Number of PostgreSQL instances                                                   | `1`                                                         |
+| `postgresql.cluster.postgresql.parameters.shared_buffers` | Amount of memory used for shared buffers                                         | `512MB`                                                     |
+| `postgresql.cluster.resources.requests.cpu`               | CPU request                                                                      | `1`                                                         |
+| `postgresql.cluster.resources.requests.memory`            | Memory request                                                                   | `2Gi`                                                       |
+| `postgresql.cluster.resources.limits.cpu`                 | CPU limit                                                                        | `2`                                                         |
+| `postgresql.cluster.resources.limits.memory`              | Memory limit                                                                     | `4Gi`                                                       |
+| `postgresql.cluster.storage.size`                         | Size of the storage                                                              | `8Gi`                                                       |
+| `postgresql.cluster.initdb.database`                      | PostgreSQL database name                                                         | `xnat`                                                      |
+| `postgresql.cluster.initdb.owner`                         | PostgreSQL owner                                                                 | `xnat`                                                      |
+| `postgresql.cluster.initdb.secret.name`                   | Name of the secret containing credentials for the database                       | `pg-user-secret`                                            |
+| `postgresql.cluster.version.postgresql`                   | PostgreSQL major version to use                                                  | `14`                                                        |

@@ -359,6 +359,7 @@ web:
   ## @param web.config.image.namespace Image namespace
   ## @param web.config.image.registry Image registry
   ## @param web.config.image.tag Image tag
+  ## @param web.config.extraWait Extra wait (in seconds) for admin account to be created after Tomcat has started
   config:
     enabled: true
     image:
@@ -367,6 +368,7 @@ web:
       namespace: ucl-mirsg
       registry: ghcr.io
       tag: latest
+    extraWait: ""
 
 ### @section XNAT Database parameters
 ## @param postgresql.enabled Whether to deploy a PostgreSQL cluster

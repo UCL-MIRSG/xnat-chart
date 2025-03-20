@@ -52,7 +52,9 @@ spec:
           - --extra-vars
           - '{"xnat_enabled_providers": ["localdb", {{ .Values.web.auth.openid.provider | quote }}]}'
           {{- end }}
+          {{- if .Values.web.tomcat.extraWait }}
           - --extra-vars
-          - xnat_wait_for_tomcat=15
+          - xnat_wait_for_tomcat={{ .Values.web.tomcat.extraWait }}
+          {{- end }}
           - -v
 {{- end }}

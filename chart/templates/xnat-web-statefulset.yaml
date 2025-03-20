@@ -126,8 +126,8 @@ spec:
               cat <<EOF > /xnat/xnat-conf.properties
               datasource.driver=org.postgresql.Driver
               datasource.url=jdbc:postgresql://{{ template "xnat.postgresql.svc" . }}/{{ .Values.postgresql.cluster.initdb.database }}
-              datasource.username=$XNAT_DATASOURCE_USERNAME
-              datasource.password=$XNAT_DATASOURCE_PASSWORD
+              datasource.username=$(XNAT_DATASOURCE_USERNAME)
+              datasource.password=$(XNAT_DATASOURCE_PASSWORD)
               hibernate.dialect=org.hibernate.dialect.PostgreSQL9Dialect
               hibernate.hbm2ddl.auto=update
               hibernate.show_sql=false
@@ -176,8 +176,8 @@ spec:
               auto.enabled=false
               auto.verified=false
               siteUrl={{ .Values.web.siteUrl }}
-              openid.{{- .Values.web.auth.openid.provider -}}.clientId=$OPENID_CLIENT_ID
-              openid.{{- .Values.web.auth.openid.provider -}}.clientSecret=$OPENID_CLIENT_SECRET
+              openid.{{- .Values.web.auth.openid.provider -}}.clientId=$(OPENID_CLIENT_ID)
+              openid.{{- .Values.web.auth.openid.provider -}}.clientSecret=$(OPENID_CLIENT_SECRET)
               openid.{{- .Values.web.auth.openid.provider -}}.accessTokenUri={{ .Values.web.auth.openid.accessTokenUri }}
               openid.{{- .Values.web.auth.openid.provider -}}.userAuthUri={{ .Values.web.auth.openid.userAuthUri }}
               openid.{{- .Values.web.auth.openid.provider -}}.link=<a href="/openid-login?providerId={{- .Values.web.auth.openid.provider -}}">{{ .Values.web.auth.openid.link }}</a>

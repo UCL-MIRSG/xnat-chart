@@ -12,7 +12,7 @@ imageCredentials:
   registry: ghcr.io
 
 postgresql:
-  fullnameOverride: xnat-core
+  fullnameOverride: xnat-core-postgresql
   cluster:
     initdb:
       database: xnatdb

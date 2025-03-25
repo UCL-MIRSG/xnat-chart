@@ -170,8 +170,19 @@ like to keep the chart installed, pass the `--skip-clean-up` flag to `ct`:
 ct install --skip-clean-up --config ct.yaml --helm-extra-set-args=" --set imageCredentials.username=$GH_USER --set imageCredentials.password=$GH_PAT"
 ```
 
-If you would like to uninstall the chart manually, first check the name of the
-installed chart:
+This is useful if you would like to e.g. log into the XNAT UI. To do so, you
+will first need to forward the NGINX ingress controller port to your localhost:
+
+```bash
+kubectl port-forward --namespace=nginx-ingress service/nginx-ingress-nginx-controller 8080:80
+```
+
+You can then go to `localhost:8080` in your browser and log in with the username
+`mirsg_service` and the `serviceAdminPassword` password set in the test
+[`secrets.yaml` file](./chart/ci/manifests/secrets.yaml).
+
+If you would like to uninstall the chart, first check the name of the installed
+chart:
 
 ```bash
 helm list -n xnat-core

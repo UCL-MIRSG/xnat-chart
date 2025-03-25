@@ -167,7 +167,7 @@ By default, `ct` will uninstall the chart after the tests pass. If you would
 like to keep the chart installed, pass the `--skip-clean-up` flag to `ct`:
 
 ```bash
-ct install --skip-clean-up --config ct.yaml --helm-extra-set-args=" --set imageCredentials.username=$GH_USER s--set imageCredentials.password=$GH_PAT"
+ct install --skip-clean-up --config ct.yaml --helm-extra-set-args=" --set imageCredentials.username=$GH_USER --set imageCredentials.password=$GH_PAT"
 ```
 
 If you would like to uninstall the chart manually, first check the name of the

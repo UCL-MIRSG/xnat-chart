@@ -1,6 +1,8 @@
 ---
 replicaCount: 2
 
+fullnameOverride: xnat-core
+
 image:
   name: xnat-core
   tag: latest
@@ -10,7 +12,7 @@ imageCredentials:
   registry: ghcr.io
 
 postgresql:
-  fullnameOverride: xnat-core-db
+  fullnameOverride: xnat-core
   cluster:
     initdb:
       database: xnatdb

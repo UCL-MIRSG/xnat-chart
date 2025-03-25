@@ -1,0 +1,17 @@
+# See: https://github.com/helm/chart-testing/blob/main/doc/ct_install.md
+chart-dirs:
+  - .
+chart-repos:
+  - cnpg=https://cloudnative-pg.github.io/charts
+  - nginx=https://kubernetes.github.io/ingress-nginx/
+
+build-id: CI
+
+helm-extra-args: --timeout 600s
+
+validate-maintainers: false
+target-branch: main
+
+namespace: xnat-core
+release-label: app.kubernetes.io/instance
+upgrade: false

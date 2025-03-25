@@ -87,6 +87,6 @@ jobs:
       - name: Run chart-testing (install)
         run: >-
           ct install --config ct.yaml --helm-extra-set-args="
-            --set imageCredentials.username=${{ secrets.GH_USER }}
-            --set imageCredentials.password=${{ secrets.GH_PAT }}
+            --set imageCredentials.username=${{ secrets.GHCR_USER }}
+            --set imageCredentials.password=${{ secrets.GHCR_PAT }}
             "

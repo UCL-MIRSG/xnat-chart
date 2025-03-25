@@ -1,0 +1,20 @@
+---
+replicaCount: 2
+
+image:
+  name: xnat-core
+  tag: latest
+
+imageCredentials:
+  enabled: true
+  registry: ghcr.io
+
+postgresql:
+  cluster:
+    initdb:
+      database: xnatdb
+      owner: xnatuser
+web:
+  siteUrl: http://localhost
+  config:
+    extraWait: 15

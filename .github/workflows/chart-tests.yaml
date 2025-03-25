@@ -36,7 +36,7 @@ jobs:
         uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1.12.0
         with:
           config: chart/ci/kind-config.yaml
-          cluster-name: xnat
+          cluster_name: xnat
           wait: 120s
 
       - name: Install kubectl

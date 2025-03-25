@@ -1,130 +1,6 @@
 # xnat
 
-Helm Chart for XNAT
-
-## Local Installation
-
-### Create a local cluster
-
-Create a cluster into which the chart will be installed using your preferred
-method. For example, using [kind](https://kind.sigs.k8s.io/):
-
-```shell
-kind create cluster --name xnat
-```
-
-### Install the CNPG Operator
-
-We use the [CNPG Operator](https://github.com/cloudnative-pg/cloudnative-pg) to
-deploy Postgres. The operator can be installed using Helm:
-
-```bash
-helm repo add cnpg https://cloudnative-pg.github.io/charts
-helm upgrade --install cnpg \
-  --namespace cnpg-system \
-  --create-namespace \
-  cnpg/cloudnative-pg
-```
-
-### Create a namespace to install the chart
-
-Create a manifest for the namespace:
-
-```bash
-cat <<EOF > namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: xnat-core
-EOF
-```
-
-Create the namespace:
-
-```bash
-kubectl apply -f namespace.yaml
-```
-
-### Create a secret containing Postgres and XNAT credentials
-
-Create a manifest for the secret:
-
-```bash
-cat <<EOF > secrets.yaml
-apiVersion: v1
-stringData:
-  username: xnat
-  password: xnat
-kind: Secret
-metadata:
-  name: pg-user-secret
-  namespace: xnat-core
-type: kubernetes.io/basic-auth
----
-apiVersion: v1
-stringData:
-  adminPassword: strongPassword
-  serviceAdminPassword: anotherStrongPassword
-kind: Secret
-metadata:
-  name: localdb-secret
-  namespace: xnat-core
-type: kubernetes.io/basic-auth
-EOF
-```
-
-Create the secret:
-
-```bash
-kubectl apply -f secrets.yaml
-```
-
-### Package and install `xnat-chart`
-
-To install a local copy of the chart, first create a package:
-
-```shell
-helm package --dependency-update chart
-```
-
-Then install the packaged chart in the cluster with the following command:
-
-```shell
-helm install \
---set image.name=xnat-core \
---set image.tag=0.0.2 \
---set imageCredentials.enabled=true \
---set imageCredentials.registry=ghcr.io \
---set imageCredentials.username=<GH_USERNAME> \
---set imageCredentials.password=<GH_PAT> \
---namespace xnat-core \
-xnat-core xnat-0.0.16.tgz
-```
-
-Set `image.tag` to the version of the
-[XNAT image](https://github.com/UCL-MIRSG/xnat-image/pkgs/container/xnat-core)
-you would like to use.
-
-[Create a PAT](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic)
-with `read:packages` scope. Use the PAT to set `imageCredentials.password`.
-
-Set `imageCredential.username` to be your GitHub username.
-
-### Uninstall the chart
-
-Uninstall the chart using the following command:
-
-```shell
-helm uninstall xnat-core -n xnat-core
-```
-
-### Render the chart
-
-The chart can be rendered using the default values with the following command:
-
-```shell
-helm template xnat-core ./xnat-0.0.16.tgz > build/chart.yaml
-```
+Helm Chart for XNAT.
 
 ## Unit tests
 
@@ -210,6 +86,121 @@ To update the snapshots, run the tests with the `-u` flag:
 
 ```bash
 docker run -it --rm -v "$(pwd)/chart":/apps/chart helmunittest/helm-unittest:3.11.1-0.3.0 /apps/chart -u
+```
+
+## Integration tests
+
+We use [`ct`](https://github.com/helm/chart-testing) for testing the chart in
+CI.
+
+To run `ct` locally, you will need to:
+
+- create a local cluster
+- install the CNPG operator
+- create the required resources
+- setup credentials for `ghcr.io/ucl-mirsg`
+- run `ct`
+
+### Create a local cluster
+
+Create a cluster into which the chart will be installed using your preferred
+method. For example, using [kind](https://kind.sigs.k8s.io/):
+
+```shell
+kind create cluster --name xnat --config chart/ci/kind-config.yaml
+```
+
+### Install the CNPG Operator
+
+We use the [CNPG Operator](https://github.com/cloudnative-pg/cloudnative-pg) to
+deploy Postgres. The operator can be installed using Helm:
+
+```bash
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+helm repo update
+helm upgrade --install cnpg \
+  --namespace cnpg-system \
+  --create-namespace \
+  cnpg/cloudnative-pg
+```
+
+### Create a namespace and to install the chart
+
+Create the namespace:
+
+```bash
+kubectl apply -f chart/ci/manifests/namespace.yaml
+```
+
+### Create a secret containing Postgres and XNAT credentials
+
+Create the secret:
+
+```bash
+kubectl apply -f chart/ci/manifests/secrets.yaml
+```
+
+### Setup credentials for GHCR
+
+You will need to configure credentials to pull the `xnat-image` image from our
+container registry (`ghcr.io/ucl-mirsg`).
+
+[Create a PAT](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-with-a-personal-access-token-classic)
+with `read:packages` scope.
+
+### Run `ct`
+
+To run the tests using `ct`:
+
+```bash
+ct install --config ct.yaml --helm-extra-set-args="--set imageCredentials.username=$GH_USER --set imageCredentials.password=$GH_PAT"
+```
+
+Use the PAT you created [above](#setup-credentials-for-ghcr) to set
+`imageCredentials.password`.
+
+Set `imageCredential.username` to be your GitHub username.
+
+#### Keep the chart installed
+
+By default, `ct` will uninstall the chart after the tests pass. If you would
+like to keep the chart installed, pass the `--skip-clean-up` flag to `ct`:
+
+```bash
+ct install --skip-clean-up --config ct.yaml --helm-extra-set-args=" --set imageCredentials.username=$GH_USER --set imageCredentials.password=$GH_PAT"
+```
+
+This is useful if you would like to e.g. log into the XNAT UI. To do so, you
+will first need to forward the NGINX ingress controller port to your localhost:
+
+```bash
+kubectl port-forward --namespace=nginx-ingress service/nginx-ingress-nginx-controller 8080:80
+```
+
+You can then go to `localhost:8080` in your browser and log in with the username
+`mirsg_service` and the `serviceAdminPassword` password set in the test
+[`secrets.yaml` file](./chart/ci/manifests/secrets.yaml).
+
+If you would like to uninstall the chart, first check the name of the installed
+chart:
+
+```bash
+helm list -n xnat-core
+```
+
+and make a note of the `NAME`. Then uninstall the chart:
+
+```shell
+helm uninstall <NAME> -n xnat-core
+```
+
+## Render the default chart values
+
+The chart can be rendered using the default values with the following commands:
+
+```shell
+helm package --dependency-update chart
+helm template xnat-core ./xnat-0.0.17.tgz > build/chart.yaml
 ```
 
 ## Storage

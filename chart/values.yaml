@@ -95,28 +95,28 @@ volumes:
     existingClaim: false
     persistent: true
     size: 1Gi
-    storageClass: # e.g. local-path for k3s default storage class
+    storageClass:  # e.g. local-path for k3s default storage class
   xnat-cache:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
-    storageClass: # e.g. local-path for k3s default storage class
+    storageClass:  # e.g. local-path for k3s default storage class
   xnat-home-logs:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
-    storageClass: # e.g. local-path for k3s default storage class
+    storageClass:  # e.g. local-path for k3s default storage class
   xnat-home-work:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
-    storageClass: # e.g. local-path for k3s default storage class
+    storageClass:  # e.g. local-path for k3s default storage class
 
 ## @param volumeMounts.xnat-build.mountPath XNAT build volume mount path
 ## @param volumeMounts.xnat-build.subPath XNAT build volume sub path
@@ -173,14 +173,14 @@ extraVolumes:
     existingClaim: false
     persistent: true
     size: 10Gi
-    storageClass: # e.g. local-path for k3s default storage class
+    storageClass:  # e.g. local-path for k3s default storage class
   xnat-prearchive:
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
-    storageClass: # e.g. local-path for k3s default storage class
+    storageClass:  # e.g. local-path for k3s default storage class
 
 ## @param extraVolumeMounts.xnat-archive.mountPath XNAT archive volume mount path
 ## @param extraVolumeMounts.xnat-archive.subPath XNAT archive volume sub path

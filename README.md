@@ -55,6 +55,7 @@ apiVersion: v1
 stringData:
   username: xnat
   password: xnat
+  dbname: xnat
 kind: Secret
 metadata:
   name: pg-user-secret
@@ -98,7 +99,7 @@ helm install \
 --set imageCredentials.username=<GH_USERNAME> \
 --set imageCredentials.password=<GH_PAT> \
 --namespace xnat-core \
-xnat-core xnat-0.0.16.tgz
+xnat-core xnat-0.0.17.tgz
 ```
 
 Set `image.tag` to the version of the
@@ -123,7 +124,7 @@ helm uninstall xnat-core -n xnat-core
 The chart can be rendered using the default values with the following command:
 
 ```shell
-helm template xnat-core ./xnat-0.0.16.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.17.tgz > build/chart.yaml
 ```
 
 ## Unit tests

@@ -284,10 +284,10 @@ web:
   ## @param web.resources.requests.memory Memory requests
   resources:
     limits:
-      cpu: 2
+      cpu: "2"
       memory: 6000Mi
     requests:
-      cpu: 1
+      cpu: "1"
       memory: 6000Mi
 
   ## @param web.livenessProbe.failureThreshold Liveness probe failure threshold

@@ -1,6 +1,5 @@
 jobs manifest should match snapshot:
   1: |
-    backoffLimit: 0
     containers:
       - args:
           - configure-xnat.yaml

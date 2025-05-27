@@ -200,7 +200,7 @@ The chart can be rendered using the default values with the following commands:
 
 ```shell
 helm package --dependency-update chart
-helm template xnat-core ./xnat-0.0.20.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.22.tgz > build/chart.yaml
 ```
 
 ## Storage
@@ -350,6 +350,7 @@ manually create the persistent volume claims before deploying the chart.
 | `web.config.image.namespace`                              | Image namespace                                                                  | `ucl-mirsg`                                                 |
 | `web.config.image.registry`                               | Image registry                                                                   | `ghcr.io`                                                   |
 | `web.config.image.tag`                                    | Image tag                                                                        | `latest`                                                    |
+| `web.config.jobAnnotations`                               | Annotations to add to the config job                                             | `{}`                                                        |
 | `web.config.extraWait`                                    | Extra wait (in seconds) for admin account to be created after Tomcat has started | `""`                                                        |
 | `postgresql.enabled`                                      | Whether to deploy a PostgreSQL cluster                                           | `true`                                                      |
 | `postgresql.backups.enabled`                              | Whether to enable database backups                                               | `false`                                                     |

@@ -64,7 +64,7 @@ spec:
               mountPath: /data/xnat/home/config/xnat-conf.properties
               subPath: xnat-conf.properties
           {{- if .Values.web.auth.openid.enabled }}
-            - name: xnat-openid-config
+            - name: openid-conf
               mountPath: /data/xnat/home/config/auth/openid-conf.properties
               readOnly: true
               subPath: openid-conf.properties
@@ -190,7 +190,7 @@ spec:
               EOF
           volumeMounts:
             - name: openid-conf
-              mountPath: /xnat/openid-conf.properties
+              mountPath: /xnat
         {{- end }}
       {{- with .Values.web.nodeSelector }}
       nodeSelector:
@@ -208,7 +208,7 @@ spec:
         - name: node-conf
         - name: xnat-config
       {{- if .Values.web.auth.openid.enabled }}
-        - name: xnat-openid-config
+        - name: openid-conf
       {{- end }}
       {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
         - name: {{ $name }}

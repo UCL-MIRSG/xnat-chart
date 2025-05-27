@@ -65,9 +65,9 @@ spec:
               subPath: xnat-conf.properties
           {{- if .Values.web.auth.openid.enabled }}
             - name: openid-conf
-              mountPath: /data/xnat/home/config/auth/openid-conf.properties
+              mountPath: /data/xnat/home/config/auth/{{ .Values.web.auth.openid.provider }}-provider.properties
               readOnly: true
-              subPath: openid-conf.properties
+              subPath: {{ .Values.web.auth.openid.provider }}-provider.properties
           {{- end }}
           {{- range $name, $prop := (merge .Values.volumeMounts .Values.extraVolumeMounts) }}
             - name: {{ $name }}
@@ -171,7 +171,7 @@ spec:
             - '-c'
             - |
               set -x
-              cat <<EOF > /xnat/openid-conf.properties
+              cat <<EOF > /xnat/{{- .Values.web.auth.openid.provider -}}-provider.properties
               name="UCL SSO"
               provider.id={{- .Values.web.auth.openid.provider }}
               auth.method=openid

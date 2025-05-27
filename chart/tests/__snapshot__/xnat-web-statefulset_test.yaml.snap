@@ -49,10 +49,10 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /data/xnat/home/config/xnat-conf.properties
             name: xnat-conf
             subPath: xnat-conf.properties
-          - mountPath: /data/xnat/home/config/auth/openid-conf.properties
+          - mountPath: /data/xnat/home/config/auth/openid1-provider.properties
             name: openid-conf
             readOnly: true
-            subPath: openid-conf.properties
+            subPath: openid1-provider.properties
           - mountPath: /data/xnat/archive
             name: xnat-archive
             subPath: null
@@ -150,7 +150,7 @@ xnat-web-statefulst manifest should match snapshot:
           - -c
           - |
             set -x
-            cat <<EOF > /xnat/openid-conf.properties
+            cat <<EOF > /xnat/openid1-provider.properties
             name="UCL SSO"
             provider.id=openid1
             auth.method=openid

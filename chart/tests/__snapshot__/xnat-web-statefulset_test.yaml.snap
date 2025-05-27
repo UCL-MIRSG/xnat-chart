@@ -47,10 +47,10 @@ xnat-web-statefulst manifest should match snapshot:
             name: node-conf
             subPath: node-conf.properties
           - mountPath: /data/xnat/home/config/xnat-conf.properties
-            name: xnat-config
+            name: xnat-conf
             subPath: xnat-conf.properties
           - mountPath: /data/xnat/home/config/auth/openid-conf.properties
-            name: xnat-openid-config
+            name: openid-conf
             readOnly: true
             subPath: openid-conf.properties
           - mountPath: /data/xnat/archive
@@ -132,7 +132,7 @@ xnat-web-statefulst manifest should match snapshot:
         name: xnat-datasource
         volumeMounts:
           - mountPath: /xnat
-            name: xnat-config
+            name: xnat-conf
       - command:
           - bash
           - -c
@@ -182,15 +182,15 @@ xnat-web-statefulst manifest should match snapshot:
         imagePullPolicy: IfNotPresent
         name: openid-conf
         volumeMounts:
-          - mountPath: /xnat/openid-conf.properties
+          - mountPath: /xnat
             name: openid-conf
     securityContext:
       runAsUser: 1000
     serviceAccountName: RELEASE-NAME-xnat
     volumes:
       - name: node-conf
-      - name: xnat-config
-      - name: xnat-openid-config
+      - name: xnat-conf
+      - name: openid-conf
       - name: xnat-archive
       - name: xnat-build
       - name: xnat-cache

@@ -174,7 +174,7 @@ spec:
               cat <<EOF > /xnat/openid-conf.properties
               name="UCL SSO"
               provider.id={{- .Values.web.auth.openid.provider }}
-              auth.method=OpenID
+              auth.method=openid
               auto.enabled=false
               auto.verified=false
               siteUrl={{ .Values.web.siteUrl }}

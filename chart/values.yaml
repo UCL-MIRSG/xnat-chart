@@ -359,6 +359,7 @@ web:
   ## @param web.config.image.namespace Image namespace
   ## @param web.config.image.registry Image registry
   ## @param web.config.image.tag Image tag
+  ## @param web.config.jobAnnotations Annotations to add to the config job
   ## @param web.config.extraWait Extra wait (in seconds) for admin account to be created after Tomcat has started
   config:
     enabled: true
@@ -368,6 +369,7 @@ web:
       namespace: ucl-mirsg
       registry: ghcr.io
       tag: latest
+    jobAnnotations: {}
     extraWait: ""
 
 ### @section XNAT Database parameters

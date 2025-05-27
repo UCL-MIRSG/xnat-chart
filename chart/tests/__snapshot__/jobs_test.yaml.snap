@@ -10,6 +10,8 @@ jobs manifest should match snapshot:
           - --extra-vars
           - xnat_service_admin_password="$(XNAT_SERVICE_ADMIN_PASSWORD)"
           - --extra-vars
+          - '{"xnat_enabled_providers": ["localdb", "openid1"]}'
+          - --extra-vars
           - xnat_wait_for_tomcat=15
           - -v
         command:

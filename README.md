@@ -200,7 +200,7 @@ The chart can be rendered using the default values with the following commands:
 
 ```shell
 helm package --dependency-update chart
-helm template xnat-core ./xnat-0.0.17.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.19.tgz > build/chart.yaml
 ```
 
 ## Storage

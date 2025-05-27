@@ -153,7 +153,7 @@ xnat-web-statefulst manifest should match snapshot:
             cat <<EOF > /xnat/openid-conf.properties
             name="UCL SSO"
             provider.id=openid1
-            auth.method=OpenID
+            auth.method=openid
             auto.enabled=false
             auto.verified=false
             siteUrl=

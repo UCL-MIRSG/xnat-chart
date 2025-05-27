@@ -65,7 +65,7 @@ spec:
               subPath: xnat-conf.properties
           {{- if .Values.web.auth.openid.enabled }}
             - name: openid-conf
-              mountPath: /data/xnat/home/config/auth/{{- .Values.web.auth.openid.provider -}}-provider.properties
+              mountPath: /data/xnat/home/config/auth/{{ .Values.web.auth.openid.provider }}-provider.properties
               readOnly: true
               subPath: {{ .Values.web.auth.openid.provider }}-provider.properties
           {{- end }}

@@ -60,7 +60,7 @@ spec:
             - name: node-conf
               mountPath: /data/xnat/home/config/node-conf.properties
               subPath: node-conf.properties
-            - name: xnat-config
+            - name: xnat-conf
               mountPath: /data/xnat/home/config/xnat-conf.properties
               subPath: xnat-conf.properties
           {{- if .Values.web.auth.openid.enabled }}
@@ -137,7 +137,7 @@ spec:
               hibernate.cache.use_query_cache=true
               EOF
           volumeMounts:
-            - name: xnat-config
+            - name: xnat-conf
               mountPath: /xnat
         - name: node-conf
           image: {{ include "xnat.image" . }}
@@ -206,7 +206,7 @@ spec:
       {{- end }}
       volumes:
         - name: node-conf
-        - name: xnat-config
+        - name: xnat-conf
       {{- if .Values.web.auth.openid.enabled }}
         - name: openid-conf
       {{- end }}

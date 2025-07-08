@@ -17,8 +17,8 @@ replicaCount: 1
 image:
   pullPolicy: IfNotPresent
   pullSecret: ""
-  registry: "ghcr.io"
-  namespace: "ucl-mirsg"
+  registry: ghcr.io
+  namespace: ucl-mirsg
   name: ""
   tag: latest
 

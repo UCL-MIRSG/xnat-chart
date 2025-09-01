@@ -40,7 +40,7 @@ jobs:
           wait: 120s
 
       - name: Install kubectl
-        uses: azure/setup-kubectl@0c5e050edfed71b2b50731ab044d42489d51c129 # v4.0.0
+        uses: azure/setup-kubectl@3e0aec4d80787158d308d7b364cb1b702e7feb7f # v4.0.0
 
       - name: Set up Helm
         uses: azure/setup-helm@b9e51907a09c216f16ebe8536097933489208112 # v4.3.0

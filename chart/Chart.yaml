@@ -3,7 +3,7 @@ apiVersion: v2
 name: xnat
 description: A Helm chart for deploying XNAT on Kubernetes
 type: application
-version: 0.0.24
+version: 0.0.25
 # XNAT version deployed in the chart
 appVersion: 1.9.1.2
 

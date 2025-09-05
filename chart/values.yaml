@@ -386,7 +386,7 @@ web:
 ## @param postgresql.cluster.initdb.database PostgreSQL database name
 ## @param postgresql.cluster.initdb.owner PostgreSQL owner
 ## @param postgresql.cluster.initdb.secret.name Name of the secret containing credentials for the database
-## @param postgresql.cluster.version.postgresql PostgreSQL major version to use
+## @param postgresql.version.postgresql PostgreSQL major version to use
 postgresql:
   enabled: true
   backups:
@@ -411,5 +411,5 @@ postgresql:
       owner: xnat
       secret:
         name: pg-user-secret
-    version:
-      postgresql: "14"
+  version:
+    postgresql: "14"

@@ -365,4 +365,4 @@ manually create the persistent volume claims before deploying the chart.
 | `postgresql.cluster.initdb.database`                      | PostgreSQL database name                                                         | `xnat`                                                      |
 | `postgresql.cluster.initdb.owner`                         | PostgreSQL owner                                                                 | `xnat`                                                      |
 | `postgresql.cluster.initdb.secret.name`                   | Name of the secret containing credentials for the database                       | `pg-user-secret`                                            |
-| `postgresql.cluster.version.postgresql`                   | PostgreSQL major version to use                                                  | `14`                                                        |
+| `postgresql.version.postgresql`                           | PostgreSQL major version to use                                                  | `14`                                                        |

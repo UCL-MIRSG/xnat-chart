@@ -200,7 +200,7 @@ The chart can be rendered using the default values with the following commands:
 
 ```shell
 helm package --dependency-update chart
-helm template xnat-core ./xnat-0.0.24.tgz > build/chart.yaml
+helm template xnat-core ./xnat-0.0.25.tgz > build/chart.yaml
 ```
 
 ## Storage
@@ -365,4 +365,4 @@ manually create the persistent volume claims before deploying the chart.
 | `postgresql.cluster.initdb.database`                      | PostgreSQL database name                                                         | `xnat`                                                      |
 | `postgresql.cluster.initdb.owner`                         | PostgreSQL owner                                                                 | `xnat`                                                      |
 | `postgresql.cluster.initdb.secret.name`                   | Name of the secret containing credentials for the database                       | `pg-user-secret`                                            |
-| `postgresql.cluster.version.postgresql`                   | PostgreSQL major version to use                                                  | `14`                                                        |
+| `postgresql.version.postgresql`                           | PostgreSQL major version to use                                                  | `14`                                                        |

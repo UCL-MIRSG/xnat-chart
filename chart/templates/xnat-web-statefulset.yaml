@@ -34,7 +34,7 @@ spec:
       securityContext:
         {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Release.Name }}
           securityContext:
             {{- toYaml .Values.web.securityContext | nindent 12 }}
           image: {{ include "xnat.image" . }}

@@ -2,7 +2,7 @@ xnat-web-statefulst manifest should match snapshot:
   1: |
     containers:
       - command:
-          - /bin/sh
+          - /bin/bash
           - -c
           - |
             /usr/local/tomcat/bin/catalina.sh run
@@ -75,7 +75,7 @@ xnat-web-statefulst manifest should match snapshot:
       - name: ""
     initContainers:
       - command:
-          - bash
+          - /bin/bash
           - -c
           - |
             set -e
@@ -101,7 +101,7 @@ xnat-web-statefulst manifest should match snapshot:
         imagePullPolicy: IfNotPresent
         name: wait-for-postgres
       - command:
-          - bash
+          - /bin/bash
           - -c
           - |
             set -x
@@ -134,7 +134,7 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /xnat
             name: xnat-conf
       - command:
-          - bash
+          - /bin/bash
           - -c
           - |
             set -x
@@ -146,7 +146,7 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /xnat
             name: node-conf
       - command:
-          - bash
+          - /bin/bash
           - -c
           - |
             set -x

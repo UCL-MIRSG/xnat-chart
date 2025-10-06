@@ -73,7 +73,7 @@ spec:
               subPath: {{ $vol.subPath }}
           {{- end }}
           command:
-            - bash
+            - /bin/bash
             - -c
             - |
               /usr/local/tomcat/bin/catalina.sh run
@@ -81,7 +81,7 @@ spec:
         - name: {{ .Release.Name }}-log-reader # Sidecar container
           image: grafana/alloy:latest
           command:
-            - /bin/sh
+            - /bin/bash
             - -c
             - /bin/alloy run --server.http.listen-addr=0.0.0.0:12345 /etc/alloy/config.alloy
           volumeMounts:
@@ -114,7 +114,7 @@ spec:
             - name: PGDATABASE
               value: {{ .Values.postgresql.cluster.initdb.database }}
           command:
-            - bash
+            - /bin/bash
             - -c
             - |
               set -e
@@ -138,7 +138,7 @@ spec:
                   name: {{ .Values.postgresql.cluster.initdb.secret.name }}
                   key: password
           command:
-            - bash
+            - /bin/bash
             - -c
             - |
               set -x
@@ -160,8 +160,8 @@ spec:
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - 'bash'
-            - '-c'
+            - /bin/bash
+            - -c
             - |
               set -x
               echo "node.id=$HOSTNAME" > /xnat/node-conf.properties
@@ -184,8 +184,8 @@ spec:
                   name: {{ .Values.auth.openid.secretName }}
                   key: clientSecret
           command:
-            - 'bash'
-            - '-c'
+            - /bin/bash
+            - -c
             - |
               set -x
               cat <<EOF > /xnat/{{- .Values.auth.openid.provider -}}-provider.properties

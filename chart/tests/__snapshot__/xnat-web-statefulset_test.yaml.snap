@@ -15,7 +15,7 @@ xnat-web-statefulst manifest should match snapshot:
             port: http
           periodSeconds: 10
           timeoutSeconds: 5
-        name: xnat
+        name: RELEASE-NAME
         ports:
           - containerPort: 8080
             name: http
@@ -34,14 +34,15 @@ xnat-web-statefulst manifest should match snapshot:
           requests:
             cpu: "1"
             memory: 6000Mi
-        securityContext: {}
+        securityContext:
+          runAsUser: 1000
         startupProbe:
           failureThreshold: 15
           httpGet:
             path: /app/template/Login.vm#!
             port: http
-          initialDelaySeconds: 20
-          periodSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 30
         volumeMounts:
           - mountPath: /data/xnat/home/config/node-conf.properties
             name: node-conf
@@ -53,9 +54,6 @@ xnat-web-statefulst manifest should match snapshot:
             name: openid-conf
             readOnly: true
             subPath: openid1-provider.properties
-          - mountPath: /data/xnat/archive
-            name: xnat-archive
-            subPath: null
           - mountPath: /data/xnat/build
             name: xnat-build
             subPath: null
@@ -68,8 +66,27 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /data/xnat/home/work
             name: xnat-home-work
             subPath: null
+          - mountPath: /usr/local/tomcat/logs
+            name: catalina-logs
+            subPath: null
+          - mountPath: /data/xnat/archive
+            name: xnat-archive
+            subPath: null
           - mountPath: /data/xnat/prearchive
             name: xnat-prearchive
+            subPath: null
+      - command:
+          - /bin/bash
+          - -c
+          - /bin/alloy run --server.http.listen-addr=0.0.0.0:12345 /etc/alloy/config.alloy
+        image: grafana/alloy:latest
+        name: RELEASE-NAME-log-reader
+        volumeMounts:
+          - mountPath: /etc/alloy/config.alloy
+            name: alloy-config
+            subPath: config.alloy
+          - mountPath: /data/xnat/home/logs
+            name: xnat-home-logs
             subPath: null
           - mountPath: /usr/local/tomcat/logs
             name: catalina-logs
@@ -187,29 +204,25 @@ xnat-web-statefulst manifest should match snapshot:
         volumeMounts:
           - mountPath: /xnat
             name: openid-conf
-    securityContext:
-      runAsUser: 1000
     serviceAccountName: RELEASE-NAME-xnat
     volumes:
+      - configMap:
+          items:
+            - key: config.alloy
+              path: config.alloy
+          name: RELEASE-NAME-xnat-alloy-config
+        name: alloy-config
       - name: node-conf
       - name: xnat-conf
       - name: openid-conf
-      - name: xnat-archive
       - name: xnat-build
       - name: xnat-cache
       - name: xnat-home-logs
       - name: xnat-home-work
-      - name: xnat-prearchive
       - name: catalina-logs
+      - name: xnat-archive
+      - name: xnat-prearchive
   2: |
-    - metadata:
-        name: xnat-archive
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 10Gi
     - metadata:
         name: xnat-build
       spec:
@@ -243,7 +256,7 @@ xnat-web-statefulst manifest should match snapshot:
           requests:
             storage: 10Gi
     - metadata:
-        name: xnat-prearchive
+        name: catalina-logs
       spec:
         accessModes:
           - ReadWriteOnce
@@ -251,7 +264,15 @@ xnat-web-statefulst manifest should match snapshot:
           requests:
             storage: 10Gi
     - metadata:
-        name: catalina-logs
+        name: xnat-archive
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: xnat-prearchive
       spec:
         accessModes:
           - ReadWriteOnce

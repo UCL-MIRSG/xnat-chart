@@ -5,7 +5,7 @@ tests:
   - it: xnat-web-statefulst manifest should match snapshot
     set:
       image.name: xnat-core
-      web.auth.openid.enabled: true
+      auth.openid.enabled: true
     asserts:
       - matchSnapshot:
           path: spec.template.spec

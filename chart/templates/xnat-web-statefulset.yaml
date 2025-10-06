@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "xnat.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.web.autoscaling.enabled }}
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
@@ -14,13 +14,13 @@ spec:
       {{- include "xnat.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.web.podAnnotations }}
+      {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "xnat.labels" . | nindent 8 }}
-        {{- with .Values.web.podLabels }}
+        {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
@@ -34,26 +34,26 @@ spec:
       containers:
         - name: {{ .Release.Name }}
           securityContext:
-            {{- toYaml .Values.web.securityContext | nindent 12 }}
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.web.tomcat.catalinaOpts }}
+          {{- if .Values.tomcat.catalinaOpts }}
           env:
             - name: CATALINA_OPTS
-              value: {{ .Values.web.tomcat.catalinaOpts | quote }}
+              value: {{ .Values.tomcat.catalinaOpts | quote }}
           {{- end }}
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           resources:
-            {{- toYaml .Values.web.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
-            {{- toYaml .Values.web.livenessProbe | nindent 12 }}
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
-            {{- toYaml .Values.web.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           startupProbe:
-            {{- toYaml .Values.web.startupProbe | nindent 12 }}
+            {{- toYaml .Values.startupProbe | nindent 12 }}
           volumeMounts:
             - name: node-conf
               mountPath: /data/xnat/home/config/node-conf.properties
@@ -61,11 +61,11 @@ spec:
             - name: xnat-conf
               mountPath: /data/xnat/home/config/xnat-conf.properties
               subPath: xnat-conf.properties
-          {{- if .Values.web.auth.openid.enabled }}
+          {{- if .Values.auth.openid.enabled }}
             - name: openid-conf
-              mountPath: /data/xnat/home/config/auth/{{ .Values.web.auth.openid.provider }}-provider.properties
+              mountPath: /data/xnat/home/config/auth/{{ .Values.auth.openid.provider }}-provider.properties
               readOnly: true
-              subPath: {{ .Values.web.auth.openid.provider }}-provider.properties
+              subPath: {{ .Values.auth.openid.provider }}-provider.properties
           {{- end }}
           {{- range $vol := (concat .Values.volumeMounts .Values.extraVolumeMounts) }}
             - name: {{ $vol.name }}
@@ -168,7 +168,7 @@ spec:
           volumeMounts:
             - name: node-conf
               mountPath: /xnat
-        {{- if .Values.web.auth.openid.enabled }}
+        {{- if .Values.auth.openid.enabled }}
         - name: openid-conf
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -176,48 +176,48 @@ spec:
             - name: OPENID_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.web.auth.openid.secretName }}
+                  name: {{ .Values.auth.openid.secretName }}
                   key: clientId
             - name: OPENID_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.web.auth.openid.secretName }}
+                  name: {{ .Values.auth.openid.secretName }}
                   key: clientSecret
           command:
             - 'bash'
             - '-c'
             - |
               set -x
-              cat <<EOF > /xnat/{{- .Values.web.auth.openid.provider -}}-provider.properties
+              cat <<EOF > /xnat/{{- .Values.auth.openid.provider -}}-provider.properties
               name="UCL SSO"
-              provider.id={{- .Values.web.auth.openid.provider }}
+              provider.id={{- .Values.auth.openid.provider }}
               auth.method=openid
               auto.enabled=false
               auto.verified=false
-              siteUrl={{ .Values.web.siteUrl }}
-              openid.{{- .Values.web.auth.openid.provider -}}.clientId=$(OPENID_CLIENT_ID)
-              openid.{{- .Values.web.auth.openid.provider -}}.clientSecret=$(OPENID_CLIENT_SECRET)
-              openid.{{- .Values.web.auth.openid.provider -}}.accessTokenUri={{ .Values.web.auth.openid.accessTokenUri }}
-              openid.{{- .Values.web.auth.openid.provider -}}.userAuthUri={{ .Values.web.auth.openid.userAuthUri }}
-              openid.{{- .Values.web.auth.openid.provider -}}.link=<a href="/openid-login?providerId={{- .Values.web.auth.openid.provider -}}">{{ .Values.web.auth.openid.link }}</a>
-              openid.{{- .Values.web.auth.openid.provider -}}.forceUserCreate=true
-              openid.{{- .Values.web.auth.openid.provider -}}.emailProperty=email
-              openid.{{- .Values.web.auth.openid.provider -}}.givenNameProperty=name
-              openid.{{- .Values.web.auth.openid.provider -}}.familyNameProperty=deliberately_unknown_property
+              siteUrl={{ .Values.siteUrl }}
+              openid.{{- .Values.auth.openid.provider -}}.clientId=$(OPENID_CLIENT_ID)
+              openid.{{- .Values.auth.openid.provider -}}.clientSecret=$(OPENID_CLIENT_SECRET)
+              openid.{{- .Values.auth.openid.provider -}}.accessTokenUri={{ .Values.auth.openid.accessTokenUri }}
+              openid.{{- .Values.auth.openid.provider -}}.userAuthUri={{ .Values.auth.openid.userAuthUri }}
+              openid.{{- .Values.auth.openid.provider -}}.link=<a href="/openid-login?providerId={{- .Values.auth.openid.provider -}}">{{ .Values.auth.openid.link }}</a>
+              openid.{{- .Values.auth.openid.provider -}}.forceUserCreate=true
+              openid.{{- .Values.auth.openid.provider -}}.emailProperty=email
+              openid.{{- .Values.auth.openid.provider -}}.givenNameProperty=name
+              openid.{{- .Values.auth.openid.provider -}}.familyNameProperty=deliberately_unknown_property
               EOF
           volumeMounts:
             - name: openid-conf
               mountPath: /xnat
         {{- end }}
-      {{- with .Values.web.nodeSelector }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.web.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.web.tolerations }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -232,7 +232,7 @@ spec:
         {{- end }}
         - name: node-conf
         - name: xnat-conf
-      {{- if .Values.web.auth.openid.enabled }}
+      {{- if .Values.auth.openid.enabled }}
         - name: openid-conf
       {{- end }}
       {{- range $vol := (concat .Values.volumes .Values.extraVolumes) }}

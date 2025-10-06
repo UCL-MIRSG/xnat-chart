@@ -4,6 +4,6 @@ templates:
 tests:
   - it: notes should match snapshot
     set:
-      web.ingress.enabled: true
+      ingress.enabled: true
     asserts:
       - matchSnapshotRaw: {}

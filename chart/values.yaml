@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 ---
-## @section Common parameters
+## @section XNAT parameters
 
 ## @param replicaCount Number of replicas
 replicaCount: 1
@@ -242,167 +242,164 @@ csiStorageClasses: {}
   #   nodeStageSecretName: ""
   #   nodeStageSecretNamespace: ""
 
-## @section XNAT Web parameters
-web:
-  ## @param web.siteUrl Site URL
-  siteUrl: ""
+## @param siteUrl Site URL
+siteUrl: ""
 
-  ## @param web.auth.openid.provider OpenID provider name
-  ## @param web.auth.openid.enabled Enable or disable the config
-  ## @param web.auth.openid.secretName Name of secret with clientID and clientSecret
-  ## @param web.auth.openid.accessTokenUri OpenID access token URI
-  ## @param web.auth.openid.userAuthUri OpenID user authentication URI
-  ## @param web.auth.openid.link OpenID link
-  ## @param web.auth.localdb.secretName Name of secret with adminPassword and serviceAdminPassword
-  auth:
-    openid:
-      provider: openid1
-      enabled: false
-      secretName: openid-secret
-      accessTokenUri: ""
-      userAuthUri: ""
-      link: ""
-    localdb:
-      secretName: localdb-secret
+## @param auth.openid.provider OpenID provider name
+## @param auth.openid.enabled Enable or disable the config
+## @param auth.openid.secretName Name of secret with clientID and clientSecret
+## @param auth.openid.accessTokenUri OpenID access token URI
+## @param auth.openid.userAuthUri OpenID user authentication URI
+## @param auth.openid.link OpenID link
+## @param auth.localdb.secretName Name of secret with adminPassword and serviceAdminPassword
+auth:
+  openid:
+    provider: openid1
+    enabled: false
+    secretName: openid-secret
+    accessTokenUri: ""
+    userAuthUri: ""
+    link: ""
+  localdb:
+    secretName: localdb-secret
 
-  ## @param web.podAnnotations Annotations to add to the web pod
-  podAnnotations: {}
+## @param podAnnotations Annotations to add to the web pod
+podAnnotations: {}
 
-  ## @param web.podLabels Labels to add to the web pod
-  podLabels: {}
+## @param podLabels Labels to add to the web pod
+podLabels: {}
 
-  ## @param web.podSecurityContext.runAsUser Pod security context runAsUser
-  podSecurityContext:
-    runAsUser: 1000
+## @param podSecurityContext Pod security context
+podSecurityContext: {}
 
-  ## @param web.securityContext Pod security context
-  securityContext:
+## @param securityContext.runAsUser Tomcat container security context runAsUser
+securityContext:
+  runAsUser: 1000
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+## @param ingress.enabled Enable or disable the ingress deployment
+## @param ingress.className Ingress class name
+## @param ingress.annotations Ingress annotations
+## @param ingress.hosts[0].host Ingress host
+## @param ingress.hosts[0].paths[0].path Ingress path
+## @param ingress.hosts[0].paths[0].pathType Ingress path type
+## @param ingress.tls Ingress TLS
+##
+ingress:
+  enabled: false
+  className: ""
+  annotations:
     {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: true
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
-  ## @param web.ingress.enabled Enable or disable the ingress deployment
-  ## @param web.ingress.className Ingress class name
-  ## @param web.ingress.annotations Ingress annotations
-  ## @param web.ingress.hosts[0].host Ingress host
-  ## @param web.ingress.hosts[0].paths[0].path Ingress path
-  ## @param web.ingress.hosts[0].paths[0].pathType Ingress path type
-  ## @param web.ingress.tls Ingress TLS
-  ##
-  ingress:
-    enabled: false
-    className: ""
-    annotations:
-      {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: true
-    hosts:
-      - host: chart-example.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
+## @param resources.limits.cpu CPU and memory limits
+## @param resources.limits.memory Memory limits
+## @param resources.requests.cpu CPU and memory requests
+## @param resources.requests.memory Memory requests
+resources:
+  limits:
+    cpu: "2"
+    memory: 6000Mi
+  requests:
+    cpu: "1"
+    memory: 6000Mi
 
-  ## @param web.resources.limits.cpu CPU and memory limits
-  ## @param web.resources.limits.memory Memory limits
-  ## @param web.resources.requests.cpu CPU and memory requests
-  ## @param web.resources.requests.memory Memory requests
-  resources:
-    limits:
-      cpu: "2"
-      memory: 6000Mi
-    requests:
-      cpu: "1"
-      memory: 6000Mi
+## @param livenessProbe.failureThreshold Liveness probe failure threshold
+## @param livenessProbe.httpGet.path Liveness probe httpGet path
+## @param livenessProbe.httpGet.port Liveness probe httpGet port
+## @param livenessProbe.periodSeconds Liveness probe period seconds
+## @param livenessProbe.timeoutSeconds Liveness probe timeout seconds
+livenessProbe:
+  failureThreshold: 1
+  httpGet:
+    path: /app/template/Login.vm#!
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 5
 
-  ## @param web.livenessProbe.failureThreshold Liveness probe failure threshold
-  ## @param web.livenessProbe.httpGet.path Liveness probe httpGet path
-  ## @param web.livenessProbe.httpGet.port Liveness probe httpGet port
-  ## @param web.livenessProbe.periodSeconds Liveness probe period seconds
-  ## @param web.livenessProbe.timeoutSeconds Liveness probe timeout seconds
-  livenessProbe:
-    failureThreshold: 1
-    httpGet:
-      path: /app/template/Login.vm#!
-      port: http
-    periodSeconds: 10
-    timeoutSeconds: 5
+## @param readinessProbe.failureThreshold Readiness probe failure threshold
+## @param readinessProbe.httpGet.path Readiness probe httpGet path
+## @param readinessProbe.httpGet.port Readiness probe httpGet port
+## @param readinessProbe.periodSeconds Readiness probe period seconds
+## @param readinessProbe.timeoutSeconds Readiness probe timeout seconds
+readinessProbe:
+  failureThreshold: 1
+  httpGet:
+    path: /app/template/Login.vm#!
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 3
 
-  ## @param web.readinessProbe.failureThreshold Readiness probe failure threshold
-  ## @param web.readinessProbe.httpGet.path Readiness probe httpGet path
-  ## @param web.readinessProbe.httpGet.port Readiness probe httpGet port
-  ## @param web.readinessProbe.periodSeconds Readiness probe period seconds
-  ## @param web.readinessProbe.timeoutSeconds Readiness probe timeout seconds
-  readinessProbe:
-    failureThreshold: 1
-    httpGet:
-      path: /app/template/Login.vm#!
-      port: http
-    periodSeconds: 10
-    timeoutSeconds: 3
+## @param startupProbe.failureThreshold Startup probe failure threshold
+## @param startupProbe.httpGet.path Startup probe httpGet path
+## @param startupProbe.httpGet.port Startup probe httpGet port
+## @param startupProbe.periodSeconds Startup probe period seconds
+## @param startupProbe.initialDelaySeconds Startup probe initial delay seconds
+startupProbe:
+  failureThreshold: 15
+  httpGet:
+    path: /app/template/Login.vm#!
+    port: http
+  periodSeconds: 30
+  initialDelaySeconds: 60
 
-  ## @param web.startupProbe.failureThreshold Startup probe failure threshold
-  ## @param web.startupProbe.httpGet.path Startup probe httpGet path
-  ## @param web.startupProbe.httpGet.port Startup probe httpGet port
-  ## @param web.startupProbe.periodSeconds Startup probe period seconds
-  ## @param web.startupProbe.initialDelaySeconds Startup probe initial delay seconds
-  startupProbe:
-    failureThreshold: 15
-    httpGet:
-      path: /app/template/Login.vm#!
-      port: http
-    periodSeconds: 10
-    initialDelaySeconds: 20
+## @param autoscaling.enabled Enable or disable the autoscaling
+## @param autoscaling.minReplicas Minimum number of replicas
+## @param autoscaling.maxReplicas Maximum number of replicas
+## @param autoscaling.targetCPUUtilizationPercentage Target CPU utilisation percentage
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
-  ## @param web.autoscaling.enabled Enable or disable the autoscaling
-  ## @param web.autoscaling.minReplicas Minimum number of replicas
-  ## @param web.autoscaling.maxReplicas Maximum number of replicas
-  ## @param web.autoscaling.targetCPUUtilizationPercentage Target CPU utilisation percentage
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
+## @param nodeSelector Node selector
+nodeSelector: {}
 
-  ## @param web.nodeSelector Node selector
-  nodeSelector: {}
+## @param tolerations Tolerations to add to the web pod
+tolerations: []
 
-  ## @param web.tolerations Tolerations to add to the web pod
-  tolerations: []
+## @param affinity Affinity to add to the web pod
+affinity: {}
 
-  ## @param web.affinity Affinity to add to the web pod
-  affinity: {}
+## @param tomcat.catalinaOpts Override default CATALINA_OPTS
+tomcat:
+  catalinaOpts: ""
 
-  ## @param web.tomcat.catalinaOpts Override default CATALINA_OPTS
-  tomcat:
-    catalinaOpts: ""
-
-  ## @param web.config.enabled Enable or disable the config
-  ## @param web.config.image.pullPolicy Image pull policy
-  ## @param web.config.image.name Image name
-  ## @param web.config.image.namespace Image namespace
-  ## @param web.config.image.registry Image registry
-  ## @param web.config.image.tag Image tag
-  ## @param web.config.jobAnnotations Annotations to add to the config job
-  ## @param web.config.extraWait Extra wait (in seconds) for admin account to be created after Tomcat has started
-  config:
-    enabled: true
-    image:
-      pullPolicy: ""
-      name: xnat-config
-      namespace: ucl-mirsg
-      registry: ghcr.io
-      tag: latest
-    jobAnnotations: {}
-    extraWait: ""
+## @param config.enabled Enable or disable the config
+## @param config.image.pullPolicy Image pull policy
+## @param config.image.name Image name
+## @param config.image.namespace Image namespace
+## @param config.image.registry Image registry
+## @param config.image.tag Image tag
+## @param config.jobAnnotations Annotations to add to the config job
+## @param config.extraWait Extra wait (in seconds) for admin account to be created after Tomcat has started
+config:
+  enabled: true
+  image:
+    pullPolicy: ""
+    name: xnat-config
+    namespace: ucl-mirsg
+    registry: ghcr.io
+    tag: latest
+  jobAnnotations: {}
+  extraWait: ""
 
 ### @section XNAT Database parameters
 ## @param postgresql.enabled Whether to deploy a PostgreSQL cluster

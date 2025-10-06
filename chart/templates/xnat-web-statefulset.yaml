@@ -31,8 +31,6 @@ spec:
         - name: {{ .Values.image.pullSecret | quote }}
       {{- end }}
       serviceAccountName: {{ include "xnat.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Release.Name }}
           securityContext:
@@ -69,16 +67,35 @@ spec:
               readOnly: true
               subPath: {{ .Values.web.auth.openid.provider }}-provider.properties
           {{- end }}
-          {{- range $name, $prop := (merge .Values.volumeMounts .Values.extraVolumeMounts) }}
-            - name: {{ $name }}
-              mountPath: {{ $prop.mountPath }}
-              subPath: {{ $prop.subPath }}
+          {{- range $vol := (concat .Values.volumeMounts .Values.extraVolumeMounts) }}
+            - name: {{ $vol.name }}
+              mountPath: {{ $vol.mountPath }}
+              subPath: {{ $vol.subPath }}
           {{- end }}
           command:
-            - /bin/sh
+            - bash
             - -c
             - |
               /usr/local/tomcat/bin/catalina.sh run
+        {{- if .Values.logging.enabled }}
+        - name: {{ .Release.Name }}-log-reader # Sidecar container
+          image: grafana/alloy:latest
+          command:
+            - /bin/sh
+            - -c
+            - /bin/alloy run --server.http.listen-addr=0.0.0.0:12345 /etc/alloy/config.alloy
+          volumeMounts:
+            - name: alloy-config
+              mountPath: /etc/alloy/config.alloy
+              subPath: config.alloy
+            {{- range $vol := .Values.volumeMounts }}
+            {{- if or (eq $vol.name "xnat-home-logs") (eq $vol.name "catalina-logs") }}
+            - name: {{ $vol.name }}
+              mountPath: {{ $vol.mountPath }}
+              subPath: {{ $vol.subPath }}
+            {{- end }}
+            {{- end }}
+        {{- end }}
       initContainers:
         - name: wait-for-postgres
           image: {{ include "xnat.image" . }}
@@ -97,8 +114,8 @@ spec:
             - name: PGDATABASE
               value: {{ .Values.postgresql.cluster.initdb.database }}
           command:
-            - 'bash'
-            - '-c'
+            - bash
+            - -c
             - |
               set -e
               until psql -h {{ template "xnat.postgresql.svc" . }} -c '\q'; do
@@ -121,8 +138,8 @@ spec:
                   name: {{ .Values.postgresql.cluster.initdb.secret.name }}
                   key: password
           command:
-            - 'bash'
-            - '-c'
+            - bash
+            - -c
             - |
               set -x
               cat <<EOF > /xnat/xnat-conf.properties
@@ -205,19 +222,27 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        {{- if .Values.logging.enabled }}
+        - name: alloy-config
+          configMap:
+            name: {{ include "xnat.fullname" . }}-alloy-config
+            items:
+              - key: config.alloy
+                path: config.alloy
+        {{- end }}
         - name: node-conf
         - name: xnat-conf
       {{- if .Values.web.auth.openid.enabled }}
         - name: openid-conf
       {{- end }}
-      {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
-        - name: {{ $name }}
-        {{- if and $prop.persistent $prop.existingClaim }}
+      {{- range $vol := (concat .Values.volumes .Values.extraVolumes) }}
+        - name: {{ $vol.name }}
+        {{- if and $vol.persistent $vol.existingClaim }}
           persistentVolumeClaim:
-            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) $name }}
-        {{- else if not $prop.persistent }}
+            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) $vol.name }}
+        {{- else if not $vol.persistent }}
           {{- if or .configMap .secret }}
-          {{- range $key, $value := $prop }}
+          {{- range $key, $value := $vol }}
             {{- if not (eq $key "name") }}
           {{ $key }}:
           {{- toYaml $value | nindent 12 }}
@@ -229,26 +254,26 @@ spec:
         {{- end }}
       {{- end }}
   volumeClaimTemplates:
-  {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
-  {{- if and $prop.persistent (not $prop.existingClaim) }}
+  {{- range $vol := (concat .Values.volumes .Values.extraVolumes) }}
+  {{- if and $vol.persistent (not $vol.existingClaim) }}
     - metadata:
-        name: {{ $name }}
-      {{- with $prop.annotations }}
+        name: {{ $vol.name }}
+      {{- with $vol.annotations }}
         annotations:
         {{- range $key, $value := . }}
           {{ $key }}: {{ $value }}
         {{- end }}
       {{- end }}
       spec:
-        accessModes: [ {{ $prop.accessMode | quote }} ]
+        accessModes: [ {{ $vol.accessMode | quote }} ]
         resources:
           requests:
-            storage: {{ $prop.size | quote }}
-      {{- if $prop.storageClass }}
-        {{- if (eq "-" $prop.storageClass) }}
+            storage: {{ $vol.size | quote }}
+      {{- if $vol.storageClass }}
+        {{- if (eq "-" $vol.storageClass) }}
         storageClassName: ""
         {{- else }}
-        storageClassName: "{{ $prop.storageClass }}"
+        storageClassName: "{{ $vol.storageClass }}"
         {{- end }}
       {{- end }}
     {{- end }}

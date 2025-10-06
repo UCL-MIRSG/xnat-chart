@@ -413,3 +413,9 @@ postgresql:
         name: pg-user-secret
   version:
     postgresql: "14"
+
+## @param logging.enabled Enable or disable logging
+## @param logging.loki_ip IP address or hostname of Loki instance
+logging:
+  enabled: true
+  loki_ip: loki:3100

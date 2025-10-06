@@ -1,0 +1,37 @@
+{{- if .Values.logging.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "xnat.fullname" . }}-alloy-config
+data:
+  config.alloy: |
+    local.file_match "xnat_logs" {
+      path_targets = [
+        {"__path__" = "/usr/local/tomcat/logs/catalina.*", job = string.format("%s-catalina.out", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/access.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/application.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/configuration.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/containers.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/containers-kubernetes.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/dicom.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/events.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/ohifviewer.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/openid.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/tasks.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/xapi.log", job = string.format("%s-xapi", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/xdat.log", job = string.format("%s-xdat", constants.hostname), hostname = constants.hostname},
+        {"__path__" = "/data/xnat/home/logs/xsync.log", job = string.format("%s-xapi", constants.hostname), hostname = constants.hostname},
+      ]
+      sync_period  = "5s"
+    }
+    loki.source.file "log_scrape" {
+      targets    = local.file_match.xnat_logs.targets
+      forward_to = [loki.write.local.receiver]
+      tail_from_end = true
+    }
+    loki.write "local" {
+      endpoint {
+        url = "http://{{ .Values.logging.loki_ip }}/loki/api/v1/push"
+      }
+    }
+{{- end }}

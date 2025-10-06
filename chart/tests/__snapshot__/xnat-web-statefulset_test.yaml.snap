@@ -71,6 +71,9 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /data/xnat/prearchive
             name: xnat-prearchive
             subPath: null
+          - mountPath: /usr/local/tomcat/logs
+            name: catalina-logs
+            subPath: null
     imagePullSecrets:
       - name: ""
     initContainers:
@@ -197,6 +200,7 @@ xnat-web-statefulst manifest should match snapshot:
       - name: xnat-home-logs
       - name: xnat-home-work
       - name: xnat-prearchive
+      - name: catalina-logs
   2: |
     - metadata:
         name: xnat-archive
@@ -240,6 +244,14 @@ xnat-web-statefulst manifest should match snapshot:
             storage: 10Gi
     - metadata:
         name: xnat-prearchive
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: catalina-logs
       spec:
         accessModes:
           - ReadWriteOnce

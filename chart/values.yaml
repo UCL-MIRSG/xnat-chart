@@ -166,7 +166,7 @@ volumeMounts:
     subPath:
   - name: catalina-logs
     mountPath: /usr/local/tomcat/logs
-    subPath: catalina.out
+    subPath:
 
 ## @param extraVolumes[0].name XNAT archive volume name
 ## @param extraVolumes[0].accessMode XNAT archive volume access modes

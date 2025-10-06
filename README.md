@@ -293,7 +293,7 @@ manually create the persistent volume claims before deploying the chart.
 | `volumeMounts[3].subPath`                                 | XNAT home work volume sub path                                                   | `nil`                                                       |
 | `volumeMounts[4].name`                                    | Catalina logs volume name                                                        | `catalina-logs`                                             |
 | `volumeMounts[4].mountPath`                               | Catalina logs volume mount path                                                  | `/usr/local/tomcat/logs`                                    |
-| `volumeMounts[4].subPath`                                 | Catalina logs volume sub path                                                    | `catalina.out`                                              |
+| `volumeMounts[4].subPath`                                 | Catalina logs volume sub path                                                    | `nil`                                                       |
 | `extraVolumes[0].name`                                    | XNAT archive volume name                                                         | `xnat-archive`                                              |
 | `extraVolumes[0].accessMode`                              | XNAT archive volume access modes                                                 | `ReadWriteOnce`                                             |
 | `extraVolumes[0].annotations`                             | XNAT archive volume annotations                                                  | `{}`                                                        |

@@ -445,6 +445,25 @@ postgresql:
 
 ## @param logging.enabled Enable or disable logging
 ## @param logging.loki_ip IP address or hostname of Loki instance
+## @param logging.logs_to_scrape List of logs to scrape
 logging:
   enabled: true
   loki_ip: loki:3100
+  logs_to_scrape:
+    - access
+    - application
+    - configuration
+    - containers
+    - containers-kubernetes
+    - dicom
+    - events
+    - ohifviewer
+    - openid
+    - received
+    - security
+    - spring
+    - sql
+    - tasks
+    - xapi
+    - xdat
+    - xsync

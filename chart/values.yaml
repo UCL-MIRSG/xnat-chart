@@ -314,10 +314,10 @@ ingress:
 resources:
   limits:
     cpu: "2"
-    memory: 6000Mi
+    memory: 4000Mi
   requests:
     cpu: "1"
-    memory: 6000Mi
+    memory: 2000Mi
 
 ## @param livenessProbe.failureThreshold Liveness probe failure threshold
 ## @param livenessProbe.httpGet.path Liveness probe httpGet path

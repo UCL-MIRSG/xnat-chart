@@ -51,6 +51,15 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
+StatefulSet labels
+*/}}
+{{- define "xnat.statefulsetLabels" -}}
+{{ include "xnat.selectorLabels" . }}
+version: {{ .Chart.AppVersion | quote }}
+app: {{ include "xnat.name" . }}
+{{- end }}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "xnat.serviceAccountName" -}}

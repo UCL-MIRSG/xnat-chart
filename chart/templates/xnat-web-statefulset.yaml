@@ -11,7 +11,8 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      {{- include "xnat.selectorLabels" . | nindent 6 }}
+      {{- include "xnat.statefulsetLabels" . | nindent 6 }}
+  serviceName: {{ include "xnat.fullname" . }}-headless
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,10 +20,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "xnat.labels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "xnat.statefulsetLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
       {{- if .Values.imageCredentials.enabled }}

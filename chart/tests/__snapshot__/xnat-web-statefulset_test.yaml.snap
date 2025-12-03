@@ -188,12 +188,6 @@ xnat-web-statefulst manifest should match snapshot:
             name: openid-conf
     serviceAccountName: RELEASE-NAME-xnat
     volumes:
-      - configMap:
-          items:
-            - key: config.alloy
-              path: config.alloy
-          name: RELEASE-NAME-xnat-alloy-config
-        name: alloy-config
       - name: node-conf
       - name: xnat-conf
       - name: openid-conf

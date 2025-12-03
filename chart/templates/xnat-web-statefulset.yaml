@@ -6,23 +6,21 @@ metadata:
   labels:
     {{- include "xnat.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.web.autoscaling.enabled }}
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "xnat.selectorLabels" . | nindent 6 }}
+      {{- include "xnat.statefulsetLabels" . | nindent 6 }}
+  serviceName: {{ include "xnat.fullname" . }}-headless
   template:
     metadata:
-      {{- with .Values.web.podAnnotations }}
+      {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "xnat.labels" . | nindent 8 }}
-        {{- with .Values.web.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+        {{- include "xnat.statefulsetLabels" . | nindent 8 }}
     spec:
       imagePullSecrets:
       {{- if .Values.imageCredentials.enabled }}
@@ -31,31 +29,29 @@ spec:
         - name: {{ .Values.image.pullSecret | quote }}
       {{- end }}
       serviceAccountName: {{ include "xnat.serviceAccountName" . }}
-      securityContext:
-        {{- toYaml .Values.web.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Release.Name }}
           securityContext:
-            {{- toYaml .Values.web.securityContext | nindent 12 }}
+            {{- toYaml .Values.securityContext | nindent 12 }}
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if .Values.web.tomcat.catalinaOpts }}
+          {{- if .Values.tomcat.catalinaOpts }}
           env:
             - name: CATALINA_OPTS
-              value: {{ .Values.web.tomcat.catalinaOpts | quote }}
+              value: {{ .Values.tomcat.catalinaOpts | quote }}
           {{- end }}
           ports:
             - name: http
               containerPort: 8080
               protocol: TCP
           resources:
-            {{- toYaml .Values.web.resources | nindent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
-            {{- toYaml .Values.web.livenessProbe | nindent 12 }}
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
           readinessProbe:
-            {{- toYaml .Values.web.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
           startupProbe:
-            {{- toYaml .Values.web.startupProbe | nindent 12 }}
+            {{- toYaml .Values.startupProbe | nindent 12 }}
           volumeMounts:
             - name: node-conf
               mountPath: /data/xnat/home/config/node-conf.properties
@@ -63,22 +59,41 @@ spec:
             - name: xnat-conf
               mountPath: /data/xnat/home/config/xnat-conf.properties
               subPath: xnat-conf.properties
-          {{- if .Values.web.auth.openid.enabled }}
+          {{- if .Values.auth.openid.enabled }}
             - name: openid-conf
-              mountPath: /data/xnat/home/config/auth/{{ .Values.web.auth.openid.provider }}-provider.properties
+              mountPath: /data/xnat/home/config/auth/{{ .Values.auth.openid.provider }}-provider.properties
               readOnly: true
-              subPath: {{ .Values.web.auth.openid.provider }}-provider.properties
+              subPath: {{ .Values.auth.openid.provider }}-provider.properties
           {{- end }}
-          {{- range $name, $prop := (merge .Values.volumeMounts .Values.extraVolumeMounts) }}
-            - name: {{ $name }}
-              mountPath: {{ $prop.mountPath }}
-              subPath: {{ $prop.subPath }}
+          {{- range $vol := (concat .Values.volumeMounts .Values.extraVolumeMounts) }}
+            - name: {{ $vol.name }}
+              mountPath: {{ $vol.mountPath }}
+              subPath: {{ $vol.subPath }}
           {{- end }}
           command:
-            - /bin/sh
+            - /bin/bash
             - -c
             - |
               /usr/local/tomcat/bin/catalina.sh run
+        {{- if .Values.logging.enabled }}
+        - name: {{ .Release.Name }}-log-reader # Sidecar container
+          image: grafana/alloy:latest
+          command:
+            - /bin/bash
+            - -c
+            - /bin/alloy run --server.http.listen-addr=0.0.0.0:12345 /etc/alloy/config.alloy
+          volumeMounts:
+            - name: alloy-config
+              mountPath: /etc/alloy/config.alloy
+              subPath: config.alloy
+            {{- range $vol := .Values.volumeMounts }}
+            {{- if or (eq $vol.name "xnat-home-logs") (eq $vol.name "catalina-logs") }}
+            - name: {{ $vol.name }}
+              mountPath: {{ $vol.mountPath }}
+              subPath: {{ $vol.subPath }}
+            {{- end }}
+            {{- end }}
+        {{- end }}
       initContainers:
         - name: wait-for-postgres
           image: {{ include "xnat.image" . }}
@@ -97,8 +112,8 @@ spec:
             - name: PGDATABASE
               value: {{ .Values.postgresql.cluster.initdb.database }}
           command:
-            - 'bash'
-            - '-c'
+            - /bin/bash
+            - -c
             - |
               set -e
               until psql -h {{ template "xnat.postgresql.svc" . }} -c '\q'; do
@@ -121,8 +136,8 @@ spec:
                   name: {{ .Values.postgresql.cluster.initdb.secret.name }}
                   key: password
           command:
-            - 'bash'
-            - '-c'
+            - /bin/bash
+            - -c
             - |
               set -x
               cat <<EOF > /xnat/xnat-conf.properties
@@ -143,15 +158,15 @@ spec:
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - 'bash'
-            - '-c'
+            - /bin/bash
+            - -c
             - |
               set -x
               echo "node.id=$HOSTNAME" > /xnat/node-conf.properties
           volumeMounts:
             - name: node-conf
               mountPath: /xnat
-        {{- if .Values.web.auth.openid.enabled }}
+        {{- if .Values.auth.openid.enabled }}
         - name: openid-conf
           image: {{ include "xnat.image" . }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -159,65 +174,73 @@ spec:
             - name: OPENID_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.web.auth.openid.secretName }}
+                  name: {{ .Values.auth.openid.secretName }}
                   key: clientId
             - name: OPENID_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.web.auth.openid.secretName }}
+                  name: {{ .Values.auth.openid.secretName }}
                   key: clientSecret
           command:
-            - 'bash'
-            - '-c'
+            - /bin/bash
+            - -c
             - |
               set -x
-              cat <<EOF > /xnat/{{- .Values.web.auth.openid.provider -}}-provider.properties
+              cat <<EOF > /xnat/{{- .Values.auth.openid.provider -}}-provider.properties
               name="UCL SSO"
-              provider.id={{- .Values.web.auth.openid.provider }}
+              provider.id={{- .Values.auth.openid.provider }}
               auth.method=openid
               auto.enabled=false
               auto.verified=false
-              siteUrl={{ .Values.web.siteUrl }}
-              openid.{{- .Values.web.auth.openid.provider -}}.clientId=$(OPENID_CLIENT_ID)
-              openid.{{- .Values.web.auth.openid.provider -}}.clientSecret=$(OPENID_CLIENT_SECRET)
-              openid.{{- .Values.web.auth.openid.provider -}}.accessTokenUri={{ .Values.web.auth.openid.accessTokenUri }}
-              openid.{{- .Values.web.auth.openid.provider -}}.userAuthUri={{ .Values.web.auth.openid.userAuthUri }}
-              openid.{{- .Values.web.auth.openid.provider -}}.link=<a href="/openid-login?providerId={{- .Values.web.auth.openid.provider -}}">{{ .Values.web.auth.openid.link }}</a>
-              openid.{{- .Values.web.auth.openid.provider -}}.forceUserCreate=true
-              openid.{{- .Values.web.auth.openid.provider -}}.emailProperty=email
-              openid.{{- .Values.web.auth.openid.provider -}}.givenNameProperty=name
-              openid.{{- .Values.web.auth.openid.provider -}}.familyNameProperty=deliberately_unknown_property
+              siteUrl={{ .Values.siteUrl }}
+              openid.{{- .Values.auth.openid.provider -}}.clientId=$(OPENID_CLIENT_ID)
+              openid.{{- .Values.auth.openid.provider -}}.clientSecret=$(OPENID_CLIENT_SECRET)
+              openid.{{- .Values.auth.openid.provider -}}.accessTokenUri={{ .Values.auth.openid.accessTokenUri }}
+              openid.{{- .Values.auth.openid.provider -}}.userAuthUri={{ .Values.auth.openid.userAuthUri }}
+              openid.{{- .Values.auth.openid.provider -}}.link=<a href="/openid-login?providerId={{- .Values.auth.openid.provider -}}">{{ .Values.auth.openid.link }}</a>
+              openid.{{- .Values.auth.openid.provider -}}.forceUserCreate=true
+              openid.{{- .Values.auth.openid.provider -}}.emailProperty=email
+              openid.{{- .Values.auth.openid.provider -}}.givenNameProperty=name
+              openid.{{- .Values.auth.openid.provider -}}.familyNameProperty=deliberately_unknown_property
               EOF
           volumeMounts:
             - name: openid-conf
               mountPath: /xnat
         {{- end }}
-      {{- with .Values.web.nodeSelector }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.web.affinity }}
+      {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.web.tolerations }}
+      {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       volumes:
+        {{- if .Values.logging.enabled }}
+        - name: alloy-config
+          configMap:
+            name: {{ include "xnat.fullname" . }}-alloy-config
+            items:
+              - key: config.alloy
+                path: config.alloy
+        {{- end }}
         - name: node-conf
         - name: xnat-conf
-      {{- if .Values.web.auth.openid.enabled }}
+      {{- if .Values.auth.openid.enabled }}
         - name: openid-conf
       {{- end }}
-      {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
-        - name: {{ $name }}
-        {{- if and $prop.persistent $prop.existingClaim }}
+      {{- range $vol := (concat .Values.volumes .Values.extraVolumes) }}
+        - name: {{ $vol.name }}
+        {{- if and $vol.persistent $vol.existingClaim }}
           persistentVolumeClaim:
-            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) $name }}
-        {{- else if not $prop.persistent }}
+            claimName: {{ printf "%s-%s" (include "xnat.fullname" $) $vol.name }}
+        {{- else if not $vol.persistent }}
           {{- if or .configMap .secret }}
-          {{- range $key, $value := $prop }}
+          {{- range $key, $value := $vol }}
             {{- if not (eq $key "name") }}
           {{ $key }}:
           {{- toYaml $value | nindent 12 }}
@@ -229,26 +252,26 @@ spec:
         {{- end }}
       {{- end }}
   volumeClaimTemplates:
-  {{- range $name, $prop := (merge .Values.volumes .Values.extraVolumes) }}
-  {{- if and $prop.persistent (not $prop.existingClaim) }}
+  {{- range $vol := (concat .Values.volumes .Values.extraVolumes) }}
+  {{- if and $vol.persistent (not $vol.existingClaim) }}
     - metadata:
-        name: {{ $name }}
-      {{- with $prop.annotations }}
+        name: {{ $vol.name }}
+      {{- with $vol.annotations }}
         annotations:
         {{- range $key, $value := . }}
           {{ $key }}: {{ $value }}
         {{- end }}
       {{- end }}
       spec:
-        accessModes: [ {{ $prop.accessMode | quote }} ]
+        accessModes: [ {{ $vol.accessMode | quote }} ]
         resources:
           requests:
-            storage: {{ $prop.size | quote }}
-      {{- if $prop.storageClass }}
-        {{- if (eq "-" $prop.storageClass) }}
+            storage: {{ $vol.size | quote }}
+      {{- if $vol.storageClass }}
+        {{- if (eq "-" $vol.storageClass) }}
         storageClassName: ""
         {{- else }}
-        storageClassName: "{{ $prop.storageClass }}"
+        storageClassName: "{{ $vol.storageClass }}"
         {{- end }}
       {{- end }}
     {{- end }}

@@ -1,5 +1,5 @@
 templates:
-  - templates/csi-storageclass.yaml
+  - templates/storageclasses.yaml
 
 tests:
   - it: csi-storageclass manifest should match snapshot

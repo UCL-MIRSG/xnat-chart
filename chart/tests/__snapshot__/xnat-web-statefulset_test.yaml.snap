@@ -2,7 +2,7 @@ xnat-web-statefulst manifest should match snapshot:
   1: |
     containers:
       - command:
-          - /bin/sh
+          - /bin/bash
           - -c
           - |
             /usr/local/tomcat/bin/catalina.sh run
@@ -15,7 +15,7 @@ xnat-web-statefulst manifest should match snapshot:
             port: http
           periodSeconds: 10
           timeoutSeconds: 5
-        name: xnat
+        name: RELEASE-NAME
         ports:
           - containerPort: 8080
             name: http
@@ -28,20 +28,19 @@ xnat-web-statefulst manifest should match snapshot:
           periodSeconds: 10
           timeoutSeconds: 3
         resources:
-          limits:
-            cpu: "2"
-            memory: 6000Mi
+          limits: {}
           requests:
             cpu: "1"
-            memory: 6000Mi
-        securityContext: {}
+            memory: 2000Mi
+        securityContext:
+          runAsUser: 1000
         startupProbe:
           failureThreshold: 15
           httpGet:
             path: /app/template/Login.vm#!
             port: http
-          initialDelaySeconds: 20
-          periodSeconds: 10
+          initialDelaySeconds: 60
+          periodSeconds: 30
         volumeMounts:
           - mountPath: /data/xnat/home/config/node-conf.properties
             name: node-conf
@@ -53,9 +52,6 @@ xnat-web-statefulst manifest should match snapshot:
             name: openid-conf
             readOnly: true
             subPath: openid1-provider.properties
-          - mountPath: /data/xnat/archive
-            name: xnat-archive
-            subPath: null
           - mountPath: /data/xnat/build
             name: xnat-build
             subPath: null
@@ -68,6 +64,12 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /data/xnat/home/work
             name: xnat-home-work
             subPath: null
+          - mountPath: /usr/local/tomcat/logs
+            name: catalina-logs
+            subPath: null
+          - mountPath: /data/xnat/archive
+            name: xnat-archive
+            subPath: null
           - mountPath: /data/xnat/prearchive
             name: xnat-prearchive
             subPath: null
@@ -75,7 +77,7 @@ xnat-web-statefulst manifest should match snapshot:
       - name: ""
     initContainers:
       - command:
-          - bash
+          - /bin/bash
           - -c
           - |
             set -e
@@ -101,7 +103,7 @@ xnat-web-statefulst manifest should match snapshot:
         imagePullPolicy: IfNotPresent
         name: wait-for-postgres
       - command:
-          - bash
+          - /bin/bash
           - -c
           - |
             set -x
@@ -134,7 +136,7 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /xnat
             name: xnat-conf
       - command:
-          - bash
+          - /bin/bash
           - -c
           - |
             set -x
@@ -146,7 +148,7 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /xnat
             name: node-conf
       - command:
-          - bash
+          - /bin/bash
           - -c
           - |
             set -x
@@ -184,28 +186,19 @@ xnat-web-statefulst manifest should match snapshot:
         volumeMounts:
           - mountPath: /xnat
             name: openid-conf
-    securityContext:
-      runAsUser: 1000
     serviceAccountName: RELEASE-NAME-xnat
     volumes:
       - name: node-conf
       - name: xnat-conf
       - name: openid-conf
-      - name: xnat-archive
       - name: xnat-build
       - name: xnat-cache
       - name: xnat-home-logs
       - name: xnat-home-work
+      - name: catalina-logs
+      - name: xnat-archive
       - name: xnat-prearchive
   2: |
-    - metadata:
-        name: xnat-archive
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 10Gi
     - metadata:
         name: xnat-build
       spec:
@@ -232,6 +225,22 @@ xnat-web-statefulst manifest should match snapshot:
             storage: 10Gi
     - metadata:
         name: xnat-home-work
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: catalina-logs
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: xnat-archive
       spec:
         accessModes:
           - ReadWriteOnce

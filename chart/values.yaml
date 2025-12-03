@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 ---
-## @section Common parameters
+## @section XNAT parameters
 
 ## @param replicaCount Number of replicas
 replicaCount: 1
@@ -64,53 +64,71 @@ service:
   port: 80
   targetPort: 8080
 
-## @param volumes.xnat-build.accessMode XNAT build volume access modes
-## @param volumes.xnat-build.annotations XNAT build volume annotations
-## @param volumes.xnat-build.existingClaim XNAT build volume existingClaim
-## @param volumes.xnat-build.persistent XNAT build volume persistent
-## @param volumes.xnat-build.size XNAT build volume size
-## @param volumes.xnat-build.storageClass XNAT build volume storageClass
-## @param volumes.xnat-cache.accessMode XNAT cache volume access modes
-## @param volumes.xnat-cache.annotations XNAT cache volume annotations
-## @param volumes.xnat-cache.existingClaim XNAT cache volume existingClaim
-## @param volumes.xnat-cache.persistent XNAT cache volume persistent
-## @param volumes.xnat-cache.size XNAT cache volume size
-## @param volumes.xnat-cache.storageClass XNAT cache volume storageClass
-## @param volumes.xnat-home-logs.accessMode XNAT logs volume access modes
-## @param volumes.xnat-home-logs.annotations XNAT logs volume annotations
-## @param volumes.xnat-home-logs.existingClaim XNAT logs volume existingClaim
-## @param volumes.xnat-home-logs.persistent XNAT logs volume persistent
-## @param volumes.xnat-home-logs.size XNAT logs volume size
-## @param volumes.xnat-home-logs.storageClass XNAT logs volume storageClass
-## @param volumes.xnat-home-work.accessMode XNAT work volume access modes
-## @param volumes.xnat-home-work.annotations XNAT work volume annotations
-## @param volumes.xnat-home-work.existingClaim XNAT work volume existingClaim
-## @param volumes.xnat-home-work.persistent XNAT work volume persistent
-## @param volumes.xnat-home-work.size XNAT work volume size
-## @param volumes.xnat-home-work.storageClass XNAT work volume storageClass
+## @param volumes[0].name XNAT build volume name
+## @param volumes[0].accessMode XNAT build volume access modes
+## @param volumes[0].annotations XNAT build volume annotations
+## @param volumes[0].existingClaim XNAT build volume existingClaim
+## @param volumes[0].persistent XNAT build volume persistent
+## @param volumes[0].size XNAT build volume size
+## @param volumes[0].storageClass XNAT build volume storageClass
+## @param volumes[1].name XNAT cache volume name
+## @param volumes[1].accessMode XNAT cache volume access modes
+## @param volumes[1].annotations XNAT cache volume annotations
+## @param volumes[1].existingClaim XNAT cache volume existingClaim
+## @param volumes[1].persistent XNAT cache volume persistent
+## @param volumes[1].size XNAT cache volume size
+## @param volumes[1].storageClass XNAT cache volume storageClass
+## @param volumes[2].name XNAT logs volume name
+## @param volumes[2].accessMode XNAT logs volume access modes
+## @param volumes[2].annotations XNAT logs volume annotations
+## @param volumes[2].existingClaim XNAT logs volume existingClaim
+## @param volumes[2].persistent XNAT logs volume persistent
+## @param volumes[2].size XNAT logs volume size
+## @param volumes[2].storageClass XNAT logs volume storageClass
+## @param volumes[3].name XNAT work volume name
+## @param volumes[3].accessMode XNAT work volume access modes
+## @param volumes[3].annotations XNAT work volume annotations
+## @param volumes[3].existingClaim XNAT work volume existingClaim
+## @param volumes[3].persistent XNAT work volume persistent
+## @param volumes[3].size XNAT work volume size
+## @param volumes[3].storageClass XNAT work volume storageClass
+## @param volumes[4].name Catalina logs volume name
+## @param volumes[4].accessMode Catalina logs volume access modes
+## @param volumes[4].annotations Catalina logs volume annotations
+## @param volumes[4].existingClaim Catalina logs volume existingClaim
+## @param volumes[4].persistent Catalina logs volume persistent
+## @param volumes[4].size Catalina logs volume size
+## @param volumes[4].storageClass Catalina logs volume storageClass
 volumes:
-  xnat-build:
+  - name: xnat-build
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 1Gi
     storageClass:  # e.g. local-path for k3s default storage class
-  xnat-cache:
+  - name: xnat-cache
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
     storageClass:  # e.g. local-path for k3s default storage class
-  xnat-home-logs:
+  - name: xnat-home-logs
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
     storageClass:  # e.g. local-path for k3s default storage class
-  xnat-home-work:
+  - name: xnat-home-work
+    accessMode: ReadWriteOnce
+    annotations: {}
+    existingClaim: false
+    persistent: true
+    size: 10Gi
+    storageClass:  # e.g. local-path for k3s default storage class
+  - name: catalina-logs
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
@@ -118,63 +136,75 @@ volumes:
     size: 10Gi
     storageClass:  # e.g. local-path for k3s default storage class
 
-## @param volumeMounts.xnat-build.mountPath XNAT build volume mount path
-## @param volumeMounts.xnat-build.subPath XNAT build volume sub path
-## @param volumeMounts.xnat-cache.mountPath XNAT cache volume mount path
-## @param volumeMounts.xnat-cache.subPath XNAT cache volume sub path
-## @param volumeMounts.xnat-home-logs.mountPath XNAT home logs volume mount path
-## @param volumeMounts.xnat-home-logs.subPath XNAT home logs volume sub path
-## @param volumeMounts.xnat-home-work.mountPath XNAT home work volume mount path
-## @param volumeMounts.xnat-home-work.subPath XNAT home work volume sub path
+## @param volumeMounts[0].name XNAT build volume name
+## @param volumeMounts[0].mountPath XNAT build volume mount path
+## @param volumeMounts[0].subPath XNAT build volume sub path
+## @param volumeMounts[1].name XNAT cache volume name
+## @param volumeMounts[1].mountPath XNAT cache volume mount path
+## @param volumeMounts[1].subPath XNAT cache volume sub path
+## @param volumeMounts[2].name XNAT home logs volume name
+## @param volumeMounts[2].mountPath XNAT home logs volume mount path
+## @param volumeMounts[2].subPath XNAT home logs volume sub path
+## @param volumeMounts[3].name XNAT home work volume name
+## @param volumeMounts[3].mountPath XNAT home work volume mount path
+## @param volumeMounts[3].subPath XNAT home work volume sub path
+## @param volumeMounts[4].name Catalina logs volume name
+## @param volumeMounts[4].mountPath Catalina logs volume mount path
+## @param volumeMounts[4].subPath Catalina logs volume sub path
 volumeMounts:
-  xnat-build:
+  - name: xnat-build
     mountPath: /data/xnat/build
     subPath:
-  xnat-cache:
+  - name: xnat-cache
     mountPath: /data/xnat/cache
     subPath:
-  xnat-home-logs:
+  - name: xnat-home-logs
     mountPath: /data/xnat/home/logs
     subPath:
-  xnat-home-work:
+  - name: xnat-home-work
     mountPath: /data/xnat/home/work
     subPath:
+  - name: catalina-logs
+    mountPath: /usr/local/tomcat/logs
+    subPath:
 
-## @param extraVolumes.xnat-archive.accessMode XNAT archive volume access modes
-## @param extraVolumes.xnat-archive.annotations XNAT archive volume annotations
-## @param extraVolumes.xnat-archive.existingClaim XNAT archive volume existingClaim
-## @param extraVolumes.xnat-archive.persistent XNAT archive volume persistent
-## @param extraVolumes.xnat-archive.size XNAT archive volume size
-## @param extraVolumes.xnat-archive.storageClass XNAT archive volume storageClass
-## @param extraVolumes.xnat-prearchive.accessMode XNAT prearchive volume access modes
-## @param extraVolumes.xnat-prearchive.annotations XNAT prearchive volume annotations
-## @param extraVolumes.xnat-prearchive.existingClaim XNAT prearchive volume existingClaim
-## @param extraVolumes.xnat-prearchive.persistent XNAT prearchive volume persistent
-## @param extraVolumes.xnat-prearchive.size XNAT prearchive volume size
-## @param extraVolumes.xnat-prearchive.storageClass XNAT prearchive volume storageClass
+## @param extraVolumes[0].name XNAT archive volume name
+## @param extraVolumes[0].accessMode XNAT archive volume access modes
+## @param extraVolumes[0].annotations XNAT archive volume annotations
+## @param extraVolumes[0].existingClaim XNAT archive volume existingClaim
+## @param extraVolumes[0].persistent XNAT archive volume persistent
+## @param extraVolumes[0].size XNAT archive volume size
+## @param extraVolumes[0].storageClass XNAT archive volume storageClass
+## @param extraVolumes[1].name XNAT prearchive volume name
+## @param extraVolumes[1].accessMode XNAT prearchive volume access modes
+## @param extraVolumes[1].annotations XNAT prearchive volume annotations
+## @param extraVolumes[1].existingClaim XNAT prearchive volume existingClaim
+## @param extraVolumes[1].persistent XNAT prearchive volume persistent
+## @param extraVolumes[1].size XNAT prearchive volume size
+## @param extraVolumes[1].storageClass XNAT prearchive volume storageClass
 extraVolumes:
-  # xnat-archive-project01:
+  # - name: xnat-archive-project01
   #   accessMode: ReadWriteMany
   #   annotations: {}
   #   existingClaim: true
   #   persistent: true
   #   size: 8Gi
   #   storageClass: smb
-  # xnat-prearchive-project01:
+  # - name: xnat-prearchive-project01
   #   accessMode: ReadWriteMany
   #   annotations: {}
   #   existingClaim: true
   #   persistent: true
   #   size: 8Gi
   #   storageClass: smb
-  xnat-archive:
+  - name: xnat-archive
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
     persistent: true
     size: 10Gi
     storageClass:  # e.g. local-path for k3s default storage class
-  xnat-prearchive:
+  - name: xnat-prearchive
     accessMode: ReadWriteOnce
     annotations: {}
     existingClaim: false
@@ -182,21 +212,23 @@ extraVolumes:
     size: 10Gi
     storageClass:  # e.g. local-path for k3s default storage class
 
-## @param extraVolumeMounts.xnat-archive.mountPath XNAT archive volume mount path
-## @param extraVolumeMounts.xnat-archive.subPath XNAT archive volume sub path
-## @param extraVolumeMounts.xnat-prearchive.mountPath XNAT prearchive volume mount path
-## @param extraVolumeMounts.xnat-prearchive.subPath XNAT prearchive volume sub path
+## @param extraVolumeMounts[0].name XNAT archive volume name
+## @param extraVolumeMounts[0].mountPath XNAT archive volume mount path
+## @param extraVolumeMounts[0].subPath XNAT archive volume sub path
+## @param extraVolumeMounts[1].name XNAT prearchive volume name
+## @param extraVolumeMounts[1].mountPath XNAT prearchive volume mount path
+## @param extraVolumeMounts[1].subPath XNAT prearchive volume sub path
 extraVolumeMounts:
-  # xnat-archive-project01:
+  # - name: xnat-archive-project01
   #   mountPath: /data/xnat/archive/project01
   #   subPath:
-  # xnat-prearchive-project01:
+  # - name: xnat-prearchive-project01
   #   mountPath: /data/xnat/prearchive/project01
   #   subPath:
-  xnat-archive:
+  - name: xnat-archive
     mountPath: /data/xnat/archive
     subPath:
-  xnat-prearchive:
+  - name: xnat-prearchive
     mountPath: /data/xnat/prearchive
     subPath:
 
@@ -210,167 +242,161 @@ csiStorageClasses: {}
   #   nodeStageSecretName: ""
   #   nodeStageSecretNamespace: ""
 
-## @section XNAT Web parameters
-web:
-  ## @param web.siteUrl Site URL
-  siteUrl: ""
+## @param siteUrl Site URL
+siteUrl: ""
 
-  ## @param web.auth.openid.provider OpenID provider name
-  ## @param web.auth.openid.enabled Enable or disable the config
-  ## @param web.auth.openid.secretName Name of secret with clientID and clientSecret
-  ## @param web.auth.openid.accessTokenUri OpenID access token URI
-  ## @param web.auth.openid.userAuthUri OpenID user authentication URI
-  ## @param web.auth.openid.link OpenID link
-  ## @param web.auth.localdb.secretName Name of secret with adminPassword and serviceAdminPassword
-  auth:
-    openid:
-      provider: openid1
-      enabled: false
-      secretName: openid-secret
-      accessTokenUri: ""
-      userAuthUri: ""
-      link: ""
-    localdb:
-      secretName: localdb-secret
+## @param auth.openid.provider OpenID provider name
+## @param auth.openid.enabled Enable or disable the config
+## @param auth.openid.secretName Name of secret with clientID and clientSecret
+## @param auth.openid.accessTokenUri OpenID access token URI
+## @param auth.openid.userAuthUri OpenID user authentication URI
+## @param auth.openid.link OpenID link
+## @param auth.localdb.secretName Name of secret with adminPassword and serviceAdminPassword
+auth:
+  openid:
+    provider: openid1
+    enabled: false
+    secretName: openid-secret
+    accessTokenUri: ""
+    userAuthUri: ""
+    link: ""
+  localdb:
+    secretName: localdb-secret
 
-  ## @param web.podAnnotations Annotations to add to the web pod
-  podAnnotations: {}
+## @param podAnnotations Annotations to add to the web pod
+podAnnotations: {}
 
-  ## @param web.podLabels Labels to add to the web pod
-  podLabels: {}
+## @param podLabels Labels to add to the web pod
+podLabels: {}
 
-  ## @param web.podSecurityContext.runAsUser Pod security context runAsUser
-  podSecurityContext:
-    runAsUser: 1000
+## @param podSecurityContext Pod security context
+podSecurityContext: {}
 
-  ## @param web.securityContext Pod security context
-  securityContext:
+## @param securityContext.runAsUser Tomcat container security context runAsUser
+securityContext:
+  runAsUser: 1000
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+## @param ingress.enabled Enable or disable the ingress deployment
+## @param ingress.className Ingress class name
+## @param ingress.annotations Ingress annotations
+## @param ingress.hosts[0].host Ingress host
+## @param ingress.hosts[0].paths[0].path Ingress path
+## @param ingress.hosts[0].paths[0].pathType Ingress path type
+## @param ingress.tls Ingress TLS
+##
+ingress:
+  enabled: false
+  className: ""
+  annotations:
     {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: true
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
-  ## @param web.ingress.enabled Enable or disable the ingress deployment
-  ## @param web.ingress.className Ingress class name
-  ## @param web.ingress.annotations Ingress annotations
-  ## @param web.ingress.hosts[0].host Ingress host
-  ## @param web.ingress.hosts[0].paths[0].path Ingress path
-  ## @param web.ingress.hosts[0].paths[0].pathType Ingress path type
-  ## @param web.ingress.tls Ingress TLS
-  ##
-  ingress:
-    enabled: false
-    className: ""
-    annotations:
-      {}
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: true
-    hosts:
-      - host: chart-example.local
-        paths:
-          - path: /
-            pathType: ImplementationSpecific
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
+## @param resources.limits CPU and memory limits
+## @param resources.requests.cpu CPU and memory requests
+## @param resources.requests.memory Memory requests
+resources:
+  limits: {}
+  requests:
+    cpu: "1"
+    memory: 2000Mi
 
-  ## @param web.resources.limits.cpu CPU and memory limits
-  ## @param web.resources.limits.memory Memory limits
-  ## @param web.resources.requests.cpu CPU and memory requests
-  ## @param web.resources.requests.memory Memory requests
-  resources:
-    limits:
-      cpu: "2"
-      memory: 6000Mi
-    requests:
-      cpu: "1"
-      memory: 6000Mi
+## @param livenessProbe.failureThreshold Liveness probe failure threshold
+## @param livenessProbe.httpGet.path Liveness probe httpGet path
+## @param livenessProbe.httpGet.port Liveness probe httpGet port
+## @param livenessProbe.periodSeconds Liveness probe period seconds
+## @param livenessProbe.timeoutSeconds Liveness probe timeout seconds
+livenessProbe:
+  failureThreshold: 1
+  httpGet:
+    path: /app/template/Login.vm#!
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 5
 
-  ## @param web.livenessProbe.failureThreshold Liveness probe failure threshold
-  ## @param web.livenessProbe.httpGet.path Liveness probe httpGet path
-  ## @param web.livenessProbe.httpGet.port Liveness probe httpGet port
-  ## @param web.livenessProbe.periodSeconds Liveness probe period seconds
-  ## @param web.livenessProbe.timeoutSeconds Liveness probe timeout seconds
-  livenessProbe:
-    failureThreshold: 1
-    httpGet:
-      path: /app/template/Login.vm#!
-      port: http
-    periodSeconds: 10
-    timeoutSeconds: 5
+## @param readinessProbe.failureThreshold Readiness probe failure threshold
+## @param readinessProbe.httpGet.path Readiness probe httpGet path
+## @param readinessProbe.httpGet.port Readiness probe httpGet port
+## @param readinessProbe.periodSeconds Readiness probe period seconds
+## @param readinessProbe.timeoutSeconds Readiness probe timeout seconds
+readinessProbe:
+  failureThreshold: 1
+  httpGet:
+    path: /app/template/Login.vm#!
+    port: http
+  periodSeconds: 10
+  timeoutSeconds: 3
 
-  ## @param web.readinessProbe.failureThreshold Readiness probe failure threshold
-  ## @param web.readinessProbe.httpGet.path Readiness probe httpGet path
-  ## @param web.readinessProbe.httpGet.port Readiness probe httpGet port
-  ## @param web.readinessProbe.periodSeconds Readiness probe period seconds
-  ## @param web.readinessProbe.timeoutSeconds Readiness probe timeout seconds
-  readinessProbe:
-    failureThreshold: 1
-    httpGet:
-      path: /app/template/Login.vm#!
-      port: http
-    periodSeconds: 10
-    timeoutSeconds: 3
+## @param startupProbe.failureThreshold Startup probe failure threshold
+## @param startupProbe.httpGet.path Startup probe httpGet path
+## @param startupProbe.httpGet.port Startup probe httpGet port
+## @param startupProbe.periodSeconds Startup probe period seconds
+## @param startupProbe.initialDelaySeconds Startup probe initial delay seconds
+startupProbe:
+  failureThreshold: 15
+  httpGet:
+    path: /app/template/Login.vm#!
+    port: http
+  periodSeconds: 30
+  initialDelaySeconds: 60
 
-  ## @param web.startupProbe.failureThreshold Startup probe failure threshold
-  ## @param web.startupProbe.httpGet.path Startup probe httpGet path
-  ## @param web.startupProbe.httpGet.port Startup probe httpGet port
-  ## @param web.startupProbe.periodSeconds Startup probe period seconds
-  ## @param web.startupProbe.initialDelaySeconds Startup probe initial delay seconds
-  startupProbe:
-    failureThreshold: 15
-    httpGet:
-      path: /app/template/Login.vm#!
-      port: http
-    periodSeconds: 10
-    initialDelaySeconds: 20
+## @param autoscaling.enabled Enable or disable the autoscaling
+## @param autoscaling.minReplicas Minimum number of replicas
+## @param autoscaling.maxReplicas Maximum number of replicas
+## @param autoscaling.targetCPUUtilizationPercentage Target CPU utilisation percentage
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
 
-  ## @param web.autoscaling.enabled Enable or disable the autoscaling
-  ## @param web.autoscaling.minReplicas Minimum number of replicas
-  ## @param web.autoscaling.maxReplicas Maximum number of replicas
-  ## @param web.autoscaling.targetCPUUtilizationPercentage Target CPU utilisation percentage
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 100
-    targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
+## @param nodeSelector Node selector
+nodeSelector: {}
 
-  ## @param web.nodeSelector Node selector
-  nodeSelector: {}
+## @param tolerations Tolerations to add to the web pod
+tolerations: []
 
-  ## @param web.tolerations Tolerations to add to the web pod
-  tolerations: []
+## @param affinity Affinity to add to the web pod
+affinity: {}
 
-  ## @param web.affinity Affinity to add to the web pod
-  affinity: {}
+## @param tomcat.catalinaOpts Override default CATALINA_OPTS
+tomcat:
+  catalinaOpts: ""
 
-  ## @param web.tomcat.catalinaOpts Override default CATALINA_OPTS
-  tomcat:
-    catalinaOpts: ""
-
-  ## @param web.config.enabled Enable or disable the config
-  ## @param web.config.image.pullPolicy Image pull policy
-  ## @param web.config.image.name Image name
-  ## @param web.config.image.namespace Image namespace
-  ## @param web.config.image.registry Image registry
-  ## @param web.config.image.tag Image tag
-  ## @param web.config.jobAnnotations Annotations to add to the config job
-  ## @param web.config.extraWait Extra wait (in seconds) for admin account to be created after Tomcat has started
-  config:
-    enabled: true
-    image:
-      pullPolicy: ""
-      name: xnat-config
-      namespace: ucl-mirsg
-      registry: ghcr.io
-      tag: latest
-    jobAnnotations: {}
-    extraWait: ""
+## @param config.enabled Enable or disable the config
+## @param config.image.pullPolicy Image pull policy
+## @param config.image.name Image name
+## @param config.image.namespace Image namespace
+## @param config.image.registry Image registry
+## @param config.image.tag Image tag
+## @param config.jobAnnotations Annotations to add to the config job
+## @param config.extraWait Extra wait (in seconds) for admin account to be created after Tomcat has started
+config:
+  enabled: true
+  image:
+    pullPolicy: ""
+    name: xnat-config
+    namespace: ucl-mirsg
+    registry: ghcr.io
+    tag: latest
+  jobAnnotations: {}
+  extraWait: ""
 
 ### @section XNAT Database parameters
 ## @param postgresql.enabled Whether to deploy a PostgreSQL cluster
@@ -413,3 +439,26 @@ postgresql:
         name: pg-user-secret
   version:
     postgresql: "14"
+
+## @param logging.enabled Enable or disable logging
+logging:
+  enabled: false
+  # loki_ip: loki:3100
+  # logs_to_scrape:
+  #   - access
+  #   - application
+  #   - configuration
+  #   - containers
+  #   - containers-kubernetes
+  #   - dicom
+  #   - events
+  #   - ohifviewer
+  #   - openid
+  #   - received
+  #   - security
+  #   - spring
+  #   - sql
+  #   - tasks
+  #   - xapi
+  #   - xdat
+  #   - xsync

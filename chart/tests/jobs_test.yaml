@@ -3,8 +3,8 @@ templates:
 tests:
   - it: jobs manifest should match snapshot
     set:
-      web.config.enabled: true
-      web.config.extraWait: 15
+      config.enabled: true
+      config.extraWait: 15
     asserts:
       - matchSnapshot:
           path: spec.template.spec

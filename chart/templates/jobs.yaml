@@ -1,9 +1,9 @@
-{{ if .Values.web.config.enabled }}
+{{ if .Values.config.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: {{ .Release.Name }}-configure
-  {{- with .Values.web.config.jobAnnotations }}
+  {{- with .Values.config.jobAnnotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
@@ -16,7 +16,7 @@ spec:
   template:
     metadata:
       name: {{ .Release.Name }}-configure
-      {{- with .Values.web.config.jobAnnotations }}
+      {{- with .Values.config.jobAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
@@ -34,17 +34,17 @@ spec:
       {{- end }}
       containers:
       - name: post-install-job
-        image: "{{ .Values.web.config.image.registry }}/{{ .Values.web.config.image.namespace }}/{{ .Values.web.config.image.name }}:{{ .Values.web.config.image.tag }}"
+        image: "{{ .Values.config.image.registry }}/{{ .Values.config.image.namespace }}/{{ .Values.config.image.name }}:{{ .Values.config.image.tag }}"
         env:
         - name: XNAT_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.web.auth.localdb.secretName }}
+              name: {{ .Values.auth.localdb.secretName }}
               key: adminPassword
         - name: XNAT_SERVICE_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.web.auth.localdb.secretName }}
+              name: {{ .Values.auth.localdb.secretName }}
               key: serviceAdminPassword
         command: ["ansible-playbook"]
         args:
@@ -55,13 +55,13 @@ spec:
           - xnat_admin_password="$(XNAT_ADMIN_PASSWORD)"
           - --extra-vars
           - xnat_service_admin_password="$(XNAT_SERVICE_ADMIN_PASSWORD)"
-          {{- if .Values.web.auth.openid.enabled }}
+          {{- if .Values.auth.openid.enabled }}
           - --extra-vars
-          - '{"xnat_enabled_providers": ["localdb", {{ .Values.web.auth.openid.provider | quote }}]}'
+          - '{"xnat_enabled_providers": ["localdb", {{ .Values.auth.openid.provider | quote }}]}'
           {{- end }}
-          {{- if .Values.web.config.extraWait }}
+          {{- if .Values.config.extraWait }}
           - --extra-vars
-          - xnat_wait_for_tomcat={{ .Values.web.config.extraWait }}
+          - xnat_wait_for_tomcat={{ .Values.config.extraWait }}
           {{- end }}
           - -v
 {{- end }}

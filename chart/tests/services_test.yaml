@@ -1,5 +1,5 @@
 templates:
-  - templates/service.yaml
+  - templates/services.yaml
 
 tests:
   - it: service manifest should match snapshot

@@ -1,0 +1,41 @@
+{{- if .Values.logging.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "xnat.fullname" . }}-alloy-config
+data:
+  config.alloy: |
+    local.file_match "catalina_logs" {
+      path_targets = [
+        {"__path__" = "/usr/local/tomcat/logs/catalina*", job = string.format("%s-catalina.out", constants.hostname), hostname = constants.hostname},
+      ]
+      sync_period  = "5s"
+    }
+    {{ range .Values.logging.logs_to_scrape }}
+    local.file_match "xnat_{{ . | replace "-" "_" }}_logs" {
+      path_targets = [
+        {"__path__" = "/data/xnat/home/logs/logs/{{ . }}.log*", job = string.format("%s-{{ . }}", constants.hostname), hostname = constants.hostname},
+      ]
+      sync_period  = "5s"
+    }
+    {{ end }}
+
+    loki.source.file "catalina_log_scrape" {
+      targets    = local.file_match.catalina_logs.targets
+      forward_to = [loki.write.default.receiver]
+      tail_from_end = true
+    }
+    {{ range .Values.logging.logs_to_scrape }}
+    loki.source.file "xnat_{{ . | replace "-" "_" }}_log_scrape" {
+      targets    = local.file_match.xnat_{{ . | replace "-" "_" }}_logs.targets
+      forward_to = [loki.write.default.receiver]
+      tail_from_end = true
+    }
+    {{ end }}
+    loki.write "default" {
+      endpoint {
+        url = "http://{{ .Values.logging.loki_ip }}/loki/api/v1/push"
+      }
+    }
+
+{{- end }}

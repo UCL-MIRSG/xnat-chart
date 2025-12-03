@@ -28,12 +28,10 @@ xnat-web-statefulst manifest should match snapshot:
           periodSeconds: 10
           timeoutSeconds: 3
         resources:
-          limits:
-            cpu: "2"
-            memory: 6000Mi
+          limits: {}
           requests:
             cpu: "1"
-            memory: 6000Mi
+            memory: 2000Mi
         securityContext:
           runAsUser: 1000
         startupProbe:

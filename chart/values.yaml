@@ -307,14 +307,11 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-## @param resources.limits.cpu CPU and memory limits
-## @param resources.limits.memory Memory limits
+## @param resources.limits CPU and memory limits
 ## @param resources.requests.cpu CPU and memory requests
 ## @param resources.requests.memory Memory requests
 resources:
-  limits:
-    cpu: "2"
-    memory: 4000Mi
+  limits: {}
   requests:
     cpu: "1"
     memory: 2000Mi

@@ -73,22 +73,6 @@ xnat-web-statefulst manifest should match snapshot:
           - mountPath: /data/xnat/prearchive
             name: xnat-prearchive
             subPath: null
-      - command:
-          - /bin/bash
-          - -c
-          - /bin/alloy run --server.http.listen-addr=0.0.0.0:12345 /etc/alloy/config.alloy
-        image: grafana/alloy:latest
-        name: RELEASE-NAME-log-reader
-        volumeMounts:
-          - mountPath: /etc/alloy/config.alloy
-            name: alloy-config
-            subPath: config.alloy
-          - mountPath: /data/xnat/home/logs
-            name: xnat-home-logs
-            subPath: null
-          - mountPath: /usr/local/tomcat/logs
-            name: catalina-logs
-            subPath: null
     imagePullSecrets:
       - name: ""
     initContainers:

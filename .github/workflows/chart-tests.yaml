@@ -33,7 +33,7 @@ jobs:
           python-version: 3.x
 
       - name: Create kind cluster
-        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1
+        uses: helm/kind-action@ef37e7f390d99f746eb8b610417061a60e82a6cc # v1
         with:
           config: chart/ci/kind-config.yaml
           cluster_name: xnat

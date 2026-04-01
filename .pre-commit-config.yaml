@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/UCL-MIRSG/.github
-    rev: v0.228.0
+    rev: v0.241.0
     hooks:
       - id: mirsg-hooks
         exclude: |-
@@ -13,7 +13,7 @@ repos:
     hooks:
       - id: helmlint
   - repo: https://github.com/bitnami/readme-generator-for-helm
-    rev: 2.7.2
+    rev: 2.8.1
     hooks:
       - id: helm-readme-generator
         # in order to run helm-readme-generator only once
